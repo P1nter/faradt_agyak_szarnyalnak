@@ -1,0 +1,31 @@
+
+ƒ
+java:S1192*"aDefine a constant instead of duplicating this literal "Mushroom.getScore() returned int" 3 times.(æ¾Âüÿÿÿÿ8›“×¬Ü2
+0
+java:S1220""Move this file to a named package.
+œ
+java:S1186&"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¾öñ¯şÿÿÿÿ
+q
+java:S1450
+"[Remove the "mushroomBody" field and declare it as a local variable in the relevant methods.(ªÏ¦µ
+@	java:S106"+Replace this use of System.out by a logger.(˜îØœ
+E	java:S106"+Replace this use of System.out by a logger.(–„Óûÿÿÿÿ
+E	java:S106"+Replace this use of System.out by a logger.(™¥Ø°ûÿÿÿÿ
+@	java:S106"+Replace this use of System.out by a logger.(é²š
+?	java:S106"+Replace this use of System.out by a logger.(ıı¸
+E	java:S106"+Replace this use of System.out by a logger.(†¨îáøÿÿÿÿ
+E	java:S106"+Replace this use of System.out by a logger.(Ú‚Ã­øÿÿÿÿ
+?	java:S106$"+Replace this use of System.out by a logger.(•Ò¾
+E	java:S106("+Replace this use of System.out by a logger.(ÔÜ›şÿÿÿÿ
+E	java:S106*"+Replace this use of System.out by a logger.(æ¾Âüÿÿÿÿ
+L	java:S106."+Replace this use of System.out by a logger.(æ¾Âüÿÿÿÿ8Õ³Ö¬Ü2
+L	java:S1060"+Replace this use of System.out by a logger.(æ¾Âüÿÿÿÿ8°“×¬Ü2
+L
+java:S1068"1Remove this unused "mushroomYarns" private field.(í¤ò»şÿÿÿÿ
+@
+java:S1068"*Remove this unused "spores" private field.(ğŸßñ
+F
+java:S1068
+"0Remove this unused "mushroomBody" private field.(ªÏ¦µ
+F
+java:S1068"0Remove this unused "mushroomYarn" private field.(×ƒÔ—

@@ -42,4 +42,9 @@ public class Mushroom {
         System.out.println("Mushroom.getScore() returned int");
         return score;
     }
+    public void destroyMushroomBody(MushroomBody body) {
+        System.out.println("Mushroom.getScore() returned int");
+        mushroomBodies.remove(body);
+        System.out.println("Mushroom.getScore() returned int");
+    }
 }

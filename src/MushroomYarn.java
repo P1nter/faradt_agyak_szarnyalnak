@@ -14,8 +14,16 @@ public class MushroomYarn {
 
         System.out.println("MushroomYarn.MushroomYarn returned");
     }
-    public void decay() {}
-    public void cut() {}
+    public void decay() {
+        System.out.println("MushroomYarn.decay() called");
+
+        System.out.println("MushroomYarn.decay() returned");
+
+    }
+    public void cut() {
+        System.out.println("MushroomYarn.cut() called");
+        System.out.println("MushroomYarn.cut() returned");
+    }
     public void update() {}
     public List<ITekton> getTektons() {
         System.out.println("MushroomYarn.getTektons() called");

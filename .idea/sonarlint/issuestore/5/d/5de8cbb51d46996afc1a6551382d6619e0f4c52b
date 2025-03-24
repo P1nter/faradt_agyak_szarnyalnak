@@ -1,0 +1,19 @@
+
+7
+java:S1220""Move this file to a named package.8†ËéªÜ2
+E	java:S106"+Replace this use of System.out by a logger.(º£?8ËéªÜ2
+L	java:S106"+Replace this use of System.out by a logger.(¼ë½´üÿÿÿÿ8‘ËéªÜ2
+E	java:S106"+Replace this use of System.out by a logger.(º£?8‘ËéªÜ2
+L	java:S106"+Replace this use of System.out by a logger.(¼ë½´üÿÿÿÿ8‘ËéªÜ2
+G	java:S106"+Replace this use of System.out by a logger.(Ç®Ú˜8’ËéªÜ2
+L	java:S106"+Replace this use of System.out by a logger.(öğí üÿÿÿÿ8’ËéªÜ2
+G	java:S106"+Replace this use of System.out by a logger.(Ğ‘”×8“ËéªÜ2
+G	java:S106!"+Replace this use of System.out by a logger.(Í«ô€8“ËéªÜ2
+G	java:S106$"+Replace this use of System.out by a logger.(áŞŸñ8”ËéªÜ2
+L	java:S106&"+Replace this use of System.out by a logger.(ğüµ•úÿÿÿÿ8”ËéªÜ2
+L	java:S106)"+Replace this use of System.out by a logger.(æ«À©üÿÿÿÿ8•ËéªÜ2
+G	java:S106+"+Replace this use of System.out by a logger.(…¨Áş8•ËéªÜ2
+G	java:S106."+Replace this use of System.out by a logger.(®Ùö€8€½¹«Ü2
+G	java:S1060"+Replace this use of System.out by a logger.(Ú’¤ï8€½¹«Ü2
+E
+java:S1068")Remove this unused "speed" private field.(‡ÚÙ)8•ËéªÜ2

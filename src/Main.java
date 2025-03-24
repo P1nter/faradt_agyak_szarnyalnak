@@ -36,6 +36,10 @@ public class Main {
         MushroomBody defaultMushroomBody = new MushroomBody();
         Insect defaultInsect = new Insect();
         MushroomYarn defaultMushroomYarn = new MushroomYarn();
+        SpeedingSpore defaultSpeedingSpore = new SpeedingSpore();
+        SlowingSpore defaultSlowingSpore = new SlowingSpore();
+        ParalyzingSpore defaultParalyzingSpore = new ParalyzingSpore();
+        CutDisablingSpore defaultCutDisablingSpore = new CutDisablingSpore();
         for (int i = 0; i < 30; i++) {
             System.out.println();
         }
@@ -62,7 +66,7 @@ public class Main {
 
                 break;
             case 6:
-                System.out.println("Hupszi");
+                System.out.println("Ugyanaz mint az 5ös");
                 break;
             case 7:
                 defaultMushroom.spread();
@@ -76,18 +80,25 @@ public class Main {
                 defaultInsect.move(defaultMushroomYarn);
                 break;
             case 11:
+                defaultInsect.cut(defaultMushroomYarn);
                 break;
             case 12:
+                defaultInsect.consumeSpore(defaultSpeedingSpore);
                 break;
             case 13:
+                defaultInsect.consumeSpore(defaultSlowingSpore);
                 break;
             case 14:
+                defaultInsect.consumeSpore(defaultParalyzingSpore);
                 break;
             case 15:
+                defaultInsect.consumeSpore(defaultCutDisablingSpore);
                 break;
             case 16:
+                defaultInsect.effectsRemove(defaultParalyzingSpore);
                 break;
             case 17:
+                defaultMushroomYarn.decay();
                 break;
             default:
                 break;
