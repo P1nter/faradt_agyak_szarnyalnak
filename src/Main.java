@@ -75,6 +75,7 @@ public class Main {
                 defaultMushroom.spread();
                 break;
             case 9:
+                defaultMushroomBody.destroyBody();
                 break;
             case 10:
                 defaultInsect.move(defaultMushroomYarn);

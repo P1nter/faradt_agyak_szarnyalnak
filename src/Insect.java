@@ -3,22 +3,22 @@ import java.util.List;
 
 public class Insect {
     private int score;
-    private List<ISpore> effects = new ArrayList<>();
+    private List<Spore> effects = new ArrayList<>();
 
     private int speed;
-    private ITekton tektons = new DefaultTekton();
-    public List<ISpore> getEffects() {
+    private Tekton tektons = new DefaultTekton();
+    public List<Spore> getEffects() {
         return effects;
     }
-    public void effectsAdd(ISpore spore) {
-        System.out.println("Insect.effectsAdd(Spore) called");
+    public void effectsAdd(Spore spore) {
+        System.out.println("Insect.effectsadd(Spore) called");
         boolean add =  effects.add(spore);
-        System.out.println("Insect.effectsAdd(Spore) returned " + add);
+        System.out.println("Insect.effectsadd(Spore) returned " + add);
     }
-    public void effectsRemove(ISpore spore) {
-        System.out.println("Insect.effectsAdd(Spore) called");
+    public void effectsRemove(Spore spore) {
+        System.out.println("Insect.effectsremove(Spore) called");
         boolean add =  effects.remove(spore);
-        System.out.println("Insect.effectsAdd(Spore) returned " + add);
+        System.out.println("Insect.effectsremove(Spore) returned " + add);
     }
 
     public Insect() {
@@ -32,7 +32,7 @@ public class Insect {
         path.getTektons();
         System.out.println("Insect.move(path) returned");
     }
-    public void consumeSpore(ISpore spore) {
+    public void consumeSpore(Spore spore) {
         System.out.println("Insect.consumeSpore() called");
         spore.affectInsect(this);
         System.out.println("Insect.consumeSpore() returned");

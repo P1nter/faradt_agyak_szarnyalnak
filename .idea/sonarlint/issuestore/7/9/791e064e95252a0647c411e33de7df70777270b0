@@ -1,0 +1,18 @@
+
+7
+java:S1220""Move this file to a named package.8ìÖºÜ2
+W
+java:S2387"5"adjacentTektons" is the name of a field in "Tekton".(ÖœŠªûÿÿÿÿ8”ìÖºÜ2
+L	java:S106"+Replace this use of System.out by a logger.(éÊÄØúÿÿÿÿ8—ìÖºÜ2
+L	java:S106
+"+Replace this use of System.out by a logger.(¼ÉÑÕúÿÿÿÿ8˜ìÖºÜ2
+L	java:S106"+Replace this use of System.out by a logger.(¬ã£µúÿÿÿÿ8˜ìÖºÜ2
+G	java:S106"+Replace this use of System.out by a logger.(Ë­î8™ìÖºÜ2
+G	java:S106"+Replace this use of System.out by a logger.(–ıÿæ8šìÖºÜ2
+L	java:S106"+Replace this use of System.out by a logger.(»°†­øÿÿÿÿ8›ìÖºÜ2
+H
+java:S1168"+Return an empty collection instead of null.(¥¹ï8›ìÖºÜ2
+W
+java:S1161":Add the "@Override" annotation above this method signature(©ºşé8›ìÖºÜ2
+L	java:S106"+Replace this use of System.out by a logger.(á…ô–ÿÿÿÿÿ8›ìÖºÜ2
+G	java:S106"+Replace this use of System.out by a logger.(÷¤ß‡8ÕØºÜ2

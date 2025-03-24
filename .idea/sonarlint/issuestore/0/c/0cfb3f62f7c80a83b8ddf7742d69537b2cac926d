@@ -1,15 +1,18 @@
 
-t
-java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(³«Æ‡þÿÿÿÿ
+{
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(¸›£©þÿÿÿÿ8¯«Œ¼Ü2
 0
 java:S1220""Move this file to a named package.
 E	java:S106"+Replace this use of System.out by a logger.(½ÞµÓþÿÿÿÿ
 E	java:S106"+Replace this use of System.out by a logger.(øµùŒûÿÿÿÿ
+X	java:S125"<This block of commented-out lines of code should be removed.(×ý»Î8šûþ½Ü2
 @	java:S106"+Replace this use of System.out by a logger.(ØÀËÑ
 @	java:S106"+Replace this use of System.out by a logger.(Î¾ Ò
-C
-java:S1172".Remove this unused method parameter "tektons".(·•æ)
+D
+java:S1172".Remove this unused method parameter "tektons".(«ÜŠ¥
 E	java:S106"+Replace this use of System.out by a logger.(íð×»ùÿÿÿÿ
 E	java:S106"+Replace this use of System.out by a logger.(‹©Ãýÿÿÿÿ
 @	java:S106"+Replace this use of System.out by a logger.(©âó…
 E	java:S106!"+Replace this use of System.out by a logger.(¯¥Åçøÿÿÿÿ
+L	java:S106&"+Replace this use of System.out by a logger.(ÈñÉøüÿÿÿÿ8‡¤½Ü2
+G	java:S106'"+Replace this use of System.out by a logger.(©Œô§8‡¤½Ü2

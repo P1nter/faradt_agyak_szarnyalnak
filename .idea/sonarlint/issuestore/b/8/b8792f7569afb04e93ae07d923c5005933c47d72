@@ -1,0 +1,11 @@
+
+0
+java:S1220""Move this file to a named package.
+@	java:S106"+Replace this use of System.out by a logger.(Üùüÿ
+E	java:S106"+Replace this use of System.out by a logger.(±ÅŒ„øÿÿÿÿ
+@	java:S106"+Replace this use of System.out by a logger.(¦Ï¤
+@	java:S106"+Replace this use of System.out by a logger.(¶ìå’
+E	java:S106"+Replace this use of System.out by a logger.(Îúóıÿÿÿÿ
+E	java:S106#"+Replace this use of System.out by a logger.(ßÛÉãÿÿÿÿÿ
+A
+java:S1068"+Remove this unused "tektons" private field.(ÓØåú

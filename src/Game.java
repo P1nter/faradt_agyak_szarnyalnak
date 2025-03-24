@@ -1,7 +1,7 @@
 import java.util.List;
 
 public class Game {
-    private List<ITekton> tektons;
+    private List<Tekton> tektons;
 
     //Teszteléshez
     DefaultTekton defaultTekton;

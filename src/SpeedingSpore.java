@@ -1,4 +1,4 @@
-public class SpeedingSpore implements ISpore {
+public class SpeedingSpore extends Spore {
     @Override
     public void affectInsect(Insect insect) {
         System.out.println("SpeedingSpore.affectInsect(insect) called");
