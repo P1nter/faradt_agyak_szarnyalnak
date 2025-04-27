@@ -50,6 +50,9 @@ abstract class Tekton {
         System.out.println("Tekton.getMushroom() returned");
         return mushrooms;
     }
+    public List<Insect> getInsects(){
+        return insects;
+    }
     public boolean canCut() {
         System.out.println("Tekton.canCut() called");
         System.out.println("Tekton.canCut() returned");
@@ -58,6 +61,11 @@ abstract class Tekton {
     public boolean canGrow() {
         System.out.println("Tekton.canGrow() called");
         System.out.println("Tekton.canGrow() returned");
+        return true;
+    }
+    public boolean canGrowYarn(){
+        System.out.println("Tekton.canGrowYarn() called");
+        System.out.println("Tekton.canGrowYarn() returned");
         return true;
     }
 }

@@ -12,7 +12,7 @@ abstract class Spore {
     }
 
     public void affectInsect(Insect insect){
-        insect.effectsAdd(this);
+        //insect.effectsAdd(this);
     }
 
     public void destroySpore(){

@@ -7,7 +7,9 @@ public class DuplicatingSpore extends Spore{
     @Override
     public void affectInsect(Insect insect) {
         System.out.println("DuplicatingSpore.affectInsect(insect) called");
-        insect.effectedByDuplicatingSpore();
+        //nem létezik ez a függvény
+        //TODO
+        //insect.effectedByDuplicatingSpore();
         System.out.println("DuplicatingSpore.affectInsect(insect) returned");
     }
 }

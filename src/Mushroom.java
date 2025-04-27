@@ -5,13 +5,14 @@ public class Mushroom {
     private List<MushroomYarn> mushroomYarns = new ArrayList<>();
     private List<Spore> spores = new ArrayList<>();
     private Tekton tekton = null;
+    private int howOld = 0;
 
     public void addMushroomYarn(MushroomYarn mushroomYarn) {
         System.out.println("Mushroom.addMushroomYarn(MushroomYarn) called");
         mushroomYarns.add(mushroomYarn);
         //megnézni, h disappearingyarn tektonon van e
         if (mushroomYarn.getTektons().)
-        System.out.println("Mushroom.addMushroomYarn(MushroomYarn) returned");
+            System.out.println("Mushroom.addMushroomYarn(MushroomYarn) returned");
     }
 
     public Mushroom() {
@@ -19,6 +20,7 @@ public class Mushroom {
         this.mushroomBody = null;
         mushroomYarns = new ArrayList<>();
         spores = new ArrayList<>();
+        howOld = 0;
         System.out.println("Mushroom.Mushroom() returned");
     }
 
@@ -35,40 +37,51 @@ public class Mushroom {
         System.out.println("Mushroom.isThereMushroomYarn() returned boolean");
         return result;
     }
+    public void updateAge() {
+        System.out.println("Mushroom.updateAge() called");
+        howOld++;
+        System.out.println("Mushroom.updateAge() returned");
+    }
     public void instructSporeRelease(MushroomBody body) {
         System.out.println("Mushroom.instructSporeRelease() called");
         body.releaseSpore();
         System.out.println("Mushroom.instructSporeRelease() returned");
     }
-    public void spread() {
+    public void Update() {
+        System.out.println("Mushroom.Update() called");
+        for (MushroomYarn mushroomYarn : mushroomYarns) {
+            mushroomYarn.update();
+        }
+        updateAge();
+        System.out.println("Mushroom.Update() returned");
+    }
+
+    public void spread(Tekton honnan, Tekton hova) {
         System.out.println("Mushroom.spread() called");
-
-        mushroomYarn = new MushroomYarn();
-
+        //grows a mushroomyarn
+        MushroomYarn mushroomYarn = new MushroomYarn(honnan, hova);
         System.out.println("Mushroom.spread() returned");
     }
-    public void growBody(Tekton tekton) {
+
+    public MushroomBody growBody(Tekton tekton) {
         System.out.println("Mushroom.growBody() called");
         //check if tekton allows
         if (this.mushroomBody != null) {
             System.out.println("Mushroom.growBody() returned: there is already a mushroom body");
-            return;
+            return null;
         }
         if (tekton.canGrow()) {
             System.out.println("Mushroom.growBody() tekton.canGrow() returned");
             //check if tekton has spore and mushroomyarn
-            if(this.tekton.hasSpore && this.tekton.hasMushroomYarn) {
-                System.out.println("Mushroom.growBody() tekton.hasSpore && tekton.hasMushroomYarn returned");
-                //create mushroom body
-            mushroomBody = new MushroomBody(tekton);
-        } else {
-            System.out.println("Mushroom.growBody() tekton.canGrow() returned");
-            return;
-        }
-
-        System.out.println("Mushroom.growBody() returned");
+                mushroomBody = new MushroomBody(tekton);
+            } else {
+                System.out.println("Mushroom.growBody() tekton.canGrow() returned");
+                return null;
+            }
+            System.out.println("Mushroom.growBody() returned");
+            return mushroomBody;
     }
-    public void update() {
+    public void update () {
         System.out.println("Mushroom.update() called");
         System.out.println("MushroomYarn adding for testing started");
         mushroomYarns.add(new MushroomYarn());
@@ -76,31 +89,39 @@ public class Mushroom {
         for (MushroomYarn m : mushroomYarns) {
             m.update();
         }
-
-
         System.out.println("Mushroom.update() returned");
 
     }
-    public int getScore() {
-        System.out.println("Mushroom.getScore() called");
-
-        System.out.println("Mushroom.getScore() returned int");
-        return score;
-    }
-    public void destroyMushroomBody(MushroomBody body) {
+    public void destroyMushroomBody (MushroomBody body){
         System.out.println("Mushroom.destroyMushroomBody() called");
         if (mushroomBody != null) {
             mushroomBody = null;
             System.out.println("Mushroom.destroyMushroomBody() returned");
-            return;
+                return;
         }
         System.out.println("Mushroom.getScore() returned");
     }
-    public boolean hasMushroomBody() {
+    public boolean hasMushroomBody () {
         System.out.println("Mushroom.hasMushroomBody() called");
         boolean result = mushroomBody != null;
         System.out.println("Mushroom.hasMushroomBody() returned boolean");
         return result;
     }
-}
 
+    public List<Spore> getSpores() {
+        System.out.println("Mushroom.getSpores() called");
+        System.out.println("Mushroom.getSpores() returned");
+        return spores;
+    }
+    public void setMushroomBody(MushroomBody mushroomBody) {
+        System.out.println("Mushroom.setMushroomBody(MushroomBody) called");
+        this.mushroomBody = mushroomBody;
+        System.out.println("Mushroom.setMushroomBody(MushroomBody) returned");
+    }
+    public boolean hasYarns() {
+        System.out.println("Mushroom.hasYarns() called");
+        boolean result = mushroomYarns.size() > 0;
+        System.out.println("Mushroom.hasYarns() returned");
+        return result;
+    }
+}

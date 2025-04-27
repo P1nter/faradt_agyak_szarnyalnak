@@ -5,4 +5,10 @@ public class NoMushroomBodyTekton extends Tekton {
         System.out.println("NoMushroomBodyTekton.NoMushroomBodyTekton() called");
         System.out.println("NoMushroomBodyTekton.NoMushroomBodyTekton() returned");
     }
+    @Override
+    public boolean canGrow() {
+        System.out.println("NoMushroomBodyTekton.isMushroomBody() called");
+        System.out.println("NoMushroomBodyTekton.isMushroomBody() returned");
+        return false;
+    }
 }

@@ -5,7 +5,9 @@ import java.util.Arrays;
 
 public class MushroomYarn {
     private Tekton[] tektons = new Tekton[2]; // Fixed size array for exactly 2 Tektons
+    private int isCut = 0;
 
+    public 
     public MushroomYarn(Tekton tekton1, Tekton tekton2) {
         System.out.println("MushroomYarn.MushroomYarn(Tekton, Tekton) called");
         if (tekton1 == null || tekton2 == null) {
