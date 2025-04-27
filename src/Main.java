@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class Main {
+/*public class Main {
     public static void main(String[] args) {
         //Alap tesztesetek
         System.out.println("Tesztesetek:\n");
@@ -107,5 +107,80 @@ public class Main {
 
 
         in.close();
+    }
+}*/
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        // Initialize the game state
+        Game game = new Game();
+
+        // Create Tektons
+        Tekton tekton_1 = new DefaultTekton();
+        Tekton tekton_2 = new DefaultTekton();
+        Tekton tekton_3 = new DefaultTekton();
+        Tekton tekton_4 = new DefaultTekton();
+
+        // Set adjacent Tektons
+        tekton_1.addAdjacentTekton(tekton_2);
+        tekton_2.addAdjacentTekton(tekton_1);
+        tekton_2.addAdjacentTekton(tekton_3);
+        tekton_3.addAdjacentTekton(tekton_2);
+        tekton_3.addAdjacentTekton(tekton_4);
+        tekton_4.addAdjacentTekton(tekton_3);
+
+        // Add Tektons to the game
+        game.addTekton(tekton_1);
+        game.addTekton(tekton_2);
+        game.addTekton(tekton_3);
+        game.addTekton(tekton_4);
+
+        // Create Insects
+        Insect insect_1 = new Insect(tekton_1);
+        Insect insect_2 = new Insect(tekton_2);
+
+        // Add Insects to Tektons
+        tekton_1.addNewInsect(insect_1);
+        tekton_2.addNewInsect(insect_2);
+
+        // Create Mushrooms
+        Mushroom mushroom_1 = new Mushroom();
+        Mushroom mushroom_3 = new Mushroom();
+
+        // Add Mushrooms to Tektons
+        tekton_1.setMushroom(mushroom_1);
+        tekton_3.setMushroom(mushroom_3);
+
+        // Test Case 1: Gombafonál növekedése
+        System.out.println("Test Case 1: Gombafonál növekedése");
+        MushroomYarn mushroomyarn_1 = new MushroomYarn(tekton_1, tekton_2);
+        mushroom_1.getMushroomYarns().add(mushroomyarn_1);
+        System.out.println("ID: mushroomyarn_1");
+        System.out.println("Tektons: [tekton_1, tekton_2]");
+        System.out.println();
+
+        // Test Case 2: Gombatest növekedése
+        System.out.println("Test Case 2: Gombatest növekedése");
+        //mushroom_1.releaseSpore();
+        MushroomBody mushroombody_1 = new MushroomBody(tekton_2);
+        tekton_2.setMushroom(mushroom_1);
+        System.out.println("ID: mushroombody_1");
+        System.out.println("Tekton: tekton_2");
+        System.out.println("Spore: 0");
+        System.out.println();
+
+        // Test Case 3: Rovar mozgása a gombafonálon
+        System.out.println("Test Case 3: Rovar mozgása a gombafonálon");
+        insect_1.move(mushroomyarn_1);
+        System.out.println("ID: insect_1");
+        System.out.println("Tekton: tekton_2");
+        System.out.println("Stunned for: 0");
+        System.out.println("Paralyzed for: 0");
+        System.out.println("Slowed for: 0");
+        System.out.println("Speeded for: 0");
+        System.out.println("Can't cut for: 0");
+        System.out.println();
     }
 }

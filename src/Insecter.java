@@ -18,4 +18,9 @@ public class Insecter extends Player{
         insects.add(insect);
         System.out.println("Insecter.AddInsect(insect) returned");
     }
+    public List<Insect> getInsects() {
+        System.out.println("Insecter.getInsects() called");
+        System.out.println("Insecter.getInsects() returned");
+        return insects;
+    }
 }

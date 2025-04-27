@@ -11,6 +11,10 @@ public class MushroomBody {
 
         System.out.println("MushroomBody.releaseSpore returned");
     }
+    public MushroomBody() {
+        System.out.println("MushroomBody.MushroomBody() called");
+        System.out.println("MushroomBody.MushroomBody() returned");
+    }
     public MushroomBody(Tekton tekton){
         System.out.println("MushroomBody.MushroomBody() called");
         this.tekton = tekton;
