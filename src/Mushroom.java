@@ -1,23 +1,39 @@
 import java.util.*;
 
 public class Mushroom {
-    private int score;
-    private List<MushroomBody> mushroomBodies = new ArrayList<>();
+    private MushroomBody mushroomBody = null;
     private List<MushroomYarn> mushroomYarns = new ArrayList<>();
     private List<Spore> spores = new ArrayList<>();
+    private Tekton tekton = null;
 
-    public void setMushroomYarn(MushroomYarn mushroomYarn) {
-        this.mushroomYarn = mushroomYarn;
+    public void addMushroomYarn(MushroomYarn mushroomYarn) {
+        System.out.println("Mushroom.addMushroomYarn(MushroomYarn) called");
+        mushroomYarns.add(mushroomYarn);
+        //megnézni, h disappearingyarn tektonon van e
+        if (mushroomYarn.getTektons().)
+        System.out.println("Mushroom.addMushroomYarn(MushroomYarn) returned");
     }
-
-    //Teszteléshez
-    private MushroomBody mushroomBody;
-    private MushroomYarn mushroomYarn;
 
     public Mushroom() {
         System.out.println("Mushroom.Mushroom() called");
-
+        this.mushroomBody = null;
+        mushroomYarns = new ArrayList<>();
+        spores = new ArrayList<>();
         System.out.println("Mushroom.Mushroom() returned");
+    }
+
+    public boolean isThereMushroomYarn(Tekton tekton1, Tekton tekton2) {
+        System.out.println("Mushroom.isThereMushroomYarn() called");
+        boolean result = false;
+        for (MushroomYarn mushroomYarn : mushroomYarns) {
+            Tekton[] tektons = mushroomYarn.getTektons();
+            if ((tektons[0] == tekton1 && tektons[1] == tekton2) || (tektons[0] == tekton2 && tektons[1] == tekton1)) {
+                result = true;
+                break;
+            }
+        }
+        System.out.println("Mushroom.isThereMushroomYarn() returned boolean");
+        return result;
     }
     public void instructSporeRelease(MushroomBody body) {
         System.out.println("Mushroom.instructSporeRelease() called");
@@ -31,11 +47,24 @@ public class Mushroom {
 
         System.out.println("Mushroom.spread() returned");
     }
-    public void growBody() {
+    public void growBody(Tekton tekton) {
         System.out.println("Mushroom.growBody() called");
-
-        mushroomBody = new MushroomBody();
-        //mushroomYarn = new MushroomYarn();
+        //check if tekton allows
+        if (this.mushroomBody != null) {
+            System.out.println("Mushroom.growBody() returned: there is already a mushroom body");
+            return;
+        }
+        if (tekton.canGrow()) {
+            System.out.println("Mushroom.growBody() tekton.canGrow() returned");
+            //check if tekton has spore and mushroomyarn
+            if(this.tekton.hasSpore && this.tekton.hasMushroomYarn) {
+                System.out.println("Mushroom.growBody() tekton.hasSpore && tekton.hasMushroomYarn returned");
+                //create mushroom body
+            mushroomBody = new MushroomBody(tekton);
+        } else {
+            System.out.println("Mushroom.growBody() tekton.canGrow() returned");
+            return;
+        }
 
         System.out.println("Mushroom.growBody() returned");
     }
@@ -59,8 +88,19 @@ public class Mushroom {
         return score;
     }
     public void destroyMushroomBody(MushroomBody body) {
-        System.out.println("Mushroom.getScore() returned int");
-        mushroomBodies.remove(body);
-        System.out.println("Mushroom.getScore() returned int");
+        System.out.println("Mushroom.destroyMushroomBody() called");
+        if (mushroomBody != null) {
+            mushroomBody = null;
+            System.out.println("Mushroom.destroyMushroomBody() returned");
+            return;
+        }
+        System.out.println("Mushroom.getScore() returned");
+    }
+    public boolean hasMushroomBody() {
+        System.out.println("Mushroom.hasMushroomBody() called");
+        boolean result = mushroomBody != null;
+        System.out.println("Mushroom.hasMushroomBody() returned boolean");
+        return result;
     }
 }
+

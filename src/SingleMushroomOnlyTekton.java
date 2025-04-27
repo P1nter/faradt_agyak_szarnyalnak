@@ -1,8 +1,8 @@
 import java.util.List;
 
 public class SingleMushroomOnlyTekton extends Tekton {
-    public List<Tekton> split() {
-        return null;
+    public SingleMushroomOnlyTekton() {
+        System.out.println("SingleMushroomOnlyTekton.SingleMushroomOnlyTekton() called");
+        System.out.println("SingleMushroomOnlyTekton.SingleMushroomOnlyTekton() returned");
     }
-    public List<Tekton> getAdjacentTektons(){ return null;}
 }

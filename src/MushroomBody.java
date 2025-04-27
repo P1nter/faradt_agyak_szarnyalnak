@@ -2,26 +2,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MushroomBody {
-    private List<Tekton> tektons;
-
-    //Teszteléshez
-    Spore spore;
+    private Tekton tekton;
 
     public void releaseSpore() {
         System.out.println("MushroomBody.releaseSpore called");
 
-        spore = new ParalyzingSpore();
         //setTektons(tektons);
 
         System.out.println("MushroomBody.releaseSpore returned");
     }
-    public MushroomBody(){
+    public MushroomBody(Tekton tekton){
         System.out.println("MushroomBody.MushroomBody() called");
-        setTektons(new ArrayList<Tekton>());
+        this.tekton = tekton;
         System.out.println("MushroomBody.MushroomBody() returned");
     }
 
-    public void setTektons(List<Tekton> tektons) {
+    public void addTekton(List<Tekton> tektons) {
         System.out.println("MushroomBody.setTektons() called");
 
         System.out.println("MushroomBody.setTektons() returned");
@@ -39,4 +35,5 @@ public class MushroomBody {
         System.out.println("MushroomBody.destroyBody() returned true");
         return true;
     }
+
 }

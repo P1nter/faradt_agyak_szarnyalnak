@@ -1,8 +1,8 @@
 import java.util.List;
 
 public class FastGrowthTekton extends Tekton {
-    public List<Tekton> split() {
-        return null;
+    public FastGrowthTekton() {
+        System.out.println("FastGrowthTekton.FastGrowthTekton() called");
+        System.out.println("FastGrowthTekton.FastGrowthTekton() returned");
     }
-    public List<Tekton> getAdjacentTektons(){ return null;}
 }

@@ -1,8 +1,14 @@
 import java.util.List;
 
 public class DisabledBodyGrowthTekton extends Tekton {
-    public List<Tekton> split() {
-        return null;
+    public DisabledBodyGrowthTekton() {
+        System.out.println("DisabledBodyGrowthTekton.DisabledBodyGrowthTekton() called");
+        System.out.println("DisabledBodyGrowthTekton.DisabledBodyGrowthTekton() returned");
     }
-    public List<Tekton> getAdjacentTektons(){ return null;}
+    @Override
+    public boolean canGrow() {
+        System.out.println("DisabledBodyGrowthTekton.canGrowBody() called");
+        System.out.println("DisabledBodyGrowthTekton.canGrowBody() returned");
+        return false;
+    }
 }
