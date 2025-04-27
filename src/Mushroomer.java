@@ -139,8 +139,7 @@ public class Mushroomer extends Player {
     public void GrowYarn(Tekton honnan, Tekton hova){
         System.out.println("Mushroomer.GrowYarn() called");
         if(fromWhereCanIGrowYarns().contains(honnan) && whereCanIGrowYarnsFromThisTekton(honnan).contains(hova))
-            //new mushroomyarn between honnan and hova
-            honnan.getMushroom().spread(honnan, hova);
+        mushroomYarns.add(honnan.getMushroom().spread(honnan, hova));
         System.out.println("Mushroomer.GrowYarn() returned");
     }
 }

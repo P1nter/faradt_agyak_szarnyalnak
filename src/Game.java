@@ -66,25 +66,12 @@ public class Game {
     }
 
     public void determineWinner(){
-        Insect insectWinner = insects.stream()
-                .max((i1, i2) -> Integer.compare(i1.getScore(), i2.getScore()))
-                .orElse(null);
-
-        Mushroom mushroomWinner = mushrooms.stream()
-                .max((m1, m2) -> Integer.compare(m1.getScore(), m2.getScore()))
-                .orElse(null);
-
-        if (insectWinner != null) {
-            System.out.println("Insect Winner: " + insectWinner + " with score: " + insectWinner.getScore());
-        } else {
-            System.out.println("No insects available.");
+        Player winner = players.get(0);
+        for(Player player:players){
+            if(player.getScore() > winner.getScore()) winner = player;
         }
 
-        if (mushroomWinner != null) {
-            System.out.println("Mushroom Winner: " + mushroomWinner + " with score: " + mushroomWinner.getScore());
-        } else {
-            System.out.println("No mushrooms available.");
-        }
+        System.out.println("The winner is: "+winner);
     }
     public void update(){
         //update all insects and mushrooms
@@ -92,9 +79,8 @@ public class Game {
             for(Insect insect : tekton.getInsects()){
                 insect.nextTurn();
             }
-            for(Mushroom mushroom : tekton.getMushroom()){
-                mushroom.update();
-            }
+
+            tekton.getMushroom().update();
         }
     }
 

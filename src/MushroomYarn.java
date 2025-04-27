@@ -5,9 +5,36 @@ import java.util.Arrays;
 
 public class MushroomYarn {
     private Tekton[] tektons = new Tekton[2]; // Fixed size array for exactly 2 Tektons
-    private int isCut = 0;
+    private boolean isCut = false;
+    private int timeBack = 0;
+    public boolean getIsCut() {
+        return isCut;
+    }
+    public int getTimeBack() {
+        return timeBack;
+    }
 
-    public 
+    public void setTimeBack(int timeBack) {
+        this.timeBack = timeBack;
+    }
+
+    public void setCut() {
+        isCut = true;
+    }
+
+    public boolean Update(){
+        System.out.println("MushroomYarn.Update() called");
+        if (isCut && timeBack > 0) {
+            timeBack--;
+            if (timeBack == 0) {
+                isCut = false;
+                return true;
+            }
+        }
+        System.out.println("MushroomYarn.Update() returned");
+        return false;
+    }
+
     public MushroomYarn(Tekton tekton1, Tekton tekton2) {
         System.out.println("MushroomYarn.MushroomYarn(Tekton, Tekton) called");
         if (tekton1 == null || tekton2 == null) {
@@ -52,13 +79,9 @@ public class MushroomYarn {
             System.out.println("MushroomYarn.cut() returned false");
             return false;
         }
-
+        setCut();
+        setTimeBack(3);
         System.out.println("MushroomYarn.cut() returned true");
         return true;
-    }
-
-    public void update() {
-        System.out.println("MushroomYarn.update() called");
-        System.out.println("MushroomYarn.update() returned");
     }
 }

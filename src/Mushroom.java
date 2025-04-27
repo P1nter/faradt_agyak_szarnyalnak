@@ -50,17 +50,23 @@ public class Mushroom {
     public void Update() {
         System.out.println("Mushroom.Update() called");
         for (MushroomYarn mushroomYarn : mushroomYarns) {
-            mushroomYarn.update();
+           if(mushroomYarn.Update()){
+               mushroomYarns.remove(mushroomYarn);
+            }
         }
         updateAge();
         System.out.println("Mushroom.Update() returned");
     }
 
-    public void spread(Tekton honnan, Tekton hova) {
+    public MushroomYarn spread(Tekton honnan, Tekton hova) {
         System.out.println("Mushroom.spread() called");
         //grows a mushroomyarn
         MushroomYarn mushroomYarn = new MushroomYarn(honnan, hova);
+        if(hova.isDisappearing() || honnan.isDisappearing()){
+            mushroomYarn.setTimeBack(5);
+        }
         System.out.println("Mushroom.spread() returned");
+        return mushroomYarn;
     }
 
     public MushroomBody growBody(Tekton tekton) {

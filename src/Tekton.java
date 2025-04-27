@@ -68,4 +68,9 @@ abstract class Tekton {
         System.out.println("Tekton.canGrowYarn() returned");
         return true;
     }
+    public boolean isDisappearing() {
+        System.out.println("Tekton.isDisappearing() called");
+        System.out.println("Tekton.isDisappearing() returned");
+        return false;
+    }
 }
