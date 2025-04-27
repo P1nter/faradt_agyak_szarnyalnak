@@ -1,21 +1,26 @@
 public class Insect {
-    private Game game;
     private int score;
     //how many actions can the insect make in a turn
     private int action;
     private Tekton tekton;
 
+    private Insecter owner;
 
+    public Insecter getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Insecter owner) {
+        this.owner = owner;
+    }
     //cutDisabled, paralyzed, spedUp, slowedDown
     private int[] effects = {0, 0, 0, 0};
 
-    public Insect(Tekton tekton, Game game) {
+    public Insect(Tekton tekton) {
         System.out.println("Insect.Insect() called");
-        this.game = game;
         this.score = 0;
         this.action = 3;
         this.tekton = tekton;
-        game.addInsect(this);
         System.out.println("Insect.Insect() returned");
     }
 
@@ -34,6 +39,11 @@ public class Insect {
         System.out.println("Insect.getAction() returned");
         return action;
 
+    }
+    public void setTekton(Tekton tekton){
+        System.out.println("Insect.setTekton() called");
+        this.tekton = tekton;
+        System.out.println("Insect.setTekton() returned");
     }
 
     public Tekton getTekton(){
@@ -67,9 +77,12 @@ public class Insect {
         this.effects[3] = 3;
         System.out.println("Insect.effectedBySlowingSpore() returned");
     }
-    public void effectByDuplicatingSpore() {
+    public void effectedByDuplicatingSpore() {
         System.out.println("Insect.effectByDuplicatingSpore() called");
-        Insect insect = new Insect(this.tekton, this.game);
+        Insect insect = new Insect(this.tekton);
+        tekton.addNewInsect(insect);
+        insect.setOwner(this.owner);
+        insect.getOwner().addInsect(insect);
         System.out.println("Insect.effectByDuplicatingSpore() returned");
     }
 
@@ -102,6 +115,10 @@ public class Insect {
         System.out.println("Insect.move(path) called");
         if(action == 0 || effects[1]!=0) return false;
         if(path.getTektons()[1] != this.getTekton() && path.getTektons()[0] != this.getTekton()) {
+            System.out.println("Insect.move(path) returned");
+            return false;
+        }
+        if(path.getIsCut()){
             System.out.println("Insect.move(path) returned");
             return false;
         }

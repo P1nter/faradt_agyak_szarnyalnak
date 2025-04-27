@@ -7,14 +7,6 @@ public class Mushroom {
     private Tekton tekton = null;
     private int howOld = 0;
 
-    public void addMushroomYarn(MushroomYarn mushroomYarn) {
-        System.out.println("Mushroom.addMushroomYarn(MushroomYarn) called");
-        mushroomYarns.add(mushroomYarn);
-        //megnézni, h disappearingyarn tektonon van e
-        if (mushroomYarn.getTektons().)
-            System.out.println("Mushroom.addMushroomYarn(MushroomYarn) returned");
-    }
-
     public Mushroom() {
         System.out.println("Mushroom.Mushroom() called");
         this.mushroomBody = null;
@@ -87,17 +79,7 @@ public class Mushroom {
             System.out.println("Mushroom.growBody() returned");
             return mushroomBody;
     }
-    public void update () {
-        System.out.println("Mushroom.update() called");
-        System.out.println("MushroomYarn adding for testing started");
-        mushroomYarns.add(new MushroomYarn());
-        System.out.println("MushroomYarn adding for testing finished");
-        for (MushroomYarn m : mushroomYarns) {
-            m.update();
-        }
-        System.out.println("Mushroom.update() returned");
 
-    }
     public void destroyMushroomBody (MushroomBody body){
         System.out.println("Mushroom.destroyMushroomBody() called");
         if (mushroomBody != null) {
@@ -129,5 +111,16 @@ public class Mushroom {
         boolean result = mushroomYarns.size() > 0;
         System.out.println("Mushroom.hasYarns() returned");
         return result;
+    }
+
+    public void removeMushroomBody(){
+        System.out.println("Mushroom.removeMushroomBody() called");
+        this.mushroomBody = null;
+        System.out.println("Mushroom.removeMushroomBody() returned");
+    }
+    public List<MushroomYarn> getMushroomYarns() {
+        System.out.println("Mushroom.getMushroomYarns() called");
+        System.out.println("Mushroom.getMushroomYarns() returned");
+        return mushroomYarns;
     }
 }

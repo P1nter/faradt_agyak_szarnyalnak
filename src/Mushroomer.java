@@ -63,8 +63,10 @@ public class Mushroomer extends Player {
     public void GrowBody(Tekton tekton){
         if (whereCanIGrowMushroomBodies().contains(tekton)) {
             System.out.println("Mushroomer.Grow(tekton) called");
-
             MushroomBody mushroomBody = tekton.getMushroom().growBody(tekton);
+            if(mushroomBody.getTektons().isFastTekton()){
+                tekton.getMushroom().Update();
+            }
             if (mushroomBody == null) {
                 System.out.println("Mushroomer.Grow(tekton) returned: mushroom body is null");
                 return;
@@ -84,9 +86,7 @@ public class Mushroomer extends Player {
            }
         }
         for(MushroomBody mushroombodies: this.mushroomsBodies){
-            for(Tekton tekton: mushroombodies.getTektons()){
-                whereHasYarns.add(tekton);
-            }
+            whereHasYarns.add(mushroombodies.getTektons());
         }
         Set<Tekton> uniqueTektons = new HashSet<>(whereHasYarns);
         whereHasYarns.clear();
@@ -139,7 +139,7 @@ public class Mushroomer extends Player {
     public void GrowYarn(Tekton honnan, Tekton hova){
         System.out.println("Mushroomer.GrowYarn() called");
         if(fromWhereCanIGrowYarns().contains(honnan) && whereCanIGrowYarnsFromThisTekton(honnan).contains(hova))
-        mushroomYarns.add(honnan.getMushroom().spread(honnan, hova));
+            mushroomYarns.add(honnan.getMushroom().spread(honnan, hova));
         System.out.println("Mushroomer.GrowYarn() returned");
     }
 }

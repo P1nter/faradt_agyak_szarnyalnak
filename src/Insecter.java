@@ -8,4 +8,14 @@ public class Insecter extends Player{
         System.out.println("Insecter.Insecter(name) called");
         System.out.println("Insecter.Insecter(name) returned");
     }
+    public void ConsumSpore(Spore spore) {
+        System.out.println("Insecter.ConsumSpore(spore) called");
+
+        System.out.println("Insecter.ConsumSpore(spore) returned");
+    }
+    public void addInsect(Insect insect) {
+        System.out.println("Insecter.AddInsect(insect) called");
+        insects.add(insect);
+        System.out.println("Insecter.AddInsect(insect) returned");
+    }
 }

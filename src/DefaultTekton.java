@@ -8,5 +8,10 @@ public class DefaultTekton extends Tekton {
         System.out.println("DefaultTekton.DefaultTekton() called");
         System.out.println("DefaultTekton.DefaultTekton() returned");
     }
+    public DefaultTekton(List<Tekton> adjacentTektons) {
+        System.out.println("DefaultTekton.DefaultTekton(List<Tekton> adjacentTektons) called");
+        this.adjacentTektons = adjacentTektons;
+        System.out.println("DefaultTekton.DefaultTekton(List<Tekton> adjacentTektons) returned");
+    }
 
 }

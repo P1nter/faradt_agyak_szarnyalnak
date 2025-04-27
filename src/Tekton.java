@@ -8,14 +8,14 @@ abstract class Tekton {
 
     public Tekton() {
         System.out.println("Tekton.Tekton() called");
-
         System.out.println("Tekton.Tekton() returned");
     }
-    List<Tekton> split() {
-        //ezgecibonyi
-        return adjacentTektons;
+    public Tekton(List<Tekton> adjacentTektonss) {
+        System.out.println("Tekton.Tekton() called");
+        this.adjacentTektons = adjacentTektonss;
+        System.out.println("Tekton.Tekton() returned");
     }
-    List<Tekton> getAdjacentTektons() {
+    public List<Tekton> getAdjacentTektons() {
         System.out.println("Tekton.getAdjacentTektons() called");
         System.out.println("Tekton.getAdjacentTektons() returned");
         return adjacentTektons;
@@ -53,6 +53,9 @@ abstract class Tekton {
     public List<Insect> getInsects(){
         return insects;
     }
+    public void setInsects(List<Insect> insects){
+        this.insects = insects;
+    }
     public boolean canCut() {
         System.out.println("Tekton.canCut() called");
         System.out.println("Tekton.canCut() returned");
@@ -71,6 +74,11 @@ abstract class Tekton {
     public boolean isDisappearing() {
         System.out.println("Tekton.isDisappearing() called");
         System.out.println("Tekton.isDisappearing() returned");
+        return false;
+    }
+    public boolean isFastTekton(){
+        System.out.println("Tekton.isFastTekton() called");
+        System.out.println("Tekton.isFastTekton() returned");
         return false;
     }
 }

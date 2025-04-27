@@ -24,10 +24,9 @@ public class MushroomYarn {
 
     public boolean Update(){
         System.out.println("MushroomYarn.Update() called");
-        if (isCut && timeBack > 0) {
+        if (timeBack > 0) {
             timeBack--;
             if (timeBack == 0) {
-                isCut = false;
                 return true;
             }
         }

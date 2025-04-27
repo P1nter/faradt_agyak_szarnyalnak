@@ -4,8 +4,7 @@ import java.util.List;
 public class Game {
     private List<Tekton> tektons;
     private List<Player> players;
-    private List<Insect> insects;
-    private List<Mushroom> mushrooms;
+
     private Player activePlayer;
 
     //generál egy standart mappot, vagy betölt egyet ha úgy inditod el, játékosokat hoz létre és kontorllálja h kinek a köre van
@@ -13,44 +12,56 @@ public class Game {
     public Game() {
 
         tektons = new ArrayList<>();
-        insects = new ArrayList<>();
-        mushrooms = new ArrayList<>();
         players = new ArrayList<>();
 
     }
 
+    public void split(Tekton tekton){
+        //split the tekton into two tektons
+        int half = tekton.getAdjacentTektons().size()/2;
+
+        List<Tekton> newadjacentTektons = new ArrayList<>();
+        for(int i = 0; i < half; i++){
+            newadjacentTektons.add(tekton.getAdjacentTektons().get(i));
+            tekton.getAdjacentTektons().remove(i);
+        }
+
+        Tekton newTekton = new DefaultTekton(newadjacentTektons);
+
+        int halfInsects = tekton.getInsects().size()/2;
+        for(int i = 0; i < halfInsects; i++){
+            tekton.getInsects().get(i).setTekton(newTekton);
+            tekton.getInsects().remove(i);
+            newTekton.addNewInsect(tekton.getInsects().get(i));
+        }
+        tekton.getMushroom().removeMushroomBody();
+        //delete all yarn from tekton
+        for(MushroomYarn mushroomYarn : tekton.getMushroom().getMushroomYarns()){
+            mushroomYarn.getTektons()[0].getMushroom().getMushroomYarns().remove(mushroomYarn);
+            mushroomYarn.getTektons()[1].getMushroom().getMushroomYarns().remove(mushroomYarn);
+        }
+        newadjacentTektons.add(tekton);
+        tekton.addAdjacentTekton(newTekton);
+        Mushroom newMushroom = new Mushroom();
+        newTekton.setMushroom(newMushroom);
+
+        //add the new tekton to the game
+        tektons.add(newTekton);
+    }
     public void addPlayer(Player player){
         players.add(player);
     }
     public void addTekton(Tekton tekton) {
         tektons.add(tekton);
     }
-    public void addInsect(Insect insect) {
-        insects.add(insect);
-    }
-    public void addMushroom(Mushroom mushroom) {
-        mushrooms.add(mushroom);
-    }
     public void removeTekton(Tekton tekton) {
         tektons.remove(tekton);
-    }
-    public void removeInsect(Insect insect) {
-        insects.remove(insect);
-    }
-    public void removeMushroom(Mushroom mushroom) {
-        mushrooms.remove(mushroom);
     }
     public void removePlayer(Player player){
         players.remove(player);
     }
     public List<Tekton> getTektons() {
         return tektons;
-    }
-    public List<Insect> getInsects() {
-        return insects;
-    }
-    public List<Mushroom> getMushrooms() {
-        return mushrooms;
     }
     public List<Player> getPlayers(){
         return players;
@@ -79,8 +90,7 @@ public class Game {
             for(Insect insect : tekton.getInsects()){
                 insect.nextTurn();
             }
-
-            tekton.getMushroom().update();
+            tekton.getMushroom().Update();
         }
     }
 

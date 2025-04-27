@@ -23,11 +23,11 @@ public class MushroomBody {
         System.out.println("MushroomBody.setTektons() returned");
     }
 
-    public List<Tekton> getTektons() {
+    public Tekton getTektons() {
         System.out.println("MushroomBody.getTektons() called");
 
         System.out.println("MushroomBody.getTektons() returned List<ITekton>");
-        return tektons;
+        return tekton;
     }
 
     public boolean destroyBody(){

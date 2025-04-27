@@ -12,10 +12,10 @@ abstract class Spore {
     }
 
     public void affectInsect(Insect insect){
-        //insect.effectsAdd(this);
+
     }
 
     public void destroySpore(){
-        //tünjön el a képernyőről
+        tekton.getMushroom().getSpores().remove(this);
     }
 }
