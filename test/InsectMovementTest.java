@@ -41,8 +41,7 @@ public class InsectMovementTest {
         // 5) Create a mushroom yarn between tekton1 and tekton2
         mushroomYarn1 = new MushroomYarn(tekton1, tekton2, 1);
         // attach to each tekton's mushroom
-        tekton1.getMushroomNoPrint().addMushroomYarn(mushroomYarn1);
-        tekton2.getMushroomNoPrint().addMushroomYarn(mushroomYarn1);
+
 
         game = new Game(
                 List.of(tekton1, tekton2, tekton3, tekton4),

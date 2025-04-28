@@ -137,6 +137,8 @@ public class MushroomYarn {
         this.ID = ID; // Default ID, can be set later if needed
         this.tektons[0] = tekton1;
         this.tektons[1] = tekton2;
+        tekton1.getMushroom().addMushroomYarn(this);
+        tekton2.getMushroom().addMushroomYarn(this);
         System.out.println("MushroomYarn.MushroomYarn(Tekton, Tekton) returned");
     }
 
