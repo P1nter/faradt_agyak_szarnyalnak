@@ -253,7 +253,7 @@ public class  Game {
      * is then printed to the console.
      * </p>
      */
-    public Mushroomer determineMushroomerWinner() {
+    public Player determineMushroomerWinner() {
         Player winnerMushroomer = players.get(0);
         for (Player player : players) {
             if (player.getPlayerType() == Player.PlayerType.MUSHROOMER) {
@@ -263,9 +263,9 @@ public class  Game {
             }
         }
         System.out.println("the mushroomer winner is: " + winnerMushroomer.getName() + " with score: " + winnerMushroomer.getScore());
-    return (Mushroomer) winnerMushroomer;
+    return  winnerMushroomer;
     }
-    public Insecter determineInsecterWinner(){
+    public Player determineInsecterWinner(){
         Player winnerInsecter = players.get(0);
         for (Player player : players) {
             if (player.getPlayerType() == Player.PlayerType.INSECTER) {
@@ -275,7 +275,7 @@ public class  Game {
             }
         }
         System.out.println("the insecter winner is: "+ winnerInsecter.getName() + " with score: "+ winnerInsecter.getScore());
-        return (Insecter) winnerInsecter;
+        return winnerInsecter;
     }
 
     /**
