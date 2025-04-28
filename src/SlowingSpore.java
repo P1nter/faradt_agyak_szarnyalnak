@@ -31,6 +31,8 @@ public class SlowingSpore extends Spore {
         this.ID = ID;
         this.tekton = tekton;
         this.setOwner(mushroomer);
+        this.getOwner().addSpore(this);
+        this.tekton.getMushroom().addSpore(this);
     }
 
     /**

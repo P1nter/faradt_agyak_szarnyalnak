@@ -43,8 +43,7 @@ public class InsectEatsSpeedingSporeTest {
 
         // 6) Create & attach a SpeedingSpore on tekton1's mushroom
         spore = new SpeedingSpore(tekton1, mushroomer,1);
-        mushroomer.addSpore(spore);
-        tekton1.getMushroomNoPrint().addSpore(spore);
+
 
         // 7) Initialize Game context with all tektons and players
         game = new Game(

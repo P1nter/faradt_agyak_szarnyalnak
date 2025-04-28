@@ -43,9 +43,7 @@ public class InsectEatsDuplicatingSporeTest {
 
         // 5) Create a duplicating spore on tekton1
         spore = new DuplicatingSpore(tekton1, mushroomer, 1);
-        mushroomer.addSpore(spore);
-        // attach it to the mushroom that tekton1 already has
-        tekton1.getMushroomNoPrint().addSpore(spore);
+
 
         // 6) Initialize game context (so duplicating can deposit a *new* insect into both tekton1 and the Insecter)
         List<Tekton> all = List.of(tekton1, tekton2, tekton3, tekton4);

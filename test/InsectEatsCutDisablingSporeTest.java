@@ -52,8 +52,6 @@ public class InsectEatsCutDisablingSporeTest {
 
         // 6) Create and assign spore to tekton1's mushroom and to the player
         spore = new CutDisablingSpore(tekton1, mushroomer, 1);
-        mushroomer.addSpore(spore);
-        tekton1.getMushroomNoPrint().addSpore(spore);
 
         // 7) Build game with all Tektons and both players
         List<Tekton> allTektons   = List.of(tekton1, tekton2, tekton3, tekton4);

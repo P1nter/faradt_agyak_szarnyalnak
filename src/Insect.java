@@ -278,10 +278,15 @@ public class Insect {
         }
         if(path.getTektons()[0] == this.getTekton()) {
             this.tekton = path.getTektons()[1];
+            path.getTektons()[0].getInsects().remove(this);
+            path.getTektons()[1].getInsects().add(this);
         } else {
             this.tekton = path.getTektons()[0];
+            path.getTektons()[1].getInsects().remove(this);
+            path.getTektons()[0].getInsects().add(this);
         }
         System.out.println("Insect.move(path) returned");
+
         action--;
         return true;
     }

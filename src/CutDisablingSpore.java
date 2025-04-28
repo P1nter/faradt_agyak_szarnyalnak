@@ -29,6 +29,8 @@ public class CutDisablingSpore extends Spore {
         this.nutrition = 5;
         this.tekton = tekton;
         this.ID = ID;
+        this.getOwner().addSpore(this);
+        this.tekton.getMushroom().addSpore(this);
     }
 
     /**

@@ -33,6 +33,8 @@ public class ParalyzingSpore extends Spore {
         this.nutrition = 5;
         this.ID = ID;
         this.tekton = tekton;
+        this.getOwner().addSpore(this);
+        this.tekton.getMushroom().addSpore(this);
     }
 
     /**

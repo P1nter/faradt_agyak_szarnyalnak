@@ -43,8 +43,7 @@ public class InsectEatsParalyzingSporeTest {
 
         // 6) Create & attach a ParalyzingSpore on tekton1’s mushroom
         spore = new ParalyzingSpore(tekton1,mushroomer, 1);
-        mushroomer.addSpore(spore);
-        tekton1.getMushroomNoPrint().addSpore(spore);
+
 
         // 7) Initialize game with all Tektons and both players
         game = new Game(

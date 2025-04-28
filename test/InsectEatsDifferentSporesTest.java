@@ -46,8 +46,7 @@ public class InsectEatsDifferentSporesTest {
         // 5) Create a spore placed on tekton1
         spore = new CutDisablingSpore(tekton1,mushroomer, 1);
         spore2 = new SlowingSpore(tekton1, mushroomer,1);
-        // Only the Mushroomer holds this spore; not attached to any mushroom
-        mushroomer.addSpore(spore);
+
         // 7) Build game with all Tektons and both players
         List<Tekton> allTektons   = List.of(tekton1, tekton2, tekton3, tekton4);
         List<Player>  allPlayers  = List.of(mushroomer, insecter);
