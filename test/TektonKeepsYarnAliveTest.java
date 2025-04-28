@@ -1,6 +1,9 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TektonKeepsYarnAliveTest {
@@ -19,36 +22,44 @@ public class TektonKeepsYarnAliveTest {
     private Spore spore;
     private Mushroom mushroom2;
     private MushroomYarn mushroomYarn1;
+    private Game game;
     @BeforeEach
     void setUp() {
+        // 1) Player
         mushroomer = new Mushroomer("Mushroomer");
         insecter = new Insecter("Insecter");
+        // 2) Tektons
         tekton1 = new DefaultTekton(1);
-        tekton2 = new LifeTekton(2);
-        tekton3 = new DefaultTekton(3);
+        tekton2 = new DefaultTekton(2);
+        tekton3 = new LifeTekton(3);
         tekton4 = new DefaultTekton(4);
-        insect1 = new Insect(tekton1, insecter,1);
-        insect2 = new Insect(tekton2, insecter,2);
+
+        // 3) Register insects with tektons and owner
+        insect1 = new Insect(tekton1, insecter, 1);
+        insect2 = new Insect(tekton3, insecter, 2);
+
+        // 4) Build adjacency graph
         tekton1.addAdjacentTekton(tekton2);
         tekton1.addAdjacentTekton(tekton3);
         tekton1.addAdjacentTekton(tekton4);
         tekton2.addAdjacentTekton(tekton3);
         tekton2.addAdjacentTekton(tekton4);
         tekton3.addAdjacentTekton(tekton4);
-        mushroomBody1 = new MushroomBody(tekton1, mushroomer,1);
-        mushroomBody3 = new MushroomBody(tekton3, mushroomer,3);
-        mushroom1 = new Mushroom(1);
-        mushroom1.addMushroomBody(mushroomBody1);
-        mushroom3 = new Mushroom(3);
-        mushroom3.addMushroomBody(mushroomBody3);
-        mushroom2 = new Mushroom(2);
-        mushroomYarn1 = new MushroomYarn(tekton1,tekton2,1);
-        mushroom2.addMushroomYarn(mushroomYarn1);
-        mushroom1.addMushroomYarn(mushroomYarn1);
+
+        mushroomYarn1 = new MushroomYarn(tekton3, tekton4,mushroomer, 1);
+        game = new Game(
+                List.of(tekton1, tekton2, tekton3, tekton4),
+                List.of(mushroomer, insecter)
+        );
     }
+
     @Test
     void TestLifeTektonKeepsYarnAlive(){
-        insect1.cut(mushroomYarn1);
-        assertTrue(mushroom1.isThereMushroomYarn(tekton1, tekton2));
+        game.list();
+        insect2.cut(mushroomYarn1);
+        game.list();
+        assertTrue(tekton3.getMushroom().isThereMushroomYarn(tekton3, tekton4));
+        assertFalse(mushroomYarn1.getIsCut());
+        game.list();
     }
 }

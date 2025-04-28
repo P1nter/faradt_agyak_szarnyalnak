@@ -31,9 +31,9 @@ public class DisabledBodyGrowthTekton extends Tekton {
         System.out.println("DisabledBodyGrowthTekton.DisabledBodyGrowthTekton() returned");
     }
     public DisabledBodyGrowthTekton(int ID) {
+        super(ID);
         System.out.println("DisabledBodyGrowthTekton.DisabledBodyGrowthTekton() called");
         Mushroom mushroom = new Mushroom();
-        this.ID = ID;
         this.mushrooms = mushroom;
         System.out.println("DisabledBodyGrowthTekton.DisabledBodyGrowthTekton() returned");
     }

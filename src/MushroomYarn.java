@@ -18,6 +18,7 @@ public class MushroomYarn {
     private boolean isCut = false;
     private int timeBack = 0;
     private int ID;
+    private Mushroomer Owner;
 
     /**
      * Checks if this mushroom yarn has been cut.
@@ -28,6 +29,16 @@ public class MushroomYarn {
         System.out.println("MushroomYarn.getIsCut() called");
         System.out.println("MushroomYarn.getIsCut() returned");
         return isCut;
+    }
+    public Mushroomer getOwner(){
+        System.out.println("MushroomYarn.getOwner() called");
+        System.out.println("MushroomYarn.getOwner() returned");
+        return Owner;
+    }
+    public void setOwner(Mushroomer mushroomer){
+        System.out.println("MushroomYarn.setOwner() called");
+        this.Owner = mushroomer;
+        System.out.println("MushroomYarn.setOwner() returned");
     }
 
     /**
@@ -77,6 +88,9 @@ public class MushroomYarn {
         if (timeBack > 0) {
             timeBack--;
             if (timeBack == 0) {
+                //tektons[0].getMushroom().getMushroomYarns().remove(this);
+                //tektons[1].getMushroom().getMushroomYarns().remove(this);
+                //this.getOwner().getMushroomYarns().remove(this);
                 return true;
             }
         }
@@ -129,7 +143,7 @@ public class MushroomYarn {
         return Arrays.copyOf(tektons, tektons.length); // Return a copy to prevent external modification
     }
 
-    public MushroomYarn(Tekton tekton1, Tekton tekton2, int ID) {
+    public MushroomYarn(Tekton tekton1, Tekton tekton2, Mushroomer mushroomer, int ID) {
         System.out.println("MushroomYarn.MushroomYarn(Tekton, Tekton) called");
         if (tekton1 == null || tekton2 == null) {
             throw new IllegalArgumentException("Both Tektons must be non-null.");
@@ -139,6 +153,14 @@ public class MushroomYarn {
         this.tektons[1] = tekton2;
         tekton1.getMushroom().addMushroomYarn(this);
         tekton2.getMushroom().addMushroomYarn(this);
+
+        this.Owner = mushroomer;
+        mushroomer.addMushroomYarn(this);
+
+        if((tektons[0].canCut() || tektons[1].canCut())) {
+            setTimeBack(5);
+        }
+
         System.out.println("MushroomYarn.MushroomYarn(Tekton, Tekton) returned");
     }
 

@@ -65,7 +65,7 @@ public class InsectCutsYarnTest {
         mushroom3.addMushroomBody(mushroomBody3);
 
         // 7) MushroomYarn between tekton1 ↔ tekton2
-        mushroomYarn1 = new MushroomYarn(tekton1, tekton2, 1);
+        mushroomYarn1 = new MushroomYarn(tekton1, tekton2,mushroomer, 1);
 
 
         // 8) Now replace each Tekton’s default Mushroom with ours
@@ -92,9 +92,10 @@ public class InsectCutsYarnTest {
     }
     @Test
     void TestCantCutThroughTimeAndSpace(){
-        game.list();
 
-        mushroomYarn4 = new MushroomYarn(tekton3,tekton4,4);
+
+        mushroomYarn4 = new MushroomYarn(tekton3,tekton4,mushroomer,4);
+        game.list();
         insect1.cut(mushroomYarn4);
         assertTrue(mushroom4.isThereMushroomYarn(tekton4, tekton3));
         game.list();

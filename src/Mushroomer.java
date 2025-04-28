@@ -90,6 +90,11 @@ public class Mushroomer extends Player {
      *
      * @return A {@code List} of {@code Tekton} objects where the player can grow mushroom bodies.
      */
+    public void addYarn(MushroomYarn mushroomYarn){
+        System.out.println("Mushroomer.addYarn(MushroomYarn) called");
+        this.mushroomYarns.add(mushroomYarn);
+        System.out.println("Mushroomer.addYarn(MushroomYarn) returned");
+    }
     public List<Tekton> whereCanIGrowMushroomBodies() {
         System.out.println("Mushroomer.whereCanIGrowMushroomBodies() called");
         List<Tekton> tektonWhereICanGrow = new ArrayList<Tekton>();
@@ -260,10 +265,13 @@ public class Mushroomer extends Player {
      */
     public void GrowYarn(Tekton honnan, Tekton hova){
         System.out.println("Mushroomer.GrowYarn() called");
-        if(fromWhereCanIGrowYarns().contains(honnan) && whereCanIGrowYarnsFromThisTekton(honnan).contains(hova)) {
+        if(fromWhereCanIGrowYarns().contains(honnan) && whereCanIGrowYarnsFromThisTekton(honnan).contains(hova) ||
+                fromWhereCanIGrowYarns().contains(hova) && whereCanIGrowYarnsFromThisTekton(hova).contains(honnan)){
             MushroomYarn newYarn = honnan.getMushroom().spread(honnan, hova);
             if (newYarn != null) {
                 mushroomYarns.add(newYarn);
+                honnan.getMushroom().getMushroomYarns().add(newYarn);
+                hova.getMushroom().getMushroomYarns().add(newYarn);
             }
         }
         System.out.println("Mushroomer.GrowYarn() returned");

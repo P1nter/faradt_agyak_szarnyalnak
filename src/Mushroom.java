@@ -106,17 +106,17 @@ public class Mushroom {
      * The mushroom's age is also incremented.
      * </p>
      */
-    public void Update() {
+    public List<MushroomYarn> Update() {
         System.out.println("Mushroom.Update() called");
-        Iterator<MushroomYarn> iterator = mushroomYarns.iterator();
-        while (iterator.hasNext()) {
-            MushroomYarn mushroomYarn = iterator.next();
-            if (mushroomYarn.Update()) {
-                iterator.remove();
+        List<MushroomYarn> mushroomYarnsToRemove = new ArrayList<>();
+        for (MushroomYarn mushroomYarn : mushroomYarns) {
+            if(mushroomYarn.Update()){
+                mushroomYarnsToRemove.add(mushroomYarn);
             }
         }
         updateAge();
         System.out.println("Mushroom.Update() returned");
+        return mushroomYarnsToRemove;
     }
 
     /**

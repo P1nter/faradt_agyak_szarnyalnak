@@ -39,7 +39,7 @@ public class InsectMovementTest {
         tekton3.addAdjacentTekton(tekton4);
 
         // 5) Create a mushroom yarn between tekton1 and tekton2
-        mushroomYarn1 = new MushroomYarn(tekton1, tekton2, 1);
+        mushroomYarn1 = new MushroomYarn(tekton1, tekton2,mushroomer, 1);
         // attach to each tekton's mushroom
 
 

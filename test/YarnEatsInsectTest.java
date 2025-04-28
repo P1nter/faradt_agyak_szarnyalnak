@@ -51,7 +51,7 @@ public class YarnEatsInsectTest {
     @Test
     void TestYarnEatsInsect(){
         mushroom2 = new Mushroom(2);
-        mushroomYarn1 = new MushroomYarn(tekton1,tekton2,1);
+        mushroomYarn1 = new MushroomYarn(tekton1,tekton2,mushroomer, 1);
         mushroom2.addMushroomYarn(mushroomYarn1);
         mushroom1.addMushroomYarn(mushroomYarn1);
         insect2.effectedByParalyzingSpore();
@@ -62,7 +62,7 @@ public class YarnEatsInsectTest {
     @Test
     void TestYarnCantEatNotParalyzed(){
         mushroom2 = new Mushroom(2);
-        mushroomYarn1 = new MushroomYarn(tekton1,tekton2,1);
+        mushroomYarn1 = new MushroomYarn(tekton1,tekton2,mushroomer, 1);
         mushroom2.addMushroomYarn(mushroomYarn1);
         mushroom1.addMushroomYarn(mushroomYarn1);
         mushroomer.eatInsect(insect2);

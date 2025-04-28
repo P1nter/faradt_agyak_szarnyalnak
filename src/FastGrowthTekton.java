@@ -32,10 +32,11 @@ public class FastGrowthTekton extends Tekton {
     }
 
     public FastGrowthTekton(int ID) {
+        super(ID);
         System.out.println("FastGrowthTekton.FastGrowthTekton() called");
         Mushroom mushroom = new Mushroom();
         this.mushrooms = mushroom;
-        this.ID = ID;
+
         System.out.println("FastGrowthTekton.FastGrowthTekton() returned");
     }
     /**

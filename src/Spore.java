@@ -93,4 +93,8 @@ abstract class Spore {
         this.tekton = tekton;
         System.out.println("Spore.setTekton() returned");
     }
+
+    public int getIDNoPrint() {
+        return ID;
+    }
 }

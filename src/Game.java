@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +39,13 @@ public class  Game {
         this.players = players;
     }
 
+    public void setTektons(List<Tekton> tektons){
+        this.tektons = tektons;
+    }
+    public void setPlayers(List<Player> players){
+        this.players = players;
+    }
+
     /**
      * Splits a given {@code Tekton} into two separate Tektons.
      * <p>
@@ -56,15 +64,17 @@ public class  Game {
     public void split(Tekton tekton){
         //split the tekton into two tektons
         int half = tekton.getAdjacentTektons().size()/2;
-
         List<Tekton> newadjacentTektons = new ArrayList<>();
         for(int i = 0; i < half; i++){
             newadjacentTektons.add(tekton.getAdjacentTektons().get(i));
+            for(Tekton tekton1 : tekton.getAdjacentTektons()){
+                tekton1.getAdjacentTektons().remove(tekton);
+            }
             tekton.getAdjacentTektons().remove(i);
+
         }
 
         Tekton newTekton = new DefaultTekton(newadjacentTektons);
-
         int halfInsects = tekton.getInsects().size()/2;
         for(int i = 0; i < halfInsects; i++){
             tekton.getInsects().get(i).setTekton(newTekton);
@@ -77,13 +87,14 @@ public class  Game {
             mushroomYarn.getTektons()[0].getMushroom().getMushroomYarns().remove(mushroomYarn);
             mushroomYarn.getTektons()[1].getMushroom().getMushroomYarns().remove(mushroomYarn);
         }
-        newadjacentTektons.add(tekton);
+        //newadjacentTektons.add(tekton);
         tekton.addAdjacentTekton(newTekton);
         Mushroom newMushroom = new Mushroom();
         newTekton.setMushroom(newMushroom);
 
         //add the new tekton to the game
         tektons.add(newTekton);
+
     }
 
     /**
@@ -191,8 +202,8 @@ public class  Game {
                     int[] effects = insect.getEffectsNoPrint();
                     System.out.println("Insect is paralyzed for: " + effects[1]);
                     System.out.println("Insect can't cut for: " + effects[0]);
-                    System.out.println("Insect is speeded for: " + effects[2]);
-                    System.out.println("Insect is slowed for: " + effects[3]);
+                    System.out.println("Insect is speeded for: " + effects[3]);
+                    System.out.println("Insect is slowed for: " + effects[2]);
                 }
             }
         }
@@ -277,12 +288,24 @@ public class  Game {
      * </p>
      */
     public void update(){
+        System.out.println("Game.update() called");
         //update all insects and mushrooms
+        List<MushroomYarn> mushroomYarns = new ArrayList<>();
         for (Tekton tekton : tektons) {
             for(Insect insect : tekton.getInsects()){
                 insect.nextTurn();
             }
-            tekton.getMushroom().Update();
+            mushroomYarns.addAll(tekton.getMushroom().Update());
+            System.out.println("UPDATEEEEEEEEEEEEEEEEEEEEEE");
         }
+        if(!mushroomYarns.isEmpty()){
+            for (MushroomYarn mushroomYarn : mushroomYarns) {
+                mushroomYarn.getOwner().getMushroomYarns().remove(mushroomYarn);
+                mushroomYarn.getTektons()[0].getMushroom().getMushroomYarns().remove(mushroomYarn);
+                mushroomYarn.getTektons()[1].getMushroom().getMushroomYarns().remove(mushroomYarn);
+            }
+        }
+
+        System.out.println("Game.update() returned");
     }
 }

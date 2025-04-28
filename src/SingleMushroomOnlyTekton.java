@@ -32,10 +32,10 @@ public class SingleMushroomOnlyTekton extends Tekton {
         System.out.println("SingleMushroomOnlyTekton.SingleMushroomOnlyTekton() returned");
     }
     public SingleMushroomOnlyTekton(int ID) {
+        super(ID);
         System.out.println("SingleMushroomOnlyTekton.SingleMushroomOnlyTekton() called");
         Mushroom mushroom = new Mushroom();
         this.mushrooms = mushroom;
-        this.ID = ID;
         System.out.println("SingleMushroomOnlyTekton.SingleMushroomOnlyTekton() returned");
     }
 

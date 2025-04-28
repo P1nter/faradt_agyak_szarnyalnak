@@ -30,6 +30,7 @@ public class NoMushroomBodyTekton extends Tekton {
         System.out.println("NoMushroomBodyTekton.NoMushroomBodyTekton() returned");
     }
     public NoMushroomBodyTekton(int ID) {
+        super(ID);
         System.out.println("NoMushroomBodyTekton.NoMushroomBodyTekton() called");
         Mushroom mushroom = new Mushroom();
         this.mushrooms = mushroom;

@@ -60,7 +60,7 @@ public class MushroomBodyGrowthTest {
     void TestGrowMushroomBodyNoSporeYesYarn() {
         game.list();
         // Yarn present, but no spore → cannot grow
-        MushroomYarn yarn = new MushroomYarn(tekton1, tekton2, 1);
+        MushroomYarn yarn = new MushroomYarn(tekton1, tekton2, mushroomer,1);
 
 
         mushroomer.growBody(tekton2);
@@ -74,7 +74,7 @@ public class MushroomBodyGrowthTest {
         // Spore + yarn, but body already exists → no new growth
         spore = new SlowingSpore(tekton2,mushroomer, 1);
 
-        MushroomYarn yarn = new MushroomYarn(tekton1, tekton2, 1);
+        MushroomYarn yarn = new MushroomYarn(tekton1, tekton2,mushroomer, 1);
 
         // Pre-add a body so growBody should detect “already there”
         tekton2.getMushroomNoPrint().addMushroomBody(
@@ -89,13 +89,11 @@ public class MushroomBodyGrowthTest {
 
     @Test
     void TestGrowMushroomBodyYesSporeYesYarnAndNoBody() {
-        game.list();
+
         // Spore + yarn, no existing body → should grow exactly one
         spore = new SlowingSpore(tekton2, mushroomer,1);
-
-
-        MushroomYarn yarn = new MushroomYarn(tekton1, tekton2, 1);
-
+        MushroomYarn yarn = new MushroomYarn(tekton1, tekton2,mushroomer, 1);
+        game.list();
         mushroomer.growBody(tekton2);
         assertNotNull(tekton2.getMushroomNoPrint().getMushroomBodyNoPrint());
         game.list();

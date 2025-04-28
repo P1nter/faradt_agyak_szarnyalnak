@@ -30,9 +30,10 @@ public class DisappearingYarnTekton extends Tekton {
         System.out.println("DisappearingYarnTekton.DisappearingYarnTekton() returned");
     }
     public DisappearingYarnTekton(int ID) {
+        super(ID);
         System.out.println("DisappearingYarnTekton.DisappearingYarnTekton() called");
         Mushroom mushroom = new Mushroom();
-        this.ID = ID;
+
         this.mushrooms = mushroom;
         System.out.println("DisappearingYarnTekton.DisappearingYarnTekton() returned");
     }

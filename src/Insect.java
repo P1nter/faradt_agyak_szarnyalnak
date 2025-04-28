@@ -333,6 +333,10 @@ public class Insect {
             System.out.println("Insect.cut(yarn) returned");
             return false;
         }
+        if(yarn.getTektons()[0] != this.getTekton() && yarn.getTektons()[1] != this.getTekton()) {
+            System.out.println("Insect.cut(yarn) returned");
+            return false;
+        }
         if(!yarn.cut()) {
             System.out.println("Insect.cut(yarn) returned false");
             return false;
