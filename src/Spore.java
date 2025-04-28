@@ -40,6 +40,8 @@ abstract class Spore {
         this.tekton = tekton;
     }
 
+    public Tekton getTekton() { return this.tekton; }
+
     /**
      * Abstract method to define how this spore affects an insect.
      * <p>

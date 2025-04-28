@@ -122,7 +122,7 @@ public class Mushroomer extends Player {
      *
      * @param tekton The {@code Tekton} on which to attempt to grow a mushroom body.
      */
-    public void GrowBody(Tekton tekton){
+    public void growBody(Tekton tekton){
         if (whereCanIGrowMushroomBodies().contains(tekton)) {
             System.out.println("Mushroomer.Grow(tekton) called");
             MushroomBody mushroomBody = tekton.getMushroom().growBody(tekton);
@@ -251,5 +251,11 @@ public class Mushroomer extends Player {
             }
         }
         System.out.println("Mushroomer.GrowYarn() returned");
+    }
+    public void addSpore(Spore spore){
+        this.spores.add(spore);
+    }
+    public List<Spore> getSpores(){
+        return this.spores;
     }
 }

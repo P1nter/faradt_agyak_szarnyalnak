@@ -21,7 +21,7 @@ public class Mushroom {
     private List<MushroomYarn> mushroomYarns = new ArrayList<>();
     private List<Spore> spores = new ArrayList<>();
     private Tekton tekton = null;
-    private int howOld = 0;
+    int howOld = 0;
 
     /**
      * Constructs a new {@code Mushroom} instance.
@@ -246,5 +246,11 @@ public class Mushroom {
         System.out.println("Mushroom.getMushroomBody() called");
         System.out.println("Mushroom.getMushroomBody() returned");
         return mushroomBody;
+    }
+    public void addMushroomBody(MushroomBody mushroomBody){
+        this.mushroomBody = mushroomBody;
+    }
+    public void addSpore(Spore spore){
+        this.spores.add(spore);
     }
 }

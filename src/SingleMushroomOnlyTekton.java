@@ -44,7 +44,7 @@ public class SingleMushroomOnlyTekton extends Tekton {
         System.out.println("SingleMushroomOnlyTekton.canGrowYarn() called");
         System.out.println("SingleMushroomOnlyTekton.canGrowYarn() returned");
         if(this.getMushroom().hasYarns()){
-            System.out.println("SingleMushroomOnlyTekton.canGrowYarn() returned true");
+            System.out.println("SingleMushroomOnlyTekton.canGrowYarn() returned false");
             return false;
         }
         return true;
