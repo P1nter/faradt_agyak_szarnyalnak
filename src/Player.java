@@ -13,6 +13,20 @@ public abstract class Player {
     private String Name;
     private int Score;
     private int Action;
+    protected enum PlayerType { INSECTER, MUSHROOMER }
+    private PlayerType playerType;
+
+    public PlayerType getPlayerType() {
+        System.out.println("Player.getPlayerType() called");
+        System.out.println("Player.getPlayerType() returned ");
+        return playerType;
+    }
+
+    public void setPlayerType(PlayerType playerType) {
+        System.out.println("Player.setPlayerType(PlayerType) called");
+        this.playerType = playerType;
+        System.out.println("Player.setPlayerType(PlayerType) returned");
+    }
 
     /**
      * Constructs a new {@code Player} with the given name.

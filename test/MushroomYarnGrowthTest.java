@@ -1,6 +1,9 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MushroomYarnGrowthTest {
@@ -13,28 +16,37 @@ public class MushroomYarnGrowthTest {
     private Insect insect1;
     private Insect insect2;
     private Mushroom mushroom1;
-    private Mushroom mushroom2;
+    private Mushroom mushroom3;
     private MushroomBody mushroomBody1;
-    private MushroomBody mushroomBody2;
+    private MushroomBody mushroomBody3;
     private Spore spore;
+    private Mushroom mushroom2;
+    private MushroomYarn mushroomYarn1;
+    private Game game;
 
     @BeforeEach
     void setUp() {
         mushroomer = new Mushroomer("Mushroomer");
         insecter = new Insecter("Insecter");
-        tekton1 = new DefaultTekton();
-        tekton2 = new DefaultTekton();
-        tekton3 = new DefaultTekton();
-        tekton4 = new DefaultTekton();
-        insect1 = new Insect(tekton1);
-        insect2 = new Insect(tekton2);
-        mushroomBody1 = new MushroomBody(tekton1);
-        mushroomBody2 = new MushroomBody(tekton3);
-        mushroom1 = new Mushroom();
+        tekton1 = new DefaultTekton(1);
+        tekton2 = new DefaultTekton(2);
+        tekton3 = new DefaultTekton(3);
+        tekton4 = new DefaultTekton(4);
+        insect1 = new Insect(tekton1, insecter,1);
+        insect2 = new Insect(tekton2,insecter,2);
+        tekton1.addAdjacentTekton(tekton2);
+        tekton1.addAdjacentTekton(tekton3);
+        tekton1.addAdjacentTekton(tekton4);
+        tekton2.addAdjacentTekton(tekton3);
+        tekton2.addAdjacentTekton(tekton4);
+        tekton3.addAdjacentTekton(tekton4);
+        mushroomBody1 = new MushroomBody(tekton1,mushroomer,1);
+        mushroomBody3 = new MushroomBody(tekton3,mushroomer,3);
+        mushroom1 = new Mushroom(1);
         mushroom1.addMushroomBody(mushroomBody1);
-        mushroom2 = new Mushroom();
-        mushroom2.addMushroomBody(mushroomBody2);
-        Spore spore = new SlowingSpore(tekton1);
+        mushroom3 = new Mushroom(3);
+        mushroom3.addMushroomBody(mushroomBody3);
+        Spore spore = new SlowingSpore(tekton1,mushroomer,1);
         mushroomer.addSpore(spore);
         mushroom1.addSpore(spore);
     }
@@ -52,11 +64,53 @@ public class MushroomYarnGrowthTest {
 
     @Test
     void testWhereCanIGrowMushroomYarnSingleMushroomOnlyHasYarn() {
-        tekton1 = new SingleMushroomOnlyTekton();
-        tekton1.getMushroom().getMushroomYarns().add(new MushroomYarn(tekton1, tekton2));
+        tekton1 = new SingleMushroomOnlyTekton(1);
+        tekton1.addAdjacentTekton(tekton2);
+        tekton1.addAdjacentTekton(tekton3);
+        tekton1.addAdjacentTekton(tekton4);
+        mushroom2 = new Mushroom(2);
+        mushroomYarn1 = new MushroomYarn(tekton1,tekton2,1);
+        mushroom2.addMushroomYarn(mushroomYarn1);
+        mushroom1.addMushroomYarn(mushroomYarn1);
+        //ha hibás akk azért, mert magunkat nem csekkoljuk csak a másik tektont
         assertTrue(mushroomer.whereCanIGrowYarnsFromThisTekton(tekton1).isEmpty());
     }
 
+    @Test
+    void testWhereYarnDisappearsOnDis(){
+        tekton1 = new DisappearingYarnTekton(1);
+        tekton1.addAdjacentTekton(tekton2);
+        tekton1.addAdjacentTekton(tekton3);
+        tekton1.addAdjacentTekton(tekton4);
+        mushroom2 = new Mushroom(2);
+        mushroomYarn1 = new MushroomYarn(tekton1,tekton2,1);
+        mushroom2.addMushroomYarn(mushroomYarn1);
+        mushroom1.addMushroomYarn(mushroomYarn1);
+        //ha hibás akk azért, mert magunkat nem csekkoljuk csak a másik tektont
+        List<Tekton> temptektons = new ArrayList<>(tekton1.getAdjacentTektons());
+        List<Player> tempplayers = new ArrayList<>();
+        tempplayers.add(mushroomer);
+        tempplayers.add(insecter);
+        game = new Game(temptektons, tempplayers);
+        game.update();
+        game.update();
+        assertFalse(mushroomer.whereCanIGrowYarnsFromThisTekton(tekton1).isEmpty());
+        game.update();
+        assertTrue(mushroomer.whereCanIGrowYarnsFromThisTekton(tekton1).isEmpty());
+
+    }
+    @Test
+    void TestYarnCanGrowWhereBodyCant(){
+        tekton4 = new NoMushroomBodyTekton(1);
+        tekton4.addAdjacentTekton(tekton1);
+        tekton4.addAdjacentTekton(tekton3);
+        tekton4.addAdjacentTekton(tekton2);
+        mushroom2 = new Mushroom(2);
+        mushroomer.growBody(tekton4);
+        assertTrue(tekton4.getMushroom().getMushroomBody() == null);
+        mushroomer.GrowYarn(tekton2, tekton4);
+        assertTrue(mushroom2.isThereMushroomYarn(tekton2, tekton4));
+    }
     @Test
     void testMushroomYarnGrowth() {
         int initTekton1YarnSize = tekton1.getMushroom().getMushroomYarns().size();
@@ -67,211 +121,5 @@ public class MushroomYarnGrowthTest {
 
         assertEquals(initTekton1YarnSize + 1, tekton1.getMushroom().getMushroomYarns().size());
         assertEquals(initTekton2YarnSize + 1, tekton2.getMushroom().getMushroomYarns().size());
-    }
-}
-
-
-public class InsectEatsSlowingSporeTest(){
-    private Mushroomer mushroomer;
-    private Insecter insecter;
-    private Tekton tekton1;
-    private Tekton tekton2;
-    private Tekton tekton3;
-    private Tekton tekton4;
-    private Insect insect1;
-    private Insect insect2;
-    private Mushroom mushroom1;
-    private Mushroom mushroom2;
-    private MushroomBody mushroomBody1;
-    private MushroomBody mushroomBody2;
-    private Spore spore;
-
-    @BeforeEach
-    void setUp() {
-        mushroomer = new Mushroomer("Mushroomer");
-        insecter = new Insecter("Insecter");
-        tekton1 = new DefaultTekton();
-        tekton2 = new DefaultTekton();
-        tekton3 = new DefaultTekton();
-        tekton4 = new DefaultTekton();
-        insect1 = new Insect(tekton1);
-        insect2 = new Insect(tekton2);
-        mushroomBody1 = new MushroomBody(tekton1);
-        mushroomBody2 = new MushroomBody(tekton3);
-        mushroom1 = new Mushroom();
-        mushroom1.addMushroomBody(mushroomBody1);
-        mushroom2 = new Mushroom();
-        mushroom2.addMushroomBody(mushroomBody2);
-        Spore spore = new SlowingSpore(tekton1);
-        mushroomer.addSpore(spore);
-        mushroom1.addSpore(spore);
-    }
-    @Test
-    void TestInsectEatsSlowingSporeSporeDoesntDisappear(){
-        insect1.consumeSpore(spore);
-        assertTrue(tekton1.getMushroom().getSpores().isEmpty());
-    }
-    @Test
-    void TestInsectEatsSlowingSporeSporeButDoesntGetSlowed(){
-        insect1.consumeSpore(spore);
-        assertTrue(insect1.getEffects()[3] == 0);
-    }
-    @Test
-    void TestInsectEatsSlowingSporeSporeAndGetsSlowed(){
-        insect1.consumeSpore(spore);
-        assertTrue(insect1.getEffects()[3] != 0);
-    }
-}
-public class InsectEatsSpeedingSporeTest(){
-    private Mushroomer mushroomer;
-    private Insecter insecter;
-    private Tekton tekton1;
-    private Tekton tekton2;
-    private Tekton tekton3;
-    private Tekton tekton4;
-    private Insect insect1;
-    private Insect insect2;
-    private Mushroom mushroom1;
-    private Mushroom mushroom2;
-    private MushroomBody mushroomBody1;
-    private MushroomBody mushroomBody2;
-    private Spore spore;
-
-    @BeforeEach
-    void setUp() {
-        mushroomer = new Mushroomer("Mushroomer");
-        insecter = new Insecter("Insecter");
-        tekton1 = new DefaultTekton();
-        tekton2 = new DefaultTekton();
-        tekton3 = new DefaultTekton();
-        tekton4 = new DefaultTekton();
-        insect1 = new Insect(tekton1);
-        insect2 = new Insect(tekton2);
-        mushroomBody1 = new MushroomBody(tekton1);
-        mushroomBody2 = new MushroomBody(tekton3);
-        mushroom1 = new Mushroom();
-        mushroom1.addMushroomBody(mushroomBody1);
-        mushroom2 = new Mushroom();
-        mushroom2.addMushroomBody(mushroomBody2);
-        Spore spore = new SpeedingSpore(tekton1);
-        mushroomer.addSpore(spore);
-        mushroom1.addSpore(spore);
-    }
-    @Test
-    void TestInsectEatsSpeedingSporeSporeDoesntDisappear(){
-        insect1.consumeSpore(spore);
-        assertTrue(tekton1.getMushroom().getSpores().isEmpty());
-    }
-    @Test
-    void TestInsectEatsSpeedingSporeSporeButDoesntGetSlowed(){
-        insect1.consumeSpore(spore);
-        assertTrue(insect1.getEffects()[2] == 0);
-    }
-    @Test
-    void TestInsectEatsSpeedingSporeSporeAndGetsSlowed(){
-        insect1.consumeSpore(spore);
-        assertTrue(insect1.getEffects()[2] != 0);
-    }
-}
-public class InsectEatsCutDisablingSporeTest(){
-    private Mushroomer mushroomer;
-    private Insecter insecter;
-    private Tekton tekton1;
-    private Tekton tekton2;
-    private Tekton tekton3;
-    private Tekton tekton4;
-    private Insect insect1;
-    private Insect insect2;
-    private Mushroom mushroom1;
-    private Mushroom mushroom2;
-    private MushroomBody mushroomBody1;
-    private MushroomBody mushroomBody2;
-    private Spore spore;
-
-    @BeforeEach
-    void setUp() {
-        mushroomer = new Mushroomer("Mushroomer");
-        insecter = new Insecter("Insecter");
-        tekton1 = new DefaultTekton();
-        tekton2 = new DefaultTekton();
-        tekton3 = new DefaultTekton();
-        tekton4 = new DefaultTekton();
-        insect1 = new Insect(tekton1);
-        insect2 = new Insect(tekton2);
-        mushroomBody1 = new MushroomBody(tekton1);
-        mushroomBody2 = new MushroomBody(tekton3);
-        mushroom1 = new Mushroom();
-        mushroom1.addMushroomBody(mushroomBody1);
-        mushroom2 = new Mushroom();
-        mushroom2.addMushroomBody(mushroomBody2);
-        Spore spore = new CutDisablingSpore(tekton1);
-        mushroomer.addSpore(spore);
-        mushroom1.addSpore(spore);
-    }
-    @Test
-    void TestInsectEatsCutDisablingSporeSporeDoesntDisappear(){
-        insect1.consumeSpore(spore);
-        assertTrue(tekton1.getMushroom().getSpores().isEmpty());
-    }
-    @Test
-    void TestInsectEatsCutDisablingSporeSporeButDoesntGetSlowed(){
-        insect1.consumeSpore(spore);
-        assertTrue(insect1.getEffects()[0] == 0);
-    }
-    @Test
-    void TestInsectEatsCutDisablingSporeSporeAndGetsSlowed(){
-        insect1.consumeSpore(spore);
-        assertTrue(insect1.getEffects()[0] != 0);
-    }
-}
-public class InsectEatsParalyzingSporeTest(){
-    private Mushroomer mushroomer;
-    private Insecter insecter;
-    private Tekton tekton1;
-    private Tekton tekton2;
-    private Tekton tekton3;
-    private Tekton tekton4;
-    private Insect insect1;
-    private Insect insect2;
-    private Mushroom mushroom1;
-    private Mushroom mushroom2;
-    private MushroomBody mushroomBody1;
-    private MushroomBody mushroomBody2;
-    private Spore spore;
-
-    @BeforeEach
-    void setUp() {
-        mushroomer = new Mushroomer("Mushroomer");
-        insecter = new Insecter("Insecter");
-        tekton1 = new DefaultTekton();
-        tekton2 = new DefaultTekton();
-        tekton3 = new DefaultTekton();
-        tekton4 = new DefaultTekton();
-        insect1 = new Insect(tekton1);
-        insect2 = new Insect(tekton2);
-        mushroomBody1 = new MushroomBody(tekton1);
-        mushroomBody2 = new MushroomBody(tekton3);
-        mushroom1 = new Mushroom();
-        mushroom1.addMushroomBody(mushroomBody1);
-        mushroom2 = new Mushroom();
-        mushroom2.addMushroomBody(mushroomBody2);
-        Spore spore = new ParalyzingSpore(tekton1);
-        mushroomer.addSpore(spore);
-        mushroom1.addSpore(spore);
-    }
-    @Test
-    void TestInsectEatsParalyzingSporeSporeDoesntDisappear(){
-        insect1.consumeSpore(spore);
-        assertTrue(tekton1.getMushroom().getSpores().isEmpty());
-    }
-    @Test
-    void TestInsectEatsParalyzingSporeSporeButDoesntGetSlowed(){
-        insect1.consumeSpore(spore);
-        assertTrue(insect1.getEffects()[1] == 0);
-    }
-    @Test
-    void TestInsectEatsParalyzingSporeSporeAndGetsSlowed(){
-        insect1.consumeSpore(spore);
-        assertTrue(insect1.getEffects()[1] != 0);
     }
 }

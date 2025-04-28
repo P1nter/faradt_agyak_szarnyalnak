@@ -17,6 +17,7 @@ public class MushroomYarn {
     private Tekton[] tektons = new Tekton[2]; // Fixed size array for exactly 2 Tektons
     private boolean isCut = false;
     private int timeBack = 0;
+    private int ID;
 
     /**
      * Checks if this mushroom yarn has been cut.
@@ -24,6 +25,8 @@ public class MushroomYarn {
      * @return {@code true} if the yarn is cut, {@code false} otherwise.
      */
     public boolean getIsCut() {
+        System.out.println("MushroomYarn.getIsCut() called");
+        System.out.println("MushroomYarn.getIsCut() returned");
         return isCut;
     }
 
@@ -33,6 +36,8 @@ public class MushroomYarn {
      * @return The number of turns remaining before the yarn reappears. A value of 0 indicates the yarn is present.
      */
     public int getTimeBack() {
+        System.out.println("MushroomYarn.getTimeBack() called");
+        System.out.println("MushroomYarn.getTimeBack() returned " + timeBack);
         return timeBack;
     }
 
@@ -42,14 +47,19 @@ public class MushroomYarn {
      * @param timeBack The number of turns before the yarn reappears.
      */
     public void setTimeBack(int timeBack) {
+        System.out.println("MushroomYarn.setTimeBack(int) called");
+
         this.timeBack = timeBack;
+        System.out.println("MushroomYarn.setTimeBack(int) returned");
     }
 
     /**
      * Marks this mushroom yarn as cut.
      */
     public void setCut() {
+        System.out.println("MushroomYarn.setCut() called");
         isCut = true;
+        System.out.println("MushroomYarn.setCut() returned");
     }
 
     /**
@@ -86,6 +96,45 @@ public class MushroomYarn {
         if (tekton1 == null || tekton2 == null) {
             throw new IllegalArgumentException("Both Tektons must be non-null.");
         }
+        this.ID = 0; // Default ID, can be set later if needed
+        this.tektons[0] = tekton1;
+        this.tektons[1] = tekton2;
+        System.out.println("MushroomYarn.MushroomYarn(Tekton, Tekton) returned");
+    }
+
+    public int getID() {
+        System.out.println("MushroomYarn.getID() called");
+        System.out.println("MushroomYarn.getID() returned " + ID);
+
+        try {
+            return ID;
+        } catch(NullPointerException e){
+            System.out.println("ID is null");
+        }
+        return 0;
+    }
+    public boolean getIsCutNoPrint() {
+        return isCut;
+    }
+
+    public int getTimeBackNoPrint() {
+        return timeBack;
+    }
+
+    public int getIDNoPrint() {
+        return ID;
+    }
+
+    public Tekton[] getTektonsNoPrint() {
+        return Arrays.copyOf(tektons, tektons.length); // Return a copy to prevent external modification
+    }
+
+    public MushroomYarn(Tekton tekton1, Tekton tekton2, int ID) {
+        System.out.println("MushroomYarn.MushroomYarn(Tekton, Tekton) called");
+        if (tekton1 == null || tekton2 == null) {
+            throw new IllegalArgumentException("Both Tektons must be non-null.");
+        }
+        this.ID = ID; // Default ID, can be set later if needed
         this.tektons[0] = tekton1;
         this.tektons[1] = tekton2;
         System.out.println("MushroomYarn.MushroomYarn(Tekton, Tekton) returned");
@@ -129,11 +178,7 @@ public class MushroomYarn {
      * This method might be intended for future implementation of a decay mechanic.
      * </p>
      */
-    public void decay() {
-        System.out.println("MushroomYarn.decay() called");
-        // TODO: Implement the decay logic for the mushroom yarn.
-        System.out.println("MushroomYarn.decay() returned");
-    }
+
 
     /**
      * Attempts to cut this mushroom yarn.
@@ -151,16 +196,27 @@ public class MushroomYarn {
             System.out.println("MushroomYarn.cut() returned false");
             return false;
         }
+        /*
         boolean m1 = tektons[0].getMushroom().hasMushroomBody();
-        boolean m2= tektons[1].getMushroom().hasMushroomBody();
+        boolean m2 = tektons[1].getMushroom().hasMushroomBody();
 
         if (!m1 && !m2) {
             System.out.println("MushroomYarn.cut() returned false");
             return false;
         }
+        */
+
         setCut();
+        tektons[0].getMushroom().getMushroomYarns().remove(this);
+        tektons[1].getMushroom().getMushroomYarns().remove(this);
         setTimeBack(3);
         System.out.println("MushroomYarn.cut() returned true");
         return true;
+    }
+    public void eatInsect(Insect insect)
+    {
+        System.out.println("MushroomYarn.eatInsect(Insect) called");
+        insect.disappear();
+        System.out.println("MushroomYarn.eatInsect(Insect) returned");
     }
 }

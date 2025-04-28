@@ -48,7 +48,7 @@ public class read {
                             tektonMap.put(location, tekton);
                             game.addTekton(tekton);
                         }
-                        Insect insect = new Insect(tekton);
+                        Insect insect = new Insect(tekton,insecter);
                         insect.setOwner(insecter);
                         insecter.addInsect(insect);
                         tekton.addNewInsect(insect);

@@ -13,6 +13,7 @@
  * @since 1.0
  */
 public class Insect {
+    private int ID;
     private int score;
     //how many actions can the insect make in a turn
     private int action;
@@ -59,12 +60,35 @@ public class Insect {
      *
      * @param tekton The initial {@code Tekton} where this insect is located.
      */
-    public Insect(Tekton tekton) {
+    public Insect(Tekton tekton, Insecter insecter, int ID) {
         System.out.println("Insect.Insect() called");
+        this.ID = ID;
         this.score = 0;
         this.action = 3;
         this.tekton = tekton;
+        tekton.addNewInsect(this);
+        insecter.addInsect(this);
         System.out.println("Insect.Insect() returned");
+    }
+    public Insect(Tekton tekton, Insecter insecter) {
+        System.out.println("Insect.Insect() called");
+        this.score = 0;
+        this.ID = 0;
+        this.action = 3;
+        this.tekton = tekton;
+        System.out.println("Insect.Insect() returned");
+    }
+
+    public int getID(){
+        System.out.println("Insect.getID() called");
+        try {
+            return ID;
+        } catch(NullPointerException e){
+            System.out.println("ID is null");
+        }
+        System.out.println("Insect.getID() returned ");
+        return 0;
+
     }
 
     /**
@@ -181,7 +205,7 @@ public class Insect {
      */
     public void effectedByDuplicatingSpore() {
         System.out.println("Insect.effectByDuplicatingSpore() called");
-        Insect insect = new Insect(this.tekton);
+        Insect insect = new Insect(this.tekton, this.owner);
         tekton.addNewInsect(insect);
         insect.setOwner(this.owner);
         insect.getOwner().addInsect(insect);
@@ -279,6 +303,10 @@ public class Insect {
             return false;
         }
         spore.affectInsect(this);
+        this.tekton.getMushroom().getSpores().remove(spore);
+        spore.getOwner().getSpores().remove(spore);
+
+
         System.out.println("Insect.consumeSpore() returned");
         action--;
         return true;
@@ -300,9 +328,38 @@ public class Insect {
             System.out.println("Insect.cut(yarn) returned");
             return false;
         }
-        yarn.cut();
-        System.out.println("Insect.cut(yarn) returned");
+        if(!yarn.cut()) {
+            System.out.println("Insect.cut(yarn) returned false");
+            return false;
+        }
+        System.out.println("Insect.cut(yarn) returned true");
         action--;
         return true;
+    }
+    public void disappear(){
+        System.out.println("Insect.disappear() called");
+        this.tekton.removeInsect(this);
+        this.getOwner().removeInsect(this);
+        this.tekton = null;
+        System.out.println("Insect.disappear() returned");
+    }
+    //write a version for each getter where it doesnt sistem.out
+    public int getScoreNoPrint() {
+        return score;
+    }
+    public int getActionNoPrint(){
+        return action;
+    }
+    public int getIDNoPrint(){
+        return ID;
+    }
+    public int[] getEffectsNoPrint() {
+        return effects;
+    }
+    public Tekton getTektonNoPrint(){
+        return tekton;
+    }
+    public Insecter getOwnerNoPrint() {
+        return owner;
     }
 }

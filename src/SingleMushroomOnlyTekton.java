@@ -23,8 +23,19 @@ public class SingleMushroomOnlyTekton extends Tekton {
      * with the specific behavior of allowing only one mushroom yarn to be grown.
      * </p>
      */
+    private int ID;
     public SingleMushroomOnlyTekton() {
         System.out.println("SingleMushroomOnlyTekton.SingleMushroomOnlyTekton() called");
+        Mushroom mushroom = new Mushroom();
+        this.mushrooms = mushroom;
+        this.ID = 0;
+        System.out.println("SingleMushroomOnlyTekton.SingleMushroomOnlyTekton() returned");
+    }
+    public SingleMushroomOnlyTekton(int ID) {
+        System.out.println("SingleMushroomOnlyTekton.SingleMushroomOnlyTekton() called");
+        Mushroom mushroom = new Mushroom();
+        this.mushrooms = mushroom;
+        this.ID = ID;
         System.out.println("SingleMushroomOnlyTekton.SingleMushroomOnlyTekton() returned");
     }
 

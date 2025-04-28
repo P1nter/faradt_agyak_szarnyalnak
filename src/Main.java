@@ -124,15 +124,54 @@ public class Main {
     private static Map<String, MushroomYarn> mushroomYarns = new HashMap<>();
 
     public static void main(String[] args) {
-        Game game = read2.loadGame("test1.txt");
-        write2.saveGame(game,"out.txt");
+        //Game game = read2.loadGame("test1.txt");
+        //write2.saveGame(game,"out.txt");
 
+        System.out.println("Tesztesetek:\n");
+
+        System.out.println("1.\t Gombafonál növekedése");
+        System.out.println("2.\t Gombatest növekedése");
+        System.out.println("3.\t Rovar mozgása a gombafonálon");
+        System.out.println("4.\t Rovarok lassító spóra evése");
+        System.out.println("5.\t Rovarok gyorsító spóra evése");
+        System.out.println("6.\t Rovarok bénító spóra evése");
+        System.out.println("7.\t Rovarok paralizáló spóra evése");
+        System.out.println("8.\t Rovarok vágásképtelenné-tevő spóra evése");
+        System.out.println("9.\t Rovarok osztódó spóra evése");
+        System.out.println("10.\t Tekton törése");
+        System.out.println("11.\t Rovarok fonál elvágása");
+        System.out.println("12.\t Gombafonál növekedése tiltott tektonra");
+        System.out.println("13.\t Rovar próbál megenni egy nem létező spórát");
+        System.out.println("14.\t Tekton fenntartja a fonalakat");
+        System.out.println("15.\t Fonalak rovarokat fogyasztanak");
+        System.out.println("16.\t Nyertes gombász meghatározása");
+        System.out.println("17.\t Nyertes rovarász meghatározása\n");
+        System.out.println("18.\t Csak egy fonal nőhet egy SingleMushroomOnlyTektonon\n");
+        System.out.println("19.\t Fonal eltűnik DisappearingYarnTekton-on néhány kör után\n");
+        System.out.println("20.\t Gombafonal nőhet olyan tektonra, ahová test nem\n");
+        System.out.println("21.\t Spóra LifeTektonra, majd fonal tiltott tektonra\n");
+        System.out.println("22.\t Fonal vágása után késleltetett eltűnés\n");
+        System.out.println("23.\t Gombatest halála miatt a fonal eltűnik\n");
+        System.out.println("24.\t Fonal nem eheti meg a nem bénult rovart\n");
+        System.out.println("25.\t A rovar bénítást kap, a fonál megeszi, majd testet növeszt\n");
+        System.out.println("26.\t Spóra LifeTektonra, fonal, mozgás, vágás visszafelé\n");
+        System.out.println("27.\t Spóra szórás szomszéd szomszédjára fejlett gombatestből, majd gombatest növesztése\n");
+        System.out.println("28.\t Rovar visszafordulna, de elvágta maga mögött a fonalat\n");
+        System.out.println("29.\t Rovar megeszik két különböző spórát, és a hatásuk összeadódik\n");
+        System.out.println("30.\t Duplikáló spóra, majd a másolat vágni próbál, de vágásképtelen spórát evett\n");
+        System.out.print("Választás: ");
+
+        //Válasz beolvasása
+        //Ha nem megfelelő, akkor hibát dob
+        Scanner in = new Scanner(System.in);
+        int choice = in.nextInt();
+        if (choice < 1 || choice > 30) {throw new RuntimeException("BProf?");}
 
         /*initializeTestEnvironment();
         printTestMenu();
         handleUserChoice();*/
     }
-
+    /*
     private static void initializeTestEnvironment() {
         // Initialize 4 Tektons
         for (int i = 1; i <= 4; i++) {
@@ -234,4 +273,5 @@ public class Main {
             System.out.println("Insect_1 failed to move.");
         }
     }
+    */
 }

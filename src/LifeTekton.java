@@ -19,11 +19,22 @@ public class LifeTekton extends Tekton{
      * inherently possessing the property of not being able to be cut.
      * </p>
      */
+    private int ID;
     public LifeTekton() {
         System.out.println("FastGrowthTekton.FastGrowthTekton() called");
+        Mushroom mushroom = new Mushroom();
+        this.mushrooms = mushroom;
+        this.ID = 0;
         System.out.println("FastGrowthTekton.FastGrowthTekton() returned");
     }
 
+    public LifeTekton(int ID) {
+        System.out.println("FastGrowthTekton.FastGrowthTekton() called");
+        Mushroom mushroom = new Mushroom();
+        this.mushrooms = mushroom;
+        this.ID = ID;
+        System.out.println("FastGrowthTekton.FastGrowthTekton() returned");
+    }
     /**
      * Overrides the {@code canCut()} method to always return {@code false}.
      * <p>

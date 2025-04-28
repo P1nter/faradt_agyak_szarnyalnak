@@ -17,6 +17,7 @@ import java.util.ArrayList;
  */
 public class ParalyzingSpore extends Spore {
 
+    private int ID;
     /**
      * Constructs a {@code ParalyzingSpore} associated with the specified {@code Tekton}.
      *
@@ -24,6 +25,13 @@ public class ParalyzingSpore extends Spore {
      */
     public ParalyzingSpore(Tekton tekton) {
         this.nutrition = 5;
+        this.ID = 0;
+        this.tekton = tekton;
+    }
+    public ParalyzingSpore(Tekton tekton, Mushroomer Owner,int ID) {
+        this.setOwner(Owner);
+        this.nutrition = 5;
+        this.ID = ID;
         this.tekton = tekton;
     }
 

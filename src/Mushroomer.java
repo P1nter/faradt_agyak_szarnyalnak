@@ -76,6 +76,7 @@ public class Mushroomer extends Player {
     public Mushroomer(String name) {
         super(name);
         System.out.println("Mushroomer.Mushroomer(name) called");
+        setPlayerType(PlayerType.MUSHROOMER);
         System.out.println("Mushroomer.Mushroomer(name) returned");
     }
 
@@ -125,7 +126,7 @@ public class Mushroomer extends Player {
     public void growBody(Tekton tekton){
         if (whereCanIGrowMushroomBodies().contains(tekton)) {
             System.out.println("Mushroomer.Grow(tekton) called");
-            MushroomBody mushroomBody = tekton.getMushroom().growBody(tekton);
+            MushroomBody mushroomBody = tekton.getMushroom().growBody(tekton, this);
             if(mushroomBody != null && mushroomBody.getTektons().isFastTekton()){
                 tekton.getMushroom().Update();
             }
@@ -200,6 +201,21 @@ public class Mushroomer extends Player {
         System.out.println("Mushroomer.whereCanIGrowYarns() returned");
         return tektonWhereICanGrow;
     }
+    public void eatInsect(Insect insect){
+        System.out.println("Mushroomer.eatInsect() called");
+        // Implement logic to eat an insect
+        if(insect.getEffects() [1] > 0){
+            for (MushroomYarn mushroomYarn: mushroomYarns){
+                for(MushroomBody mushroomBody: mushroomsBodies){
+                    if (mushroomBody.getTektons().getMushroom().getMushroomYarns().contains(mushroomYarn) && insect.getTekton() == mushroomBody.getTektons()){
+                        growBody(insect.getTekton());
+                        mushroomYarn.eatInsect(insect);
+                    }
+                }
+            }
+        }
+        System.out.println("Mushroomer.eatInsect() returned");
+    }
 
     /**
      * Determines the list of adjacent Tektons reachable from a specific Tekton where this player can grow new mushroom yarns.
@@ -253,9 +269,49 @@ public class Mushroomer extends Player {
         System.out.println("Mushroomer.GrowYarn() returned");
     }
     public void addSpore(Spore spore){
+        System.out.println("Mushroomer.addSpore(Spore) called");
         this.spores.add(spore);
+        System.out.println("Mushroomer.addSpore(Spore) returned");
     }
     public List<Spore> getSpores(){
+        System.out.println("Mushroomer.getSpores() called");
+        System.out.println("Mushroomer.getSpores() returned");
         return this.spores;
+    }
+    public void releaseSpore(MushroomBody mushroomBody, Spore spore, Tekton tekton){
+        System.out.println("Mushroomer.releaseSpore() called");
+        if (mushroomBody.getTektons().getMushroom().getHowOld() < 1)
+            System.out.println("This mushroom body is too young to release spores");
+        if (mushroomBody.getTektons().getMushroom().getHowOld() > 0 && mushroomBody.getTektons().getMushroom().getHowOld() < 3) {
+            if (mushroomBody.getTektons().getAdjacentTektons().contains(tekton)){
+                //logic to release spore
+                spore.setTekton(tekton);
+                this.spores.add(spore);
+                //megkell nézni van e ott mushroom << legyen mindenhol mushroom alapértelmezetten
+                if (tekton.getMushroom() != null) {
+                    tekton.getMushroom().getSpores().add(spore);
+                }
+                System.out.println("Spore released successfully");
+            } else {
+                System.out.println("This mushroom body is not adjacent to the specified tekton");
+            }
+        }
+        if (mushroomBody.getTektons().getMushroom().getHowOld() > 3){
+            for (Tekton tekton1: mushroomBody.getTektons().getAdjacentTektons()) {
+                if (mushroomBody.getTektons().getAdjacentTektons().contains(tekton) ||
+                        tekton1.getAdjacentTektons().contains(tekton)) {
+                    //logic to release spore
+                    spore.setTekton(tekton);
+                    this.spores.add(spore);
+                    if (tekton.getMushroom() != null) {
+                        tekton.getMushroom().getSpores().add(spore);
+                    }
+                    System.out.println("Spore released successfully");
+                } else {
+                    System.out.println("This mushroombody cant release spores there");
+                }
+            }
+        }
+        System.out.println("Mushroomer.releaseSpore() returned");
     }
 }

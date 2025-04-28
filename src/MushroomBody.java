@@ -1,3 +1,4 @@
+import javax.print.attribute.standard.MultipleDocumentHandling;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,34 @@ import java.util.List;
  */
 public class MushroomBody {
     private Tekton tekton;
+    private Mushroomer owner;
+    private int ID;
+
+    public int getID() {
+        System.out.println("MushroomBody.getID() called");
+        try {
+            return ID;
+        } catch(NullPointerException e){
+            System.out.println("ID is null");
+        }
+        System.out.println("MushroomBody.getID() returned " + ID);
+        return 0;
+    }
+    // Getter without System.out.println for ID
+    public int getIDNoPrint() {
+        return ID;
+    }
+
+    public Mushroomer getOwner(){
+        return owner;
+    }
+
+    // Getter without System.out.println for Tekton
+    public Tekton getTektonNoPrint() {
+        return tekton;
+    }
+
+
 
     /**
      * Triggers the release of a spore from this mushroom body.
@@ -23,15 +52,8 @@ public class MushroomBody {
      * prints messages to the console.
      * </p>
      */
-    public void releaseSpore() {
-        System.out.println("MushroomBody.releaseSpore called");
-        // TODO: Implement the logic for spore release, including creating and adding a spore to the game.
-        System.out.println("MushroomBody.releaseSpore returned");
-    }
 
-    /**
-     * Constructs a new {@code MushroomBody} with no associated {@code Tekton}.
-     */
+
     public MushroomBody() {
         System.out.println("MushroomBody.MushroomBody() called");
         System.out.println("MushroomBody.MushroomBody() returned");
@@ -42,9 +64,18 @@ public class MushroomBody {
      *
      * @param tekton The {@code Tekton} where this mushroom body is located.
      */
-    public MushroomBody(Tekton tekton){
+    public MushroomBody(Tekton tekton, Mushroomer owner){
         System.out.println("MushroomBody.MushroomBody() called");
         this.tekton = tekton;
+        this.owner = owner;
+        this.ID = 0;
+        System.out.println("MushroomBody.MushroomBody() returned");
+    }
+    public MushroomBody(Tekton tekton, Mushroomer owner, int ID){
+        System.out.println("MushroomBody.MushroomBody() called");
+        this.tekton = tekton;
+        this.owner = owner;
+        this.ID = ID;
         System.out.println("MushroomBody.MushroomBody() returned");
     }
 

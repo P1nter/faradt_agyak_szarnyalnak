@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class DisabledBodyGrowthTekton extends Tekton {
 
+    private int ID;
     /**
      * Constructs a new {@code DisabledBodyGrowthTekton}.
      * <p>
@@ -24,6 +25,16 @@ public class DisabledBodyGrowthTekton extends Tekton {
      */
     public DisabledBodyGrowthTekton() {
         System.out.println("DisabledBodyGrowthTekton.DisabledBodyGrowthTekton() called");
+        Mushroom mushroom = new Mushroom();
+        this.ID = 0;
+        this.mushrooms = mushroom;
+        System.out.println("DisabledBodyGrowthTekton.DisabledBodyGrowthTekton() returned");
+    }
+    public DisabledBodyGrowthTekton(int ID) {
+        System.out.println("DisabledBodyGrowthTekton.DisabledBodyGrowthTekton() called");
+        Mushroom mushroom = new Mushroom();
+        this.ID = ID;
+        this.mushrooms = mushroom;
         System.out.println("DisabledBodyGrowthTekton.DisabledBodyGrowthTekton() returned");
     }
 

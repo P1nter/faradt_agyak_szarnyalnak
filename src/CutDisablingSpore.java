@@ -12,6 +12,7 @@
  */
 public class CutDisablingSpore extends Spore {
 
+    private int ID;
     /**
      * Constructs a {@code CutDisablingSpore} associated with the provided {@code Tekton} instance.
      * This association might determine the origin or target of the spore.
@@ -21,6 +22,13 @@ public class CutDisablingSpore extends Spore {
     public CutDisablingSpore(Tekton tekton) {
         this.nutrition = 5;
         this.tekton = tekton;
+        this.ID = 0;
+    }
+    public CutDisablingSpore(Tekton tekton, Mushroomer Owner,int ID) {
+        this.setOwner(Owner);
+        this.nutrition = 5;
+        this.tekton = tekton;
+        this.ID = ID;
     }
 
     /**
@@ -32,6 +40,7 @@ public class CutDisablingSpore extends Spore {
     public void affectInsect(Insect insect) {
         System.out.println("CutDisablingSpore.affectInsect(insect) called");
         insect.effectedByCutDisablingSpore();
+
         System.out.println("CutDisablingSpore.affectInsect(insect) returned");
     }
 }

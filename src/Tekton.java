@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * An abstract base class representing a location or area within the game world.
@@ -24,6 +25,7 @@ abstract class Tekton {
      * The mushroom associated with this Tekton.
      */
     Mushroom mushrooms = null;
+    private int ID;
 
     /**
      * A list of insects currently located on this Tekton.
@@ -35,7 +37,21 @@ abstract class Tekton {
      */
     public Tekton() {
         System.out.println("Tekton.Tekton() called");
+        Mushroom mushroom = new Mushroom();
+        this.ID = 0;
+        this.mushrooms = mushroom;
         System.out.println("Tekton.Tekton() returned");
+    }
+    public Tekton(int ID) {
+        System.out.println("Tekton.Tekton() called");
+        Mushroom mushroom = new Mushroom();
+        this.ID = ID;
+        this.mushrooms = mushroom;
+        System.out.println("Tekton.Tekton() returned");
+    }
+
+    public int getID(){
+        return ID;
     }
 
     /**
@@ -46,6 +62,8 @@ abstract class Tekton {
     public Tekton(List<Tekton> adjacentTektonss) {
         System.out.println("Tekton.Tekton() called");
         this.adjacentTektons = adjacentTektonss;
+        Mushroom mushroom = new Mushroom();
+        this.mushrooms = mushroom;
         System.out.println("Tekton.Tekton() returned");
     }
 
@@ -90,6 +108,7 @@ abstract class Tekton {
     public void addAdjacentTekton(Tekton tekton) {
         System.out.println("Tekton.addAdjacentTekton(Tekton) called");
         adjacentTektons.add(tekton);
+        tekton.getAdjacentTektons().add(this);
         System.out.println("Tekton.addAdjacentTekton(Tekton) returned");
     }
 
@@ -218,4 +237,22 @@ abstract class Tekton {
         System.out.println("Tekton.isFastTekton() returned");
         return false;
     }
+    public int getIDNoPrint() {
+        return ID;
+    }
+
+    public List<Tekton> getAdjacentTektonsNoPrint() {
+        return adjacentTektons;
+    }
+
+    public Mushroom getMushroomNoPrint() {
+        return mushrooms;
+    }
+
+    public List<Insect> getInsectsNoPrint() {
+        return insects;
+    }
+
+
+
 }

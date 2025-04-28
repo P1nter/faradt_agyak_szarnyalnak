@@ -14,14 +14,23 @@
  */
 public class SpeedingSpore extends Spore {
 
+    private int ID;
     /**
      * Constructs a {@code SpeedingSpore} linked to the specified {@code Tekton}.
      *
      * @param tekton The {@code Tekton} associated with this spore, potentially indicating its origin or area of effect.
      */
-    public SpeedingSpore(Tekton tekton) {
+    public SpeedingSpore(Tekton tekton, Mushroomer mushroomer) {
         this.nutrition = 5;
+        this.ID = 0;
         this.tekton = tekton;
+        this.setOwner(mushroomer);
+    }
+    public SpeedingSpore(Tekton tekton, Mushroomer mushroomer, int ID) {
+        this.nutrition = 5;
+        this.ID = ID;
+        this.tekton = tekton;
+        this.setOwner(mushroomer);
     }
 
     /**

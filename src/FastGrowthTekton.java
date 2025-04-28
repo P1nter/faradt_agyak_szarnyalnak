@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class FastGrowthTekton extends Tekton {
 
+    private int ID;
     /**
      * Constructs a new {@code FastGrowthTekton}.
      * <p>
@@ -24,9 +25,19 @@ public class FastGrowthTekton extends Tekton {
      */
     public FastGrowthTekton() {
         System.out.println("FastGrowthTekton.FastGrowthTekton() called");
+        Mushroom mushroom = new Mushroom();
+        this.mushrooms = mushroom;
+        this.ID = 0;
         System.out.println("FastGrowthTekton.FastGrowthTekton() returned");
     }
 
+    public FastGrowthTekton(int ID) {
+        System.out.println("FastGrowthTekton.FastGrowthTekton() called");
+        Mushroom mushroom = new Mushroom();
+        this.mushrooms = mushroom;
+        this.ID = ID;
+        System.out.println("FastGrowthTekton.FastGrowthTekton() returned");
+    }
     /**
      * Overrides the {@code isFastTekton()} method to always return {@code true}.
      * <p>

@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Manages the overall game state, including Tektons, players, and turn progression.
@@ -14,7 +15,7 @@ import java.util.List;
  *
  * @since 1.0
  */
-public class Game {
+public class  Game {
     private List<Tekton> tektons;
     private List<Player> players;
 
@@ -31,6 +32,10 @@ public class Game {
     public Game() {
         tektons = new ArrayList<>();
         players = new ArrayList<>();
+    }
+    public Game(List<Tekton> tektons, List<Player> players){
+        this.tektons = tektons;
+        this.players = players;
     }
 
     /**
@@ -117,6 +122,82 @@ public class Game {
         players.remove(player);
     }
 
+
+    public void list() {
+        for (Tekton tekton : tektons) {
+            // Cache tekton ID to avoid any unexpected changes
+            final int tektonId = tekton.getIDNoPrint();
+            System.out.println();
+            System.out.println("ID: " + tektonId);
+
+            // Adjacent Tektons
+            List<Tekton> adjacent = tekton.getAdjacentTektonsNoPrint();
+            System.out.println("Adjacent Tektons: " +
+                    (adjacent == null || adjacent.isEmpty()
+                            ? "None"
+                            : adjacent.stream()
+                            .map(Tekton::getIDNoPrint)
+                            .collect(Collectors.toList())));
+
+            // Insects on this Tekton
+            List<Insect> insects = tekton.getInsectsNoPrint();
+            System.out.println("Insects: " +
+                    (insects == null || insects.isEmpty()
+                            ? "None"
+                            : insects.stream().map(Insect::getIDNoPrint).collect(Collectors.toList())));
+
+            // Mushroom (if any)
+            Mushroom mushroom = tekton.getMushroomNoPrint();
+            if (mushroom != null) {
+                System.out.println("Mushroom: " + mushroom);
+
+                // MushroomBody
+                MushroomBody body = mushroom.getMushroomBodyNoPrint();
+                if (body != null) {
+                    System.out.println("  Mushroombodies: " + body);
+                    System.out.println("    MushroomBody ID: " + body.getIDNoPrint());
+                    System.out.println("    MushroomBody Tekton: " + body.getTektonNoPrint().getIDNoPrint());
+                } else {
+                    System.out.println("  Mushroombodies: None");
+                }
+
+                // MushroomYarns
+                List<MushroomYarn> yarns = mushroom.getMushroomYarnsNoPrint();
+                if (yarns != null && !yarns.isEmpty()) {
+                    System.out.println("  MushroomYarns: " +
+                            yarns.stream().map(MushroomYarn::getIDNoPrint).collect(Collectors.toList()));
+                    for (MushroomYarn yarn : yarns) {
+                        System.out.println("    MushroomYarn ID: " + yarn.getIDNoPrint());
+                        Tekton[] linked = yarn.getTektonsNoPrint();
+                        System.out.println("    MushroomYarn Tektons: " +
+                                linked[0].getIDNoPrint() + " and " + linked[1].getIDNoPrint());
+                    }
+                } else {
+                    System.out.println("  MushroomYarns: None");
+                }
+            } else {
+                System.out.println("Mushroom: None");
+            }
+
+            // Print each insect's details
+            if (insects != null) {
+                for (Insect insect : insects) {
+                    final int insectId = insect.getIDNoPrint();
+                    System.out.println();
+                    System.out.println("Insect ID: " + insectId);
+                    System.out.println("Insect Tekton: " + insect.getTektonNoPrint().getIDNoPrint());
+                    System.out.println("Insect Player: " + insect.getOwnerNoPrint().getName());
+
+                    int[] effects = insect.getEffectsNoPrint();
+                    System.out.println("Insect is paralyzed for: " + effects[1]);
+                    System.out.println("Insect can't cut for: " + effects[0]);
+                    System.out.println("Insect is speeded for: " + effects[2]);
+                    System.out.println("Insect is slowed for: " + effects[3]);
+                }
+            }
+        }
+    }
+
     /**
      * Retrieves the list of all Tektons currently in the game.
      *
@@ -161,13 +242,29 @@ public class Game {
      * is then printed to the console.
      * </p>
      */
-    public void determineWinner(){
-        Player winner = players.get(0);
-        for(Player player:players){
-            if(player.getScore() > winner.getScore()) winner = player;
+    public Mushroomer determineMushroomerWinner() {
+        Player winnerMushroomer = players.get(0);
+        for (Player player : players) {
+            if (player.getPlayerType() == Player.PlayerType.MUSHROOMER) {
+                if (winnerMushroomer.getScore() < player.getScore()) {
+                    winnerMushroomer = player;
+                }
+            }
         }
-
-        System.out.println("The winner is: "+winner);
+        System.out.println("the mushroomer winner is: " + winnerMushroomer.getName() + " with score: " + winnerMushroomer.getScore());
+    return (Mushroomer) winnerMushroomer;
+    }
+    public Insecter determineInsecterWinner(){
+        Player winnerInsecter = players.get(0);
+        for (Player player : players) {
+            if (player.getPlayerType() == Player.PlayerType.INSECTER) {
+                if (winnerInsecter.getScore() < player.getScore()) {
+                    winnerInsecter = player;
+                }
+            }
+        }
+        System.out.println("the insecter winner is: "+ winnerInsecter.getName() + " with score: "+ winnerInsecter.getScore());
+        return (Insecter) winnerInsecter;
     }
 
     /**

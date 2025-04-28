@@ -17,6 +17,7 @@ import java.util.*;
  * @since 1.0
  */
 public class Mushroom {
+    private int ID;
     private MushroomBody mushroomBody = null;
     private List<MushroomYarn> mushroomYarns = new ArrayList<>();
     private List<Spore> spores = new ArrayList<>();
@@ -33,6 +34,16 @@ public class Mushroom {
     public Mushroom() {
         System.out.println("Mushroom.Mushroom() called");
         this.mushroomBody = null;
+        this.ID = 0;
+        mushroomYarns = new ArrayList<>();
+        spores = new ArrayList<>();
+        howOld = 0;
+        System.out.println("Mushroom.Mushroom() returned");
+    }
+    public Mushroom(int ID) {
+        System.out.println("Mushroom.Mushroom() called");
+        this.mushroomBody = null;
+        this.ID = ID;
         mushroomYarns = new ArrayList<>();
         spores = new ArrayList<>();
         howOld = 0;
@@ -56,7 +67,7 @@ public class Mushroom {
                 break;
             }
         }
-        System.out.println("Mushroom.isThereMushroomYarn() returned boolean");
+        System.out.println("Mushroom.isThereMushroomYarn() returned "+result);
         return result;
     }
 
@@ -76,10 +87,17 @@ public class Mushroom {
      */
     public void instructSporeRelease(MushroomBody body) {
         System.out.println("Mushroom.instructSporeRelease() called");
-        body.releaseSpore();
+        if (howOld > 0 && howOld < 2){
+
+        }
         System.out.println("Mushroom.instructSporeRelease() returned");
     }
 
+    public int getHowOld() {
+        System.out.println("Mushroom.getHowOld() called");
+        System.out.println("Mushroom.getHowOld() returned int");
+        return howOld;
+    }
     /**
      * Updates the state of the mushroom for the current game turn.
      * <p>
@@ -137,7 +155,7 @@ public class Mushroom {
      * @return The newly created {@code MushroomBody}, or {@code null} if a body already exists
      * or the Tekton does not allow growth.
      */
-    public MushroomBody growBody(Tekton tekton) {
+    public MushroomBody growBody(Tekton tekton,Mushroomer mushroomer) {
         System.out.println("Mushroom.growBody() called");
         //check if tekton allows
         if (this.mushroomBody != null) {
@@ -147,7 +165,7 @@ public class Mushroom {
         if (tekton.canGrow()) {
             System.out.println("Mushroom.growBody() tekton.canGrow() returned");
             //check if tekton has spore and mushroomyarn
-            mushroomBody = new MushroomBody(tekton);
+            mushroomBody = new MushroomBody(tekton, mushroomer);
         } else {
             System.out.println("Mushroom.growBody() tekton.canGrow() returned");
             return null;
@@ -248,9 +266,41 @@ public class Mushroom {
         return mushroomBody;
     }
     public void addMushroomBody(MushroomBody mushroomBody){
+        System.out.println("Mushroom.addMushroomBody(MushroomBody) called");
         this.mushroomBody = mushroomBody;
+        System.out.println("Mushroom.addMushroomBody(MushroomBody) returned");
     }
     public void addSpore(Spore spore){
+        System.out.println("Mushroom.addSpore(Spore) called");
         this.spores.add(spore);
+        System.out.println("Mushroom.addSpore(Spore) returned");
+    }
+    public void addMushroomYarn(MushroomYarn mushroomYarn){
+        System.out.println("Mushroom.addMushroomYarn(MushroomYarn) called");
+        this.mushroomYarns.add(mushroomYarn);
+        System.out.println("Mushroom.addMushroomYarn(MushroomYarn) returned");
+    }
+    public int getIDNoPrint() {
+        return ID;
+    }
+
+    public MushroomBody getMushroomBodyNoPrint() {
+        return mushroomBody;
+    }
+
+    public List<MushroomYarn> getMushroomYarnsNoPrint() {
+        return mushroomYarns;
+    }
+
+    public List<Spore> getSporesNoPrint() {
+        return spores;
+    }
+
+    public Tekton getTektonNoPrint() {
+        return tekton;
+    }
+
+    public int getHowOldNoPrint() {
+        return howOld;
     }
 }

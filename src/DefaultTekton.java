@@ -14,6 +14,7 @@ import java.util.ArrayList;
  */
 public class DefaultTekton extends Tekton {
 
+    private int ID;
     /**
      * Constructs a new {@code DefaultTekton} instance with no initial adjacent Tektons.
      * <p>
@@ -24,7 +25,13 @@ public class DefaultTekton extends Tekton {
      */
     public DefaultTekton() {
         System.out.println("DefaultTekton.DefaultTekton() called");
+        this.ID = 0;
         System.out.println("DefaultTekton.DefaultTekton() returned");
+    }
+    public DefaultTekton(int ID) {
+        super(ID);
+        System.out.println("DefaultTekton.DefaultTekton() called with ID: " + ID);
+        System.out.println("DefaultTekton.DefaultTekton() returned with ID: " + ID);
     }
 
     /**

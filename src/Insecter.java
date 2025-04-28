@@ -24,6 +24,8 @@ public class Insecter extends Player{
     public Insecter(String name) {
         super(name);
         System.out.println("Insecter.Insecter(name) called");
+        setPlayerType(PlayerType.INSECTER);
+
         System.out.println("Insecter.Insecter(name) returned");
     }
 
@@ -51,6 +53,7 @@ public class Insecter extends Player{
      */
     public void addInsect(Insect insect) {
         System.out.println("Insecter.AddInsect(insect) called");
+        insect.setOwner(this);
         insects.add(insect);
         System.out.println("Insecter.AddInsect(insect) returned");
     }
@@ -64,5 +67,10 @@ public class Insecter extends Player{
         System.out.println("Insecter.getInsects() called");
         System.out.println("Insecter.getInsects() returned");
         return insects;
+    }
+    public void removeInsect(Insect insect){
+        System.out.println("Insecter.removeInsect(insect) called");
+        insects.remove(insect);
+        System.out.println("Insecter.removeInsect(insect) returned");
     }
 }

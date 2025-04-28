@@ -13,6 +13,7 @@
  */
 public class DuplicatingSpore extends Spore {
 
+    private int ID;
     /**
      * Constructs a {@code DuplicatingSpore} associated with the specified {@code Tekton}.
      *
@@ -20,6 +21,13 @@ public class DuplicatingSpore extends Spore {
      */
     public DuplicatingSpore(Tekton tekton) {
         this.nutrition = 5;
+        this.ID = 0;
+        this.tekton = tekton;
+    }
+    public DuplicatingSpore(Tekton tekton, Mushroomer Owner,int ID) {
+        this.setOwner(Owner);
+        this.nutrition = 5;
+        this.ID = ID;
         this.tekton = tekton;
     }
 

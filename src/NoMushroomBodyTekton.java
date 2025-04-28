@@ -21,8 +21,19 @@ public class NoMushroomBodyTekton extends Tekton {
      * inherently disallowing mushroom body growth.
      * </p>
      */
+    private int ID;
     public NoMushroomBodyTekton() {
         System.out.println("NoMushroomBodyTekton.NoMushroomBodyTekton() called");
+        Mushroom mushroom = new Mushroom();
+        this.mushrooms = mushroom;
+        this.ID = 0;
+        System.out.println("NoMushroomBodyTekton.NoMushroomBodyTekton() returned");
+    }
+    public NoMushroomBodyTekton(int ID) {
+        System.out.println("NoMushroomBodyTekton.NoMushroomBodyTekton() called");
+        Mushroom mushroom = new Mushroom();
+        this.mushrooms = mushroom;
+        this.ID = ID;
         System.out.println("NoMushroomBodyTekton.NoMushroomBodyTekton() returned");
     }
 

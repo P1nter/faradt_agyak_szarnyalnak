@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class DisappearingYarnTekton extends Tekton {
 
+    private int ID;
     /**
      * Constructs a new {@code DisappearingYarnTekton}.
      * <p>
@@ -23,6 +24,16 @@ public class DisappearingYarnTekton extends Tekton {
      */
     public DisappearingYarnTekton() {
         System.out.println("DisappearingYarnTekton.DisappearingYarnTekton() called");
+        Mushroom mushroom = new Mushroom();
+        this.ID = 0;
+        this.mushrooms = mushroom;
+        System.out.println("DisappearingYarnTekton.DisappearingYarnTekton() returned");
+    }
+    public DisappearingYarnTekton(int ID) {
+        System.out.println("DisappearingYarnTekton.DisappearingYarnTekton() called");
+        Mushroom mushroom = new Mushroom();
+        this.ID = ID;
+        this.mushrooms = mushroom;
         System.out.println("DisappearingYarnTekton.DisappearingYarnTekton() returned");
     }
 

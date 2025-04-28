@@ -259,7 +259,7 @@ public class read2 {
             default: throw new IllegalArgumentException("Ismeretlen Spore típus: " + type);
         }
     }
-}*/
+}*//*
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -310,7 +310,7 @@ public class read2 {
                             int action = Integer.parseInt(line.split(" ")[0].split("=")[1]);
                             String effectsPart = line.substring(line.indexOf("[") + 1, line.indexOf("]")).trim();
                             String[] effectStrings = effectsPart.split(" ");
-                            Insect insect = new Insect(currentTekton);
+                            Insect insect = new Insect(currentTekton, new Insecter("alma"));
                             insect.setAction(action);
 
                             int[] effects = insect.getEffects();
@@ -393,5 +393,5 @@ public class read2 {
         }
     }
 }
-
+*/
 
