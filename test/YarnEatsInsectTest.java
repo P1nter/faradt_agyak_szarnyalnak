@@ -66,9 +66,7 @@ public class YarnEatsInsectTest {
     void TestYarnEatsInsect(){
         mushroomYarn1 = new MushroomYarn(tekton1,tekton2,mushroomer, 1);
         insect2.effectedByParalyzingSpore();
-        game.list();
         mushroomer.eatInsect(insect2);
-        game.list();
         assertTrue(tekton2.getInsects().isEmpty());
     }
 }

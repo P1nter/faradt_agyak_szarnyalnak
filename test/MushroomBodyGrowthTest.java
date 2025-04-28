@@ -38,39 +38,32 @@ public class MushroomBodyGrowthTest {
 
     @Test
     void TestGrowMushroomBodyNoSporeNoYarn() {
-        game.list();
         // No spore, no yarn → cannot grow
         mushroomer.growBody(tekton2);
         assertTrue(tekton2.getMushroomNoPrint().getMushroomBodyNoPrint()==null);
-        game.list();
     }
 
     @Test
     void TestGrowMushroomBodyYesSporeNoYarn() {
-        game.list();
         // Spore present, but no connecting yarn → still cannot grow
         spore = new SlowingSpore(tekton2, mushroomer,1);
 
         mushroomer.growBody(tekton2);
         assertTrue(tekton2.getMushroomNoPrint().getMushroomBodyNoPrint()==null);
-        game.list();
     }
 
     @Test
     void TestGrowMushroomBodyNoSporeYesYarn() {
-        game.list();
         // Yarn present, but no spore → cannot grow
         MushroomYarn yarn = new MushroomYarn(tekton1, tekton2, mushroomer,1);
 
 
         mushroomer.growBody(tekton2);
         assertNull(tekton2.getMushroomNoPrint().getMushroomBodyNoPrint());
-        game.list();
     }
 
     @Test
     void TestGrowMushroomBodyYesSporeYesYarnButAlreadyBody() {
-        game.list();
         // Spore + yarn, but body already exists → no new growth
         spore = new SlowingSpore(tekton2,mushroomer, 1);
 
@@ -84,7 +77,6 @@ public class MushroomBodyGrowthTest {
         mushroomer.growBody(tekton2);
         // Still only the original body
         assertNotNull(tekton2.getMushroomNoPrint().getMushroomBodyNoPrint());
-        game.list();
     }
 
     @Test
@@ -93,21 +85,17 @@ public class MushroomBodyGrowthTest {
         // Spore + yarn, no existing body → should grow exactly one
         spore = new SlowingSpore(tekton2, mushroomer,1);
         MushroomYarn yarn = new MushroomYarn(tekton1, tekton2,mushroomer, 1);
-        game.list();
         mushroomer.growBody(tekton2);
         assertNotNull(tekton2.getMushroomNoPrint().getMushroomBodyNoPrint());
-        game.list();
     }
 
     @Test
     void TestGrowMushroomOnNoMushroomBodyTekton() {
-        game.list();
         // A Tekton subclass that forbids body growth
         Tekton noBody = new NoMushroomBodyTekton(5);
         noBody.addAdjacentTekton(tekton1);
 
         mushroomer.growBody(noBody);
         assertNull(noBody.getMushroomNoPrint().getMushroomBodyNoPrint());
-        game.list();
     }
 }

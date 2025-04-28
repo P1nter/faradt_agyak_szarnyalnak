@@ -55,11 +55,8 @@ public class TektonKeepsYarnAliveTest {
 
     @Test
     void TestLifeTektonKeepsYarnAlive(){
-        game.list();
         insect2.cut(mushroomYarn1);
-        game.list();
         assertTrue(tekton3.getMushroom().isThereMushroomYarn(tekton3, tekton4));
         assertFalse(mushroomYarn1.getIsCut());
-        game.list();
     }
 }

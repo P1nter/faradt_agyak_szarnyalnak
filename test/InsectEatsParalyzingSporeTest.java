@@ -55,7 +55,6 @@ public class InsectEatsParalyzingSporeTest {
     @Test
     void testParalyzingSporeGivesParalysis() {
         // Insect eats the spore
-        game.list();
         insect1.consumeSpore(spore);
 
         // The spore should be removed from both player and mushroom
@@ -64,6 +63,5 @@ public class InsectEatsParalyzingSporeTest {
 
         // And insect1 should now have a non-zero 'paralyzed' effect
         assertTrue(insect1.getEffects()[1] > 0);
-        game.list();
     }
 }

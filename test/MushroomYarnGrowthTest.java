@@ -64,7 +64,6 @@ public class MushroomYarnGrowthTest {
     @Test
     void testWhereYarnDisappearsOnDis(){
         mushroomYarn1 = new MushroomYarn(tekton1,tekton2,mushroomer, 1);
-        game.list();
         game.update();
         game.update();
         assertTrue(tekton1.getMushroom().isThereMushroomYarn(tekton1, tekton2));
@@ -73,27 +72,21 @@ public class MushroomYarnGrowthTest {
         game.update();
         game.list();
         assertFalse(tekton1.getMushroom().isThereMushroomYarn(tekton1, tekton2));
-        game.list();
     }
     @Test
     void TestYarnCanGrowWhereBodyCant(){
-        game.list();
         mushroomer.growBody(tekton4);
         assertTrue(tekton4.getMushroom().getMushroomBody() == null);
         MushroomYarn yarn = new MushroomYarn(tekton1, tekton2, mushroomer, 1);
         tekton2.getMushroom().addMushroomBody(mushroomBody2 = new MushroomBody(tekton2, mushroomer, 2));
         mushroomer.GrowYarn(tekton2, tekton4);
-        game.list();
         assertTrue(tekton2.getMushroom().isThereMushroomYarn(tekton2, tekton4));
-        game.list();
     }
     @Test
     void testMushroomYarnGrowth() {
         MushroomYarn yarn = new MushroomYarn(tekton3, tekton2, mushroomer, 1);
         tekton2.getMushroom().addMushroomBody(mushroomBody2 = new MushroomBody(tekton2, mushroomer, 2));
-        game.list();
         mushroomer.GrowYarn(tekton1, tekton2);
-        game.list();
         assertTrue(tekton2.getMushroom().isThereMushroomYarn(tekton1, tekton2));
     }
 }

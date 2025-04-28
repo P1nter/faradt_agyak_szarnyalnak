@@ -54,7 +54,6 @@ public class InsectEatsSlowingSporeTest {
     @Test
     void testSlowingSporeAppliesSlowEffect() {
         // Pre-condition: no slow effect
-        game.list();
         assertEquals(0, insect1.getEffects()[3]);
 
         // Consume the spore
@@ -66,6 +65,5 @@ public class InsectEatsSlowingSporeTest {
 
         // Insect must now have a non-zero speed reduction effect
         assertTrue(insect1.getEffects()[3] > 0);
-        game.list();
     }
 }
