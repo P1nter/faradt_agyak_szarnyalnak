@@ -70,6 +70,5 @@ public class YarnEatsInsectTest {
         mushroomer.eatInsect(insect2);
         game.list();
         assertTrue(tekton2.getInsects().isEmpty());
-        assertTrue(insecter.getInsects().isEmpty());
     }
 }

@@ -209,13 +209,11 @@ public class Mushroomer extends Player {
     public void eatInsect(Insect insect){
         System.out.println("Mushroomer.eatInsect() called");
         // Implement logic to eat an insect
-        if(insect.getEffects() [1] > 0){
+        if(insect.getEffects()[1] > 0){
             for (MushroomYarn mushroomYarn: mushroomYarns){
-                for(MushroomBody mushroomBody: mushroomsBodies){
-                    if (mushroomBody.getTektons().getMushroom().getMushroomYarns().contains(mushroomYarn) && insect.getTekton() == mushroomBody.getTektons()){
-                        growBody(insect.getTekton());
-                        mushroomYarn.eatInsect(insect);
-                    }
+                if(mushroomYarn.getTektons()[0] == insect.getTekton() || mushroomYarn.getTektons()[1] == insect.getTekton()){
+                    insect.getTekton().removeInsect(insect);
+                    insect.getOwner().getInsects().remove(insect);
                 }
             }
         }
