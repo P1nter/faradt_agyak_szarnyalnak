@@ -82,7 +82,6 @@ public class InsectCutsYarnTest {
     @Test
     void TestCutsYarnAndItDisappears(){
         game.list();
-
         insect1.cut(mushroomYarn1);
         game.update();
         game.update();
@@ -92,8 +91,6 @@ public class InsectCutsYarnTest {
     }
     @Test
     void TestCantCutThroughTimeAndSpace(){
-
-
         mushroomYarn4 = new MushroomYarn(tekton3,tekton4,mushroomer,4);
         game.list();
         insect1.cut(mushroomYarn4);
