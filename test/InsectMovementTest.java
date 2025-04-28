@@ -51,15 +51,19 @@ public class InsectMovementTest {
 
     @Test
     void TestCanMoveToAdjacentTekton() {
+        game.list();
         // Move along the yarn: insect1 starts at tekton1, should end at tekton2
         insect1.move(mushroomYarn1);
         assertEquals(tekton2, insect1.getTekton());
+        game.list();
     }
 
     @Test
     void TestYarnDoesntExistOnSameTekton() {
+        game.list();
         // Move via adjacency: insect2 starts at tekton2, moving to tekton3
         insect2.move(mushroomYarn1);
         assertNotEquals(tekton1, insect2.getTekton());
+        game.list();
     }
 }

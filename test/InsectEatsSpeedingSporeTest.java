@@ -54,6 +54,7 @@ public class InsectEatsSpeedingSporeTest {
 
     @Test
     void testSpeedingSporeAppliesSpeedEffect() {
+        game.list();
         // Pre-condition: no speed effect yet
         assertEquals(0, insect1.getEffects()[2]);
 
@@ -66,5 +67,6 @@ public class InsectEatsSpeedingSporeTest {
 
         // Insect must now have a non-zero speed effect (effects[2] == sped duration)
         assertTrue(insect1.getEffects()[2] > 0);
+        game.list();
     }
 }

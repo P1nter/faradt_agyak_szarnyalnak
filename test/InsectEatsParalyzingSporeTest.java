@@ -54,6 +54,7 @@ public class InsectEatsParalyzingSporeTest {
 
     @Test
     void testParalyzingSporeGivesParalysis() {
+        game.list();
         // Insect eats the spore
         insect1.consumeSpore(spore);
 
@@ -63,5 +64,6 @@ public class InsectEatsParalyzingSporeTest {
 
         // And insect1 should now have a non-zero 'paralyzed' effect
         assertTrue(insect1.getEffects()[1] > 0);
+        game.list();
     }
 }

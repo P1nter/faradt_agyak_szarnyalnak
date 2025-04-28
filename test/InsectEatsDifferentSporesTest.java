@@ -55,6 +55,7 @@ public class InsectEatsDifferentSporesTest {
 
     @Test
     void TestInsectEatsMultipleSpores() {
+        game.list();
         // Insect tries to consume a spore held by the player, not on its current mushroom
         insect1.consumeSpore(spore);
         insect1.consumeSpore(spore2);
@@ -63,5 +64,6 @@ public class InsectEatsDifferentSporesTest {
         // Since the spore was never on a mushroom, no spore list to clear there
         // If your Mushroom.getSpores() returns null when empty, this passes
         // Otherwise adjust assertion accordingly
+        game.list();
     }
 }

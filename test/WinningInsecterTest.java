@@ -65,8 +65,10 @@ public class WinningInsecterTest {
     }
     @Test
     void testWinningInsecter() {
+        game.list();
         insecter.setScore(15);
         insecter2.setScore(10);
         assertEquals(insecter, game.determineInsecterWinner());
+        game.list();
     }
 }

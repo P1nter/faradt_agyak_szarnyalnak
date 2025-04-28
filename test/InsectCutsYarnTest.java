@@ -81,16 +81,20 @@ public class InsectCutsYarnTest {
     }
     @Test
     void TestCutsYarnAndItDisappears(){
+        game.list();
         insect1.cut(mushroomYarn1);
         game.update();
         game.update();
         game.update();
         assertFalse(mushroom1.isThereMushroomYarn(tekton1, tekton2));
+        game.list();
     }
     @Test
     void TestCantCutThroughTimeAndSpace(){
+        game.list();
         mushroomYarn4 = new MushroomYarn(tekton3,tekton4,mushroomer,4);
         insect1.cut(mushroomYarn4);
         assertTrue(mushroom4.isThereMushroomYarn(tekton4, tekton3));
+        game.list();
     }
 }

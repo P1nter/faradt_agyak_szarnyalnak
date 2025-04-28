@@ -61,9 +61,11 @@ public class InsectEatsCutDisablingSporeTest {
 
     @Test
     void TestInsectEatsCutDisablingSporeSporeAndGetsSlowed() {
+        game.list();
         insect1.consumeSpore(spore);
         assertTrue(mushroomer.getSpores().isEmpty());
         assertTrue(tekton1.getMushroomNoPrint().getSpores().isEmpty());
         assertTrue(insect1.getEffects()[0] != 0);
+        game.list();
     }
 }

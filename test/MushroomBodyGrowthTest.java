@@ -81,21 +81,24 @@ public class MushroomBodyGrowthTest {
 
     @Test
     void TestGrowMushroomBodyYesSporeYesYarnAndNoBody() {
-
+        game.list();
         // Spore + yarn, no existing body → should grow exactly one
         spore = new SlowingSpore(tekton2, mushroomer,1);
         MushroomYarn yarn = new MushroomYarn(tekton1, tekton2,mushroomer, 1);
         mushroomer.growBody(tekton2);
         assertNotNull(tekton2.getMushroomNoPrint().getMushroomBodyNoPrint());
+        game.list();
     }
 
     @Test
     void TestGrowMushroomOnNoMushroomBodyTekton() {
+        game.list();
         // A Tekton subclass that forbids body growth
         Tekton noBody = new NoMushroomBodyTekton(5);
         noBody.addAdjacentTekton(tekton1);
 
         mushroomer.growBody(noBody);
         assertNull(noBody.getMushroomNoPrint().getMushroomBodyNoPrint());
+        game.list();
     }
 }

@@ -61,6 +61,7 @@ public class TektonSplitTest {
     }
     @Test
     void TestDuplicatestPerfectly(){
+        game.list();
         game.split(tekton1);
         assertTrue(tekton1.getMushroom().getMushroomYarns().isEmpty());
         assertEquals(5, game.getTektons().size());
@@ -70,5 +71,6 @@ public class TektonSplitTest {
         assertTrue(game.getTektons().get(4).getAdjacentTektons().contains(tekton1));
         assertTrue(game.getTektons().get(4).getAdjacentTektons().contains(tekton2));
         assertFalse(game.getTektons().get(4).getAdjacentTektons().contains(tekton4));
+        game.list();
     }
 }

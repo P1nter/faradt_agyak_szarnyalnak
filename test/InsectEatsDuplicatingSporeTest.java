@@ -54,6 +54,7 @@ public class InsectEatsDuplicatingSporeTest {
 
     @Test
     void testDuplicatingSporeProducesExtraInsect() {
+        game.list();
         // Before eating: only one insect on tekton1, and one owned by insecter
 
         // Insect1 eats the duplicating spore
@@ -65,6 +66,6 @@ public class InsectEatsDuplicatingSporeTest {
 
         // After eating: there should now be two insects on tekton1 and two in insecter's roster
         assertEquals(2, tekton1.getInsects().size());
-
+        game.list();
     }
 }

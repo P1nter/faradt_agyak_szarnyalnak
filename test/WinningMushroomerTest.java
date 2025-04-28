@@ -65,8 +65,10 @@ public class WinningMushroomerTest {
     }
     @Test
     void testWinningMushroomer() {
+        game.list();
         mushroomer.setScore(15);
         mushroomer2.setScore(10);
         assertEquals(mushroomer, game.determineMushroomerWinner());
+        game.list();
     }
 }

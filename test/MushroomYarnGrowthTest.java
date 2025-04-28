@@ -56,6 +56,7 @@ public class MushroomYarnGrowthTest {
 
     @Test
     void testWhereCanIGrowMushroomYarnNotAdjacent() {
+        game.list();
         assertTrue(mushroomer.whereCanIGrowYarnsFromThisTekton(tekton1).contains(tekton2) &&
                 mushroomer.whereCanIGrowYarnsFromThisTekton(tekton1).contains(tekton3) &&
                 mushroomer.whereCanIGrowYarnsFromThisTekton(tekton1).contains(tekton4));
@@ -63,6 +64,7 @@ public class MushroomYarnGrowthTest {
 
     @Test
     void testWhereYarnDisappearsOnDis(){
+        game.list();
         mushroomYarn1 = new MushroomYarn(tekton1,tekton2,mushroomer, 1);
         game.update();
         game.update();
@@ -72,21 +74,26 @@ public class MushroomYarnGrowthTest {
         game.update();
         game.list();
         assertFalse(tekton1.getMushroom().isThereMushroomYarn(tekton1, tekton2));
+        game.list();
     }
     @Test
     void TestYarnCanGrowWhereBodyCant(){
+        game.list();
         mushroomer.growBody(tekton4);
         assertTrue(tekton4.getMushroom().getMushroomBody() == null);
         MushroomYarn yarn = new MushroomYarn(tekton1, tekton2, mushroomer, 1);
         tekton2.getMushroom().addMushroomBody(mushroomBody2 = new MushroomBody(tekton2, mushroomer, 2));
         mushroomer.GrowYarn(tekton2, tekton4);
         assertTrue(tekton2.getMushroom().isThereMushroomYarn(tekton2, tekton4));
+        game.list();
     }
     @Test
     void testMushroomYarnGrowth() {
+        game.list();
         MushroomYarn yarn = new MushroomYarn(tekton3, tekton2, mushroomer, 1);
         tekton2.getMushroom().addMushroomBody(mushroomBody2 = new MushroomBody(tekton2, mushroomer, 2));
         mushroomer.GrowYarn(tekton1, tekton2);
         assertTrue(tekton2.getMushroom().isThereMushroomYarn(tekton1, tekton2));
+        game.list();
     }
 }
