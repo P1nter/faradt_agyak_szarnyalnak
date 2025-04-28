@@ -1,10 +1,10 @@
 /**
- * Represents a spore that disables the cutting ability of insects.
+ * This class models a specialized spore designed to impair the cutting mechanisms of insects upon contact.
  * <p>This class extends the {@code Spore} class and provides specific behavior
  * for affecting insects by disabling their cutting ability.</p>
  *
- * <p>Each instance of {@code CutDisablingSpore} is associated with a {@code Tekton}
- * and has a fixed nutrition value of 5.</p>
+ * <p>Each instance of {@code CutDisablingSpore} is linked to a specific {@code Tekton},
+ * potentially influencing its distribution or effectiveness. It also has a fixed nutrition value of 5.</p>
  *
  * @see Spore
  * @see Tekton
@@ -13,7 +13,8 @@
 public class CutDisablingSpore extends Spore {
 
     /**
-     * Constructs a {@code CutDisablingSpore} with the specified {@code Tekton}.
+     * Constructs a {@code CutDisablingSpore} associated with the provided {@code Tekton} instance.
+     * This association might determine the origin or target of the spore.
      *
      * @param tekton The {@code Tekton} associated with this spore.
      */
@@ -25,7 +26,7 @@ public class CutDisablingSpore extends Spore {
     /**
      * Affects the specified insect by disabling its cutting ability.
      *
-     * @param insect The {@code Insect} to be affected by this spore.
+     * @param insect The {@code Insect} to be affected by this spore, causing its cutting ability to be disabled.
      */
     @Override
     public void affectInsect(Insect insect) {

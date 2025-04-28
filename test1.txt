@@ -1,0 +1,31 @@
+[Tektons]
+Type=DefaultTekton
+AdjacentTektons=FastGrowthTekton
+HasMushroom=true
+Insects=
+-Action=3 Effects=[0 0 0 0]
+
+Type=FastGrowthTekton
+AdjacentTektons=DefaultTekton LifeTekton
+HasMushroom=true
+Insects=
+-Action=2 Effects=[0 1 0 0]
+
+Type=LifeTekton
+AdjacentTektons=FastGrowthTekton
+HasMushroom=false
+
+[Mushrooms]
+OnTekton=DefaultTekton
+HasBody=true
+Spores=
+-Type=SlowingSpore
+Yarns=
+-Between=DefaultTekton FastGrowthTekton IsCut=false TimeBack=0
+
+OnTekton=FastGrowthTekton
+HasBody=true
+Spores=
+-Type=DuplicatingSpore
+Yarns=
+-Between=FastGrowthTekton LifeTekton IsCut=true TimeBack=3

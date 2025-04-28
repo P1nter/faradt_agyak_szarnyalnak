@@ -112,75 +112,126 @@ import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main {
-    public static void main(String[] args) {
-        // Initialize the game state
-        Game game = new Game();
+import java.util.*;
 
-        // Create Tektons
-        Tekton tekton_1 = new DefaultTekton();
-        Tekton tekton_2 = new DefaultTekton();
-        Tekton tekton_3 = new DefaultTekton();
-        Tekton tekton_4 = new DefaultTekton();
+import java.util.*;
+
+public class Main {
+    private static Game game;
+    private static Map<String, Tekton> tektons = new HashMap<>();
+    private static Map<String, Insect> insects = new HashMap<>();
+    private static Map<String, Mushroom> mushrooms = new HashMap<>();
+    private static Map<String, MushroomYarn> mushroomYarns = new HashMap<>();
+
+    public static void main(String[] args) {
+        Game game = read2.loadGame("test1.txt");
+        write2.saveGame(game,"out.txt");
+
+
+        /*initializeTestEnvironment();
+        printTestMenu();
+        handleUserChoice();*/
+    }
+
+    private static void initializeTestEnvironment() {
+        // Initialize 4 Tektons
+        for (int i = 1; i <= 4; i++) {
+            String id = "tekton_" + i;
+            tektons.put(id, new DefaultTekton());
+        }
 
         // Set adjacent Tektons
-        tekton_1.addAdjacentTekton(tekton_2);
-        tekton_2.addAdjacentTekton(tekton_1);
-        tekton_2.addAdjacentTekton(tekton_3);
-        tekton_3.addAdjacentTekton(tekton_2);
-        tekton_3.addAdjacentTekton(tekton_4);
-        tekton_4.addAdjacentTekton(tekton_3);
+        tektons.get("tekton_1").addAdjacentTekton(tektons.get("tekton_2"));
+        tektons.get("tekton_2").addAdjacentTekton(tektons.get("tekton_1"));
+        tektons.get("tekton_2").addAdjacentTekton(tektons.get("tekton_3"));
+        tektons.get("tekton_3").addAdjacentTekton(tektons.get("tekton_2"));
+        tektons.get("tekton_3").addAdjacentTekton(tektons.get("tekton_4"));
+        tektons.get("tekton_4").addAdjacentTekton(tektons.get("tekton_3"));
 
-        // Add Tektons to the game
-        game.addTekton(tekton_1);
-        game.addTekton(tekton_2);
-        game.addTekton(tekton_3);
-        game.addTekton(tekton_4);
-
-        // Create Insects
-        Insect insect_1 = new Insect(tekton_1);
-        Insect insect_2 = new Insect(tekton_2);
+        // Initialize Insects
+        insects.put("insect_1", new Insect(tektons.get("tekton_1")));
+        insects.put("insect_2", new Insect(tektons.get("tekton_2")));
 
         // Add Insects to Tektons
-        tekton_1.addNewInsect(insect_1);
-        tekton_2.addNewInsect(insect_2);
+        tektons.get("tekton_1").addNewInsect(insects.get("insect_1"));
+        tektons.get("tekton_2").addNewInsect(insects.get("insect_2"));
 
-        // Create Mushrooms
-        Mushroom mushroom_1 = new Mushroom();
-        Mushroom mushroom_3 = new Mushroom();
+        // Initialize Mushrooms
+        mushrooms.put("mushroom_1", new Mushroom());
+        mushrooms.put("mushroom_3", new Mushroom());
 
         // Add Mushrooms to Tektons
-        tekton_1.setMushroom(mushroom_1);
-        tekton_3.setMushroom(mushroom_3);
+        tektons.get("tekton_1").setMushroom(mushrooms.get("mushroom_1"));
+        tektons.get("tekton_3").setMushroom(mushrooms.get("mushroom_3"));
 
-        // Test Case 1: Gombafonál növekedése
-        System.out.println("Test Case 1: Gombafonál növekedése");
-        MushroomYarn mushroomyarn_1 = new MushroomYarn(tekton_1, tekton_2);
-        mushroom_1.getMushroomYarns().add(mushroomyarn_1);
-        System.out.println("ID: mushroomyarn_1");
-        System.out.println("Tektons: [tekton_1, tekton_2]");
-        System.out.println();
+        // Initialize Game
+        game = new Game();
+        for (Tekton tekton : tektons.values()) {
+            game.addTekton(tekton);
+        }
+    }
 
-        // Test Case 2: Gombatest növekedése
-        System.out.println("Test Case 2: Gombatest növekedése");
-        //mushroom_1.releaseSpore();
-        MushroomBody mushroombody_1 = new MushroomBody(tekton_2);
-        tekton_2.setMushroom(mushroom_1);
-        System.out.println("ID: mushroombody_1");
-        System.out.println("Tekton: tekton_2");
-        System.out.println("Spore: 0");
-        System.out.println();
+    private static void printTestMenu() {
+        System.out.println("====== Test Cases ======");
+        System.out.println("1. Grow Mushroom Yarn");
+        System.out.println("2. Grow Mushroom Body");
+        System.out.println("3. Insect Movement");
+        System.out.print("Choose a test case (1-3): ");
+    }
 
-        // Test Case 3: Rovar mozgása a gombafonálon
-        System.out.println("Test Case 3: Rovar mozgása a gombafonálon");
-        insect_1.move(mushroomyarn_1);
-        System.out.println("ID: insect_1");
-        System.out.println("Tekton: tekton_2");
-        System.out.println("Stunned for: 0");
-        System.out.println("Paralyzed for: 0");
-        System.out.println("Slowed for: 0");
-        System.out.println("Speeded for: 0");
-        System.out.println("Can't cut for: 0");
-        System.out.println();
+    private static void handleUserChoice() {
+        Scanner scanner = new Scanner(System.in);
+        int choice = scanner.nextInt();
+
+        switch (choice) {
+            case 1:
+                testGrowMushroomYarn();
+                break;
+            case 2:
+                testGrowMushroomBody();
+                break;
+            case 3:
+                testInsectMovement();
+                break;
+            default:
+                System.out.println("Invalid choice.");
+        }
+        scanner.close();
+    }
+
+    private static void testGrowMushroomYarn() {
+        System.out.println("\n=== Test: Grow Mushroom Yarn ===");
+        Mushroom mushroom = mushrooms.get("mushroom_1");
+        Tekton tekton1 = tektons.get("tekton_1");
+        Tekton tekton2 = tektons.get("tekton_2");
+
+        MushroomYarn yarn = new MushroomYarn(tekton1, tekton2);
+        mushroom.getMushroomYarns().add(yarn);
+        mushroomYarns.put("mushroomyarn_1", yarn);
+
+        System.out.println("Mushroom Yarn created between Tekton_1 and Tekton_2.");
+    }
+
+    private static void testGrowMushroomBody() {
+        System.out.println("\n=== Test: Grow Mushroom Body ===");
+        Mushroom mushroom = mushrooms.get("mushroom_1");
+        Tekton tekton2 = tektons.get("tekton_2");
+
+        MushroomBody body = new MushroomBody(tekton2);
+        mushroom.setMushroomBody(body);
+
+        System.out.println("Mushroom Body grown on Tekton_2.");
+    }
+
+    private static void testInsectMovement() {
+        System.out.println("\n=== Test: Insect Movement ===");
+        Insect insect = insects.get("insect_1");
+        MushroomYarn yarn = mushroomYarns.get("mushroomyarn_1");
+
+        if (insect.move(yarn)) {
+            System.out.println("Insect_1 moved to Tekton_2.");
+        } else {
+            System.out.println("Insect_1 failed to move.");
+        }
     }
 }
