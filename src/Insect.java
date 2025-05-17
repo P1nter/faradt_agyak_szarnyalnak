@@ -1,3 +1,7 @@
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.Observable;
+
 /**
  * Represents an insect within the game world, capable of movement, interaction, and being affected by spores.
  * <p>
@@ -12,7 +16,7 @@
  * @see MushroomYarn
  * @since 1.0
  */
-public class Insect {
+public class Insect extends Observable {
     private int ID;
     private int score;
     //how many actions can the insect make in a turn
@@ -21,6 +25,15 @@ public class Insect {
 
     private Insecter owner;
 
+    private final PropertyChangeSupport support = new PropertyChangeSupport(this);
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        support.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        support.removePropertyChangeListener(listener);
+    }
     /**
      * Gets the owner of this insect.
      *

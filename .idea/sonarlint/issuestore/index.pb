@@ -5,8 +5,6 @@
 src/Insect.java,5\d\5de8cbb51d46996afc1a6551382d6619e0f4c52b
 E
 src/MushroomYarn.java,d\2\d2ae918abcc313013e4bdbdb92f189413480fb2a
-?
-src/ISpore.java,b\f\bf10dfd2a9beaf1c844a470f86b76569666297ae
 F
 src/SpeedingSpore.java,9\6\9627c919b550fdc29c6992ef22ea5415137da03b
 E
@@ -25,8 +23,6 @@ F
 src/DefaultTekton.java,7\9\791e064e95252a0647c411e33de7df70777270b0
 >
 src/Spore.java,f\2\f2fcb991536be75aacc0867c49d93282909508b8
-@
-src/ITekton.java,9\a\9a2201b8e7c5a64bfeb6188ba64f9def76c3f475
 Q
 !src/DisabledBodyGrowthTekton.java,a\3\a362a8e4d7ab0f8a5a170c87b777b34cadda5bba
 O

@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 import java.util.stream.Collectors;
 
 /**
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
  * @see Insect
  * @since 1.0
  */
-abstract class Tekton {
+abstract class Tekton extends Observable {
     /**
      * A list of adjacent Tektons connected to this Tekton.
      */

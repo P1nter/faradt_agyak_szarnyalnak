@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observer;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -236,6 +237,9 @@ public class  Game {
      * next player in the list.
      * </p>
      */
+    public Player getActivePlayer() {
+        return activePlayer;
+    }
     public void nextPlayer(){
         int index = players.indexOf(activePlayer);
 
@@ -308,4 +312,7 @@ public class  Game {
 
         System.out.println("Game.update() returned");
     }
+
+
+
 }

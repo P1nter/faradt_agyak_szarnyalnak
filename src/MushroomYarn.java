@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Observable;
 
 /**
  * Represents a connection or pathway of mushroom filaments between two Tektons.
@@ -13,7 +14,7 @@ import java.util.Arrays;
  * @see Tekton
  * @since 1.0
  */
-public class MushroomYarn {
+public class MushroomYarn extends Observable {
     private Tekton[] tektons = new Tekton[2]; // Fixed size array for exactly 2 Tektons
     private boolean isCut = false;
     private int timeBack = 0;

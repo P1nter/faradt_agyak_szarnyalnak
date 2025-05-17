@@ -1,6 +1,7 @@
 import javax.print.attribute.standard.MultipleDocumentHandling;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 /**
  * Represents the body of a mushroom, capable of releasing spores.
@@ -13,7 +14,7 @@ import java.util.List;
  * @see Spore
  * @since 1.0
  */
-public class MushroomBody {
+public class MushroomBody extends Observable {
     private Tekton tekton;
     private Mushroomer owner;
     private int ID;

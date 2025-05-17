@@ -1,11 +1,16 @@
 
-0
-java:S1220""Move this file to a named package.
-@	java:S106"+Replace this use of System.out by a logger.(Üùüÿ
-E	java:S106"+Replace this use of System.out by a logger.(±ÅŒ„øÿÿÿÿ
-@	java:S106"+Replace this use of System.out by a logger.(¦Ï¤
-@	java:S106"+Replace this use of System.out by a logger.(¶ìå’
-E	java:S106"+Replace this use of System.out by a logger.(Îúóıÿÿÿÿ
-E	java:S106#"+Replace this use of System.out by a logger.(ßÛÉãÿÿÿÿÿ
-A
-java:S1068"+Remove this unused "tektons" private field.(ÓØåú
+7
+java:S1220""Move this file to a named package.8ÚÎÒÀç2
+c
+java:S1854"ARemove this useless assignment to local variable "mushroomScore".(°´‰Õıÿÿÿÿ8çÎÒÀç2
+\
+java:S1854"?Remove this useless assignment to local variable "insectScore".(ƒ¦Š8çÎÒÀç2
+G	java:S106"+Replace this use of System.out by a logger.(»ûàê8èÎÒÀç2
+M
+java:S1481"0Remove this unused "insectScore" local variable.(ƒ¦Š8éÎÒÀç2
+T
+java:S1481"2Remove this unused "mushroomScore" local variable.(°´‰Õıÿÿÿÿ8êÎÒÀç2
+L	java:S106"+Replace this use of System.out by a logger.(Îúóıÿÿÿÿ8ëÎÒÀç2
+L	java:S106!"+Replace this use of System.out by a logger.(ßÛÉãÿÿÿÿÿ8ìÎÒÀç2
+H
+java:S1068"+Remove this unused "tektons" private field.(ÓØåú8îÎÒÀç2

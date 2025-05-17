@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Observable;
 /**
  * An abstract base class representing a spore within the game.
  * <p>
@@ -15,7 +15,9 @@ import java.util.List;
  * @see Mushroom
  * @since 1.0
  */
-abstract class Spore {
+//make it observable
+//import java.util.Observable;
+abstract class Spore  extends Observable {
     /**
      * The nutritional value of the spore.
      */
@@ -27,6 +29,8 @@ abstract class Spore {
      * The {@code Tekton} associated with this spore.
      */
     Tekton tekton;
+
+
 
     public void setOwner(Mushroomer mushroomer){
         System.out.println("Spore.setOwner() called");
