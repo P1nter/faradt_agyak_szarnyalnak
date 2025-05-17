@@ -106,11 +106,19 @@ abstract class Tekton extends Observable {
      *
      * @param tekton The {@code Tekton} to be added as an adjacent Tekton.
      */
+
     public void addAdjacentTekton(Tekton tekton) {
-        System.out.println("Tekton.addAdjacentTekton(Tekton) called");
-        adjacentTektons.add(tekton);
-        tekton.getAdjacentTektons().add(this);
-        System.out.println("Tekton.addAdjacentTekton(Tekton) returned");
+        // System.out.println("Tekton.addAdjacentTekton called for " + this.getIDNoPrint() + " with " + tekton.getIDNoPrint());
+        if (!this.adjacentTektons.contains(tekton)) { // Prevent duplicate additions from one side
+            this.adjacentTektons.add(tekton);
+        }
+        // The symmetric add should ensure the other side also doesn't duplicate
+        // However, to be absolutely safe and avoid potential re-entrant issues if getAdjacentTektons() has side effects
+        // or if listeners are involved (though not apparent here), make the symmetric add conditional too.
+        if (!tekton.getAdjacentTektonsNoPrint().contains(this)) { // Use NoPrint to avoid log spam here
+            tekton.getAdjacentTektonsNoPrint().add(this);
+        }
+        // System.out.println("Tekton.addAdjacentTekton returned for " + this.getIDNoPrint());
     }
 
     /**
