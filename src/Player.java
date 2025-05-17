@@ -1,95 +1,52 @@
-/**
- * An abstract base class representing a player in the game.
- * <p>
- * This class provides fundamental properties and methods common to all types of players,
- * such as a name, a score, and available actions per turn. Concrete player implementations
- * will extend this class to add specific behaviors and attributes relevant to their role
- * in the game.
- * </p>
- *
- * @since 1.0
- */
+// Player.java
 public abstract class Player {
     private String Name;
     private int Score;
-    private int Action;
+    private int Action; // Current actions remaining this turn
+    public static final int DEFAULT_ACTIONS_PER_TURN = 3; // Define default actions
+
     protected enum PlayerType { INSECTER, MUSHROOMER }
     private PlayerType playerType;
 
-    public PlayerType getPlayerType() {
-        System.out.println("Player.getPlayerType() called");
-        System.out.println("Player.getPlayerType() returned ");
-        return playerType;
-    }
-
-    public void setPlayerType(PlayerType playerType) {
-        System.out.println("Player.setPlayerType(PlayerType) called");
-        this.playerType = playerType;
-        System.out.println("Player.setPlayerType(PlayerType) returned");
-    }
-
-    /**
-     * Constructs a new {@code Player} with the given name.
-     *
-     * @param name The name of the player.
-     */
     public Player(String name) {
         this.Name = name;
         this.Score = 0;
-        this.Action = 3;
+        this.Action = DEFAULT_ACTIONS_PER_TURN; // Initialize with default
     }
 
-    /**
-     * Gets the name of this player.
-     *
-     * @return The name of the player.
-     */
-    public String getName() {
-        return Name;
+    public String getName() { return Name; }
+    public int getScore() { return Score; }
+    public int getAction() { return Action; } // Returns actions *remaining*
+
+    public void setName(String name) { this.Name = name; }
+    public void setScore(int score) { this.Score = score; }
+
+    // This might be used if max actions can change, but decrementActionPoints is for using them up.
+    // public void setAction(int action) { this.Action = action; }
+
+    public void resetActionPoints() {
+        this.Action = DEFAULT_ACTIONS_PER_TURN;
+        System.out.println("Player " + Name + ": Action points reset to " + this.Action);
     }
 
-    /**
-     * Gets the current score of this player.
-     *
-     * @return The current score of the player.
-     */
-    public int getScore() {
-        return Score;
+    public boolean hasActionsLeft() {
+        return this.Action > 0;
     }
 
-    /**
-     * Gets the number of actions this player can perform in the current turn.
-     *
-     * @return The number of available actions for the player.
-     */
-    public int getAction() {
-        return Action;
+    public void decrementActionPoints() {
+        if (this.Action > 0) {
+            this.Action--;
+            System.out.println("Player " + Name + ": Action points decremented. Remaining: " + this.Action);
+        } else {
+            System.out.println("Player " + Name + ": Warning - Tried to decrement action points when already 0.");
+        }
     }
 
-    /**
-     * Sets the name of this player.
-     *
-     * @param name The new name for the player.
-     */
-    public void setName(String name) {
-        this.Name = name;
+    public PlayerType getPlayerType() {
+        return playerType;
     }
 
-    /**
-     * Sets the current score of this player.
-     *
-     * @param score The new score for the player.
-     */
-    public void setScore(int score) {
-        this.Score = score;
-    }
-
-    /**
-     * Sets the number of actions this player has for the current turn.
-     *
-     * @param action The new number of actions for the player.
-     */
-    public void setAction(int action) {
-        this.Action = action;
+    protected void setPlayerType(PlayerType playerType) {
+        this.playerType = playerType;
     }
 }

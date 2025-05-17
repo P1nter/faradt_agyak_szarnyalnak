@@ -1,104 +1,77 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-/**
- * An abstract base class representing a spore within the game.
- * <p>
- * This class defines the common properties and behaviors of all spore types.
- * Each spore has a nutrition value and is associated with a specific {@code Tekton},
- * likely the one from which it originated. Subclasses will implement specific
- * effects that the spore has on insects.
- * </p>
- *
- * @see Insect
- * @see Tekton
- * @see Mushroom
- * @since 1.0
- */
-//make it observable
-//import java.util.Observable;
-abstract class Spore  extends Observable {
-    /**
-     * The nutritional value of the spore.
-     */
-    int nutrition = 5;
-    private Mushroomer Owner;
+// Spore.java
+// import java.util.Observable; // Legacy
 
-    private int ID;
-    /**
-     * The {@code Tekton} associated with this spore.
-     */
-    Tekton tekton;
+public abstract class Spore /* extends Observable */ {
+    public enum SporeType {
+        CUT_DISABLING("Cut Disabling"),
+        PARALYZING("Paralyzing"),
+        DUPLICATING("Duplicating"),
+        SLOWING("Slowing"),
+        SPEEDING("Speeding");
 
-
-
-    public void setOwner(Mushroomer mushroomer){
-        System.out.println("Spore.setOwner() called");
-        this.Owner = mushroomer;
-        System.out.println("Spore.setOwner() returned");
-    }
-    public Mushroomer getOwner() {
-        System.out.println("Spore.getOwner() called");
-        System.out.println("Spore.getOwner() returned");
-        return Owner; }
-    /**
-     * Protected default constructor for subclasses.
-     */
-    protected Spore(){}
-
-    /**
-     * Protected constructor to create a spore associated with a specific {@code Tekton}.
-     *
-     * @param tekton The {@code Tekton} associated with this spore.
-     */
-    protected Spore(Tekton tekton, Mushroomer mushroomer) {
-        System.out.println("Spore(tekton) called");
-        this.tekton = tekton;
-        this.ID = 0;
-        System.out.println("Spore(tekton) returned");
-    }
-    protected Spore(Tekton tekton, Mushroomer mushroomer, int ID) {
-        System.out.println("Spore(tekton) called");
-        this.tekton = tekton;
-        this.ID = ID;
-        System.out.println("Spore(tekton) returned");
+        private final String displayName;
+        SporeType(String displayName) { this.displayName = displayName; }
+        @Override public String toString() { return displayName; }
     }
 
-    public Tekton getTekton() {
-        System.out.println("Spore.getTekton() called");
-        System.out.println("Spore.getTekton() returned");
-        return this.tekton; }
+    protected int nutrition; // Subclasses should set this
+    protected Tekton currentTekton; // The Tekton this spore is currently on
+    protected Mushroomer owner;     // The Mushroomer player who owns/created this spore
+    protected final int ID;         // Unique ID for the spore instance
+    protected final SporeType type; // The specific type of this spore
 
-    /**
-     * Abstract method to define how this spore affects an insect.
-     * <p>
-     * Subclasses must implement this method to apply their specific effects
-     * to the given insect. The default implementation does nothing.
-     * </p>
-     *
-     * @param insect The {@code Insect} to be affected by this spore.
-     */
-    public void affectInsect(Insect insect){
-        // Subclasses will implement specific effects here.
-    }
+    private static int nextIDCounter = 1;
 
-    /**
-     * Destroys this spore by removing it from the list of spores of its associated mushroom.
-     */
-    public void destroySpore(){
-        System.out.println("Spore.destroySpore() called");
-        if (tekton != null && tekton.getMushroom() != null) {
-            tekton.getMushroom().getSpores().remove(this);
+    protected Spore(SporeType type, Tekton onTekton, Mushroomer owner, int id, int nutritionValue) {
+        if (type == null || onTekton == null || owner == null) {
+            throw new IllegalArgumentException("Spore type, onTekton, and owner cannot be null.");
         }
-        System.out.println("Spore.destroySpore() returned");
-    }
-    public void setTekton(Tekton tekton) {
-        System.out.println("Spore.setTekton() called");
-        this.tekton = tekton;
-        System.out.println("Spore.setTekton() returned");
+        this.type = type;
+        this.currentTekton = onTekton;
+        this.owner = owner;
+        this.nutrition = nutritionValue;
+
+        if (id <= 0) {
+            this.ID = nextIDCounter++;
+        } else {
+            this.ID = id;
+            if (id >= nextIDCounter) nextIDCounter = id + 1;
+        }
+        // System.out.println("Spore Created: ID=" + this.ID + ", Type=" + type + ", Owner=" + owner.getName() + ", OnTekton=" + onTekton.getIDNoPrint());
     }
 
-    public int getIDNoPrint() {
-        return ID;
+    public abstract void affectInsect(Insect insect);
+
+    public Tekton getTektonNoPrint() { return currentTekton; }
+    public Tekton getTekton() { /* System.out.println("Spore.getTekton() called"); */ return currentTekton; }
+
+    public void setTekton(Tekton tekton) { // When spore moves or is placed
+        // If spore moves, it should be removed from old Tekton's mushroom manager's list
+        // and added to the new one. This logic is better handled by game actions.
+        // For now, just update its internal reference.
+        // System.out.println("Spore " + ID + " setTekton from " + (this.currentTekton != null ? this.currentTekton.getIDNoPrint() : "null") + " to " + (tekton != null ? tekton.getIDNoPrint() : "null"));
+        this.currentTekton = tekton;
+    }
+
+    public Mushroomer getOwner() { return owner; }
+    // Owner is typically set at creation and shouldn't change.
+    public void setOwner(Mushroomer owner) { this.owner = owner; }
+
+
+    public int getIDNoPrint() { return ID; }
+    public int getID() { return ID; }
+    public SporeType getSporeType() { return type; }
+    public int getNutrition() { return nutrition; }
+
+
+    public void destroySpore(){
+        // System.out.println("Spore ID " + ID + " destroySpore() called.");
+        if (currentTekton != null && currentTekton.getMushroomNoPrint() != null) {
+            currentTekton.getMushroomNoPrint().removeSpore(this);
+        }
+        if (owner != null) {
+            owner.removeOwnedSpore(this); // Mushroomer needs removeOwnedSpore(Spore s)
+        }
+        // System.out.println("Spore ID " + ID + " references removed from Tekton's manager and Owner.");
     }
 }

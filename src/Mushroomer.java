@@ -1,323 +1,206 @@
+// Mushroomer.java
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+// import java.util.stream.Collectors; // If used
 
-/**
- * Represents a player in the game who specializes in managing and growing mushrooms.
- * <p>
- * This class extends the {@code Player} class and provides specific functionality
- * for a player focused on cultivating mushrooms. It maintains lists of mushroom bodies,
- * mushroom yarns, and spores owned by the player. It also includes methods to determine
- * where the player can grow new mushroom bodies and yarns, and to perform these growth actions.
- * </p>
- *
- * @see Player
- * @see MushroomBody
- * @see MushroomYarn
- * @see Spore
- * @see Tekton
- * @since 1.0
- */
 public class Mushroomer extends Player {
-    private List<MushroomBody> mushroomsBodies = new ArrayList<MushroomBody>();
-    private List<MushroomYarn> mushroomYarns = new ArrayList<MushroomYarn>();
-    private List<Spore> spores = new ArrayList<Spore>();
+    private List<MushroomBody> mushroomBodies = new ArrayList<>();
+    private List<MushroomYarn> mushroomYarns = new ArrayList<>();
+    private List<Spore> sporesOwned = new ArrayList<>();
 
-    /**
-     * Gets the list of mushroom yarns owned by this player.
-     *
-     * @return A {@code List} containing the {@code MushroomYarn} objects owned by the player.
-     */
-    public List<MushroomYarn> getMushroomYarns() {
-        System.out.println("Mushroomer.getMushroomYarns() called");
-        System.out.println("Mushroomer.getMushroomYarns() returned");
-        return mushroomYarns;
-    }
-
-    /**
-     * Adds a mushroom yarn to this player's collection.
-     *
-     * @param mushroomYarn The {@code MushroomYarn} object to be added.
-     */
-    public void addMushroomYarn(MushroomYarn mushroomYarn) {
-        System.out.println("Mushroomer.addMushroomYarn(MushroomYarn) called");
-        mushroomYarns.add(mushroomYarn);
-        System.out.println("Mushroomer.addMushroomYarn(MushroomYarn) returned");
-    }
-
-    /**
-     * Gets the list of mushroom bodies owned by this player.
-     *
-     * @return A {@code List} containing the {@code MushroomBody} objects owned by the player.
-     */
-    public List<MushroomBody> getMushroomBodies() {
-        System.out.println("Mushroomer.getMushrooms() called");
-        System.out.println("Mushroomer.getMushrooms() returned");
-        return mushroomsBodies;
-    }
-
-    /**
-     * Adds a mushroom body to this player's collection.
-     *
-     * @param mushroomBody The {@code MushroomBody} object to be added.
-     */
-    public void addMushroomBody(MushroomBody mushroomBody) {
-        System.out.println("Mushroomer.addMushroom(Mushroom) called");
-        mushroomsBodies.add(mushroomBody);
-        System.out.println("Mushroomer.addMushroom(Mushroom) returned");
-    }
-
-    /**
-     * Constructs a new {@code Mushroomer} with the given name.
-     *
-     * @param name The name of the mushroom controlling player.
-     */
     public Mushroomer(String name) {
         super(name);
-        System.out.println("Mushroomer.Mushroomer(name) called");
         setPlayerType(PlayerType.MUSHROOMER);
-        System.out.println("Mushroomer.Mushroomer(name) returned");
     }
 
-    /**
-     * Determines the list of Tektons where this player can grow new mushroom bodies.
-     * <p>
-     * A player can grow a mushroom body on a Tekton if a mushroom yarn owned by the player
-     * is connected to that Tekton, and if the spores present on that Tekton's mushroom
-     * are also in the player's collection of spores. The returned list contains unique Tektons.
-     * </p>
-     *
-     * @return A {@code List} of {@code Tekton} objects where the player can grow mushroom bodies.
-     */
-    public void addYarn(MushroomYarn mushroomYarn){
-        System.out.println("Mushroomer.addYarn(MushroomYarn) called");
-        this.mushroomYarns.add(mushroomYarn);
-        System.out.println("Mushroomer.addYarn(MushroomYarn) returned");
+    public void addMushroomBody(MushroomBody body) { /* ... same as before ... */
+        if (body != null && !this.mushroomBodies.contains(body)) {
+            this.mushroomBodies.add(body);
+        }
     }
-    public List<Tekton> whereCanIGrowMushroomBodies() {
-        System.out.println("Mushroomer.whereCanIGrowMushroomBodies() called");
-        List<Tekton> tektonWhereICanGrow = new ArrayList<Tekton>();
-        for (MushroomYarn mushroomYarn : mushroomYarns) {
-            for (Tekton tekton : mushroomYarn.getTektons()) {
-                for (Spore spore : tekton.getMushroom().getSpores()){
-                    if (this.spores.contains (spore)) {
-                        tektonWhereICanGrow.add(tekton);
+    public void removeMushroomBody(MushroomBody body) { this.mushroomBodies.remove(body); }
+    public List<MushroomBody> getMushroomBodies() { return new ArrayList<>(mushroomBodies); }
+
+    public void addMushroomYarn(MushroomYarn yarn) { /* ... same as before ... */
+        if (yarn != null && !this.mushroomYarns.contains(yarn)) {
+            this.mushroomYarns.add(yarn);
+            if (yarn.getOwner() != this) yarn.setOwner(this);
+        }
+    }
+    public void removeMushroomYarn(MushroomYarn yarn) { this.mushroomYarns.remove(yarn); }
+    public List<MushroomYarn> getMushroomYarns() { return new ArrayList<>(mushroomYarns); }
+
+    public void addOwnedSpore(Spore spore) { /* ... same as before ... */
+        if (spore != null && !this.sporesOwned.contains(spore)) {
+            this.sporesOwned.add(spore);
+            if(spore.getOwner() != this) spore.setOwner(this);
+        }
+    }
+    public void removeOwnedSpore(Spore spore) { this.sporesOwned.remove(spore); }
+    public List<Spore> getSporesOwned() { return new ArrayList<>(sporesOwned); }
+    @Deprecated public List<Spore> getSpores() { return getSporesOwned(); }
+    @Deprecated public void addSpore(Spore spore) { addOwnedSpore(spore); }
+
+    public boolean GrowYarn(Tekton fromTekton, Tekton toTekton) { /* ... same as before ... */
+        System.out.println(getName() + " attempts to grow yarn from T" + fromTekton.getIDNoPrint() + " to T" + toTekton.getIDNoPrint());
+        boolean canGrowFrom = false;
+        for(MushroomBody mb : this.mushroomBodies) if(mb.getTektonNoPrint() == fromTekton) canGrowFrom = true;
+        if(!canGrowFrom){
+            for(MushroomYarn my : this.mushroomYarns) {
+                Tekton[] ends = my.getTektonsNoPrint();
+                if(ends[0] == fromTekton || ends[1] == fromTekton) { canGrowFrom = true; break; }
+            }
+        }
+        if(!canGrowFrom) { System.out.println(" GrowYarn Fail: No influence on source Tekton " + fromTekton.getIDNoPrint()); return false; }
+        if(!fromTekton.getAdjacentTektonsNoPrint().contains(toTekton)) { System.out.println(" GrowYarn Fail: Tektons not adjacent."); return false; }
+        if(!toTekton.canGrowYarn()) { System.out.println(" GrowYarn Fail: Target Tekton " + toTekton.getIDNoPrint() + " cannot grow yarn."); return false; }
+        for(MushroomYarn existingYarn : this.mushroomYarns){
+            Tekton[] ends = existingYarn.getTektonsNoPrint();
+            if((ends[0] == fromTekton && ends[1] == toTekton) || (ends[0] == toTekton && ends[1] == fromTekton)){
+                System.out.println(" GrowYarn Fail: Yarn already exists."); return false;
+            }
+        }
+        int nextYarnId = 1;
+        if (!this.mushroomYarns.isEmpty()) nextYarnId = this.mushroomYarns.stream().mapToInt(MushroomYarn::getIDNoPrint).max().orElse(0) + 1;
+        MushroomYarn newYarn = new MushroomYarn(fromTekton, toTekton, this, nextYarnId); // Constructor should set owner
+        // this.addMushroomYarn(newYarn); // Constructor of MushroomYarn now adds to owner
+        fromTekton.getMushroomNoPrint().addMushroomYarn(newYarn);
+        toTekton.getMushroomNoPrint().addMushroomYarn(newYarn);
+        System.out.println("Mushroomer " + getName() + ": Yarn grown successfully between T" + fromTekton.getIDNoPrint() + " and T" + toTekton.getIDNoPrint());
+        return true;
+    }
+
+    // Corrected signature to match call from Game.java
+    public List<Tekton> whereCanISpreadSpores(Tekton fromSourceBodyTekton, Spore.SporeType type, /* Potentially: , List<Tekton> allGameTektons */List<Tekton> tektons) {
+        Set<Tekton> validTargets = new HashSet<>();
+        List<Tekton> sourcesToConsider = new ArrayList<>();
+
+        if (fromSourceBodyTekton != null &&
+                fromSourceBodyTekton.getMushroomNoPrint() != null &&
+                fromSourceBodyTekton.getMushroomNoPrint().hasMushroomBody() &&
+                fromSourceBodyTekton.getMushroomNoPrint().getMushroomBodyNoPrint().getOwner() == this) {
+            sourcesToConsider.add(fromSourceBodyTekton);
+        } else { // If no specific source, consider all player's bodies (this part might be removed if SELECT_ACTOR step requires a body to be selected first)
+            System.out.println(getName() + ": No specific source Tekton for spread, considering all owned bodies.");
+            for (MushroomBody mb : this.mushroomBodies) {
+                sourcesToConsider.add(mb.getTektonNoPrint());
+            }
+        }
+
+        if(sourcesToConsider.isEmpty()){
+            System.out.println(getName() + " has no suitable mushroom bodies to spread spores from for this action.");
+            return new ArrayList<>();
+        }
+
+        for (Tekton source : sourcesToConsider) {
+            Mushroom sourceMushroomManager = source.getMushroomNoPrint();
+            if (sourceMushroomManager == null || !sourceMushroomManager.hasMushroomBody()) continue;
+
+            // Rule: Adjacent Tektons are primary targets
+            for (Tekton adj : source.getAdjacentTektonsNoPrint()) {
+                validTargets.add(adj);
+            }
+
+            // Rule: If mushroom body is old enough (e.g., age > 1), can spread to Tektons 2 steps away
+            if (sourceMushroomManager.getHowOldNoPrint() > 1) { // Example: age > 1 allows 2-step
+                for (Tekton adj1 : source.getAdjacentTektonsNoPrint()) {
+                    for (Tekton adj2 : adj1.getAdjacentTektonsNoPrint()) {
+                        if (adj2 != source) { // Don't target the source Tekton itself
+                            validTargets.add(adj2);
+                        }
                     }
                 }
             }
         }
-        Set<Tekton> uniqueTektons = new HashSet<>(tektonWhereICanGrow);
-        tektonWhereICanGrow.clear();
-        tektonWhereICanGrow.addAll(uniqueTektons);
-        for (Tekton tekton : tektonWhereICanGrow) {
-            System.out.println("Mushroomer.whereCanIGrowMushroomBodies() tekton: " + tekton);
+        // Player cannot spread spores onto Tektons where they already have a body.
+        for(MushroomBody mb : this.mushroomBodies){
+            validTargets.remove(mb.getTektonNoPrint());
         }
-        System.out.println("Mushroomer.whereCanIGrowMushroomBodies() returned");
-        return tektonWhereICanGrow;
+        System.out.println(getName() + ": Found " + validTargets.size() + " valid targets for spreading " + type + " from considered sources.");
+        return new ArrayList<>(validTargets);
     }
 
-    /**
-     * Attempts to grow a mushroom body on the specified Tekton.
-     * <p>
-     * Growth is only possible if the Tekton is in the list of locations where the player can grow
-     * mushroom bodies (determined by {@link #whereCanIGrowMushroomBodies()}). If the growth is successful,
-     * the new mushroom body is added to the player's collection. If the Tekton is a fast-growing Tekton,
-     * its mushroom is updated immediately after body growth.
-     * </p>
-     *
-     * @param tekton The {@code Tekton} on which to attempt to grow a mushroom body.
-     */
-    public void growBody(Tekton tekton){
-        if (whereCanIGrowMushroomBodies().contains(tekton)) {
-            System.out.println("Mushroomer.Grow(tekton) called");
-            MushroomBody mushroomBody = tekton.getMushroom().growBody(tekton, this);
-            if(mushroomBody != null && mushroomBody.getTektons().isFastTekton()){
-                tekton.getMushroom().Update();
+
+    public List<Tekton> whereCanIGrowMushroomBodies(List<Tekton> allGameTektons) { // Added allGameTektons if rule 2 needs it
+        Set<Tekton> tektonWhereICanGrow = new HashSet<>();
+        // Rule 1: Can grow on a Tekton connected by player's yarn, if that Tekton has a spore owned by player
+        for (MushroomYarn my : mushroomYarns) {
+            for (Tekton tekton : my.getTektonsNoPrint()) {
+                if (tekton.canGrow() && (tekton.getMushroomNoPrint() == null || !tekton.getMushroomNoPrint().hasMushroomBody())) {
+                    Mushroom manager = tekton.getMushroomNoPrint();
+                    if (manager != null) {
+                        for (Spore sporeOnTekton : manager.getSporesNoPrint()) {
+                            if (sporeOnTekton.getOwner() == this) {
+                                tektonWhereICanGrow.add(tekton);
+                                break;
+                            }
+                        }
+                    }
+                }
             }
-            if (mushroomBody == null) {
-                System.out.println("Mushroomer.Grow(tekton) returned: mushroom body is null");
-                return;
+        }
+        // Rule 2: Can grow on any Tekton that has a spore owned by the player,
+        // if you want this rule, you need access to all tektons.
+        if (allGameTektons != null) {
+            for (Tekton tekton : allGameTektons ) {
+                if (tekton.canGrow() && (tekton.getMushroomNoPrint() == null || !tekton.getMushroomNoPrint().hasMushroomBody())) {
+                    Mushroom manager = tekton.getMushroomNoPrint();
+                    if (manager != null) {
+                        for (Spore sporeOnTekton : manager.getSporesNoPrint()) {
+                            if (sporeOnTekton.getOwner() == this) {
+                                tektonWhereICanGrow.add(tekton);
+                                break;
+                            }
+                        }
+                    }
+                }
             }
-            this.addMushroomBody(mushroomBody);
-            System.out.println("Mushroomer.Grow(tekton) returned");
+        }
+        return new ArrayList<>(tektonWhereICanGrow);
+    }
+
+    public List<Tekton> fromWhereCanIGrowYarns() { /* ... same as before ... */
+        Set<Tekton> possibleSources = new HashSet<>();
+        for(MushroomBody mb : this.mushroomBodies) possibleSources.add(mb.getTektonNoPrint());
+        for(MushroomYarn my : this.mushroomYarns) {
+            possibleSources.add(my.getTektonsNoPrint()[0]);
+            possibleSources.add(my.getTektonsNoPrint()[1]);
+        }
+        return new ArrayList<>(possibleSources);
+    }
+    public List<Tekton> whereCanIGrowYarnsFromThisTekton(Tekton t) { /* ... same as before ... */
+        List<Tekton> validTargets = new ArrayList<>();
+        if (t == null) return validTargets;
+        for(Tekton neighbor : t.getAdjacentTektonsNoPrint()){
+            if(neighbor.canGrowYarn()) {
+                boolean yarnExists = false;
+                for(MushroomYarn my : this.mushroomYarns){
+                    Tekton[] ends = my.getTektonsNoPrint();
+                    if((ends[0] == t && ends[1] == neighbor) || (ends[0] == neighbor && ends[1] == t)){
+                        yarnExists = true; break;
+                    }
+                }
+                if(!yarnExists) validTargets.add(neighbor);
+            }
+        }
+        return validTargets;
+    }
+    public void growBody(Tekton tekton){ /* ... same as before ... */
+        if (tekton.canGrow() && (tekton.getMushroomNoPrint() == null || !tekton.getMushroomNoPrint().hasMushroomBody())) {
+            MushroomBody newBody = tekton.getMushroomNoPrint().growBody(tekton, this);
+            // Game.tryGrowBody will call completeAction which fires state change
         } else {
-            System.out.println("Mushroomer.Grow(tekton) tekton is not in whereCanIGrowMushroomBodies()");
+            System.out.println(getName() + ": growBody preconditions not met for T" + tekton.getIDNoPrint());
         }
     }
-
-    /**
-     * Determines the list of Tektons from which this player can grow new mushroom yarns.
-     * <p>
-     * A player can grow a yarn from a Tekton if the player owns a mushroom yarn connected to that Tekton
-     * or if the player owns a mushroom body located on that Tekton. The returned list contains unique Tektons.
-     * </p>
-     *
-     * @return A {@code List} of {@code Tekton} objects from which the player can grow mushroom yarns.
-     */
-    public List<Tekton> fromWhereCanIGrowYarns() {
-        System.out.println("Mushroomer.callSpread(tekton) called");
-        List<Tekton> whereHasYarns = new ArrayList<Tekton>();
-        for (MushroomYarn mushroomYarns: this.mushroomYarns) {
-            for(Tekton tekton: mushroomYarns.getTektons()){
-                whereHasYarns.add(tekton);
-            }
-        }
-        for(MushroomBody mushroombodies: this.mushroomsBodies){
-            whereHasYarns.add(mushroombodies.getTektons());
-        }
-        Set<Tekton> uniqueTektons = new HashSet<>(whereHasYarns);
-        whereHasYarns.clear();
-        whereHasYarns.addAll(uniqueTektons);
-        for (Tekton tekton: whereHasYarns){
-            System.out.println("Mushroomer.callSpread(tekton) tekton: " + tekton);
-        }
-        System.out.println("Mushroomer.callSpread(tekton) returned");
-        return whereHasYarns;
-    }
-
-    /**
-     * Determines the list of adjacent Tektons where this player can grow new mushroom yarns.
-     * <p>
-     * A player can grow a yarn to an adjacent Tekton if that Tekton allows yarn growth
-     * (determined by its {@code canGrowYarn()} method) and if the player has a connection
-     * (either a mushroom yarn or a mushroom body) to the originating Tekton. The returned
-     * list contains unique adjacent Tektons.
-     * </p>
-     *
-     * @return A {@code List} of adjacent {@code Tekton} objects where the player can grow mushroom yarns.
-     */
-    public List<Tekton> whereCanIGrowYarns() {
-        System.out.println("Mushroomer.whereCanIGrowYarns() called");
-        List<Tekton> tektonWhereICanGrow = new ArrayList<Tekton>();
-        for(Tekton tekton: fromWhereCanIGrowYarns()){
-            for(Tekton tekton2: tekton.getAdjacentTektons()){
-                if(tekton2.canGrowYarn()){
-                    tektonWhereICanGrow.add(tekton2);
-                }
-            }
-        }
-        Set<Tekton> uniqueTektons = new HashSet<>(tektonWhereICanGrow);
-        tektonWhereICanGrow.clear();
-        tektonWhereICanGrow.addAll(uniqueTektons);
-        for (Tekton tekton : tektonWhereICanGrow) {
-            System.out.println("Mushroomer.whereCanIGrowYarns() tekton: " + tekton);
-        }
-        System.out.println("Mushroomer.whereCanIGrowYarns() returned");
-        return tektonWhereICanGrow;
-    }
-    public void eatInsect(Insect insect){
-        System.out.println("Mushroomer.eatInsect() called");
-        // Implement logic to eat an insect
-        if(insect.getEffects()[1] > 0){
-            for (MushroomYarn mushroomYarn: mushroomYarns){
-                if(mushroomYarn.getTektons()[0] == insect.getTekton() || mushroomYarn.getTektons()[1] == insect.getTekton()){
-                    insect.getTekton().removeInsect(insect);
-                    insect.getOwner().getInsects().remove(insect);
-                }
-            }
-        }
-        System.out.println("Mushroomer.eatInsect() returned");
-    }
-
-    /**
-     * Determines the list of adjacent Tektons reachable from a specific Tekton where this player can grow new mushroom yarns.
-     * <p>
-     * This method checks the adjacent Tektons of the given Tekton and returns those that allow yarn growth
-     * (determined by their {@code canGrowYarn()} method). The returned list contains unique adjacent Tektons.
-     * </p>
-     *
-     * @param tekton The originating {@code Tekton} from which to check for growable yarns.
-     * @return A {@code List} of adjacent {@code Tekton} objects where the player can grow mushroom yarns.
-     */
-    public List<Tekton> whereCanIGrowYarnsFromThisTekton(Tekton tekton) {
-        System.out.println("Mushroomer.whereCanIGrowYarnsFromThisTekton(tekton) called");
-        List<Tekton> tektonWhereICanGrow = new ArrayList<Tekton>();
-        for (Tekton tekton1 : tekton.getAdjacentTektons()) {
-            if (tekton1.canGrowYarn()) {
-                tektonWhereICanGrow.add(tekton1);
-            }
-        }
-        Set<Tekton> uniqueTektons = new HashSet<>(tektonWhereICanGrow);
-        tektonWhereICanGrow.clear();
-        tektonWhereICanGrow.addAll(uniqueTektons);
-        for (Tekton tekton1 : tektonWhereICanGrow) {
-            System.out.println("Mushroomer.whereCanIGrowYarnsFromThisTekton(tekton) tekton: " + tekton1);
-        }
-        System.out.println("Mushroomer.whereCanIGrowYarnsFromThisTekton(tekton) returned");
-        return tektonWhereICanGrow;
-    }
-
-    /**
-     * Attempts to grow a mushroom yarn between two specified Tektons.
-     * <p>
-     * Growth is only possible if the originating Tekton is one from which the player can grow yarns
-     * (determined by {@link #fromWhereCanIGrowYarns()}) and if the destination Tekton is an adjacent
-     * Tekton where a yarn can be grown from the originating Tekton
-     * (determined by {@link #whereCanIGrowYarnsFromThisTekton(Tekton)}). If the growth is successful,
-     * the new mushroom yarn is added to the player's collection.
-     * </p>
-     *
-     * @param honnan The originating {@code Tekton} for the new mushroom yarn.
-     * @param hova   The destination {@code Tekton} for the new mushroom yarn.
-     */
-    public void GrowYarn(Tekton honnan, Tekton hova){
-        System.out.println("Mushroomer.GrowYarn() called");
-        if(fromWhereCanIGrowYarns().contains(honnan) && whereCanIGrowYarnsFromThisTekton(honnan).contains(hova) ||
-                fromWhereCanIGrowYarns().contains(hova) && whereCanIGrowYarnsFromThisTekton(hova).contains(honnan)){
-            MushroomYarn newYarn = honnan.getMushroom().spread(honnan, hova);
-            if (newYarn != null) {
-                mushroomYarns.add(newYarn);
-                honnan.getMushroom().getMushroomYarns().add(newYarn);
-                hova.getMushroom().getMushroomYarns().add(newYarn);
-            }
-        }
-        System.out.println("Mushroomer.GrowYarn() returned");
-    }
-    public void addSpore(Spore spore){
-        System.out.println("Mushroomer.addSpore(Spore) called");
-        this.spores.add(spore);
-        System.out.println("Mushroomer.addSpore(Spore) returned");
-    }
-    public List<Spore> getSpores(){
-        System.out.println("Mushroomer.getSpores() called");
-        System.out.println("Mushroomer.getSpores() returned");
-        return this.spores;
-    }
-    public void releaseSpore(MushroomBody mushroomBody, Spore spore, Tekton tekton){
-        System.out.println("Mushroomer.releaseSpore() called");
-        if (mushroomBody.getTektons().getMushroom().getHowOld() < 1)
-            System.out.println("This mushroom body is too young to release spores");
-        if (mushroomBody.getTektons().getMushroom().getHowOld() > 0 && mushroomBody.getTektons().getMushroom().getHowOld() < 3) {
-            if (mushroomBody.getTektons().getAdjacentTektons().contains(tekton)){
-                //logic to release spore
-                spore.setTekton(tekton);
-                this.spores.add(spore);
-                //megkell nézni van e ott mushroom << legyen mindenhol mushroom alapértelmezetten
-                if (tekton.getMushroom() != null) {
-                    tekton.getMushroom().getSpores().add(spore);
-                }
-                System.out.println("Spore released successfully");
-            } else {
-                System.out.println("This mushroom body is not adjacent to the specified tekton");
-            }
-        }
-        if (mushroomBody.getTektons().getMushroom().getHowOld() > 3){
-            for (Tekton tekton1: mushroomBody.getTektons().getAdjacentTektons()) {
-                if (mushroomBody.getTektons().getAdjacentTektons().contains(tekton) ||
-                        tekton1.getAdjacentTektons().contains(tekton)) {
-                    //logic to release spore
-                    spore.setTekton(tekton);
-                    this.spores.add(spore);
-                    if (tekton.getMushroom() != null) {
-                        tekton.getMushroom().getSpores().add(spore);
-                    }
-                    System.out.println("Spore released successfully");
-                } else {
-                    System.out.println("This mushroombody cant release spores there");
-                }
-            }
-        }
-        System.out.println("Mushroomer.releaseSpore() returned");
+    public void addYarn(MushroomYarn my) { addMushroomYarn(my); } // Alias from diagram
+    public void releaseSpore(MushroomBody fromBody, Spore.SporeType type, Tekton toTekton){ /* ... same as before ... */
+        if (fromBody == null || fromBody.getOwner() != this || toTekton == null) { return; }
+        Tekton sourceTekton = fromBody.getTektonNoPrint();
+        Mushroom sourceMushroomManager = sourceTekton.getMushroomNoPrint();
+        int nextSporeId = this.sporesOwned.size() + 1;
+        sourceMushroomManager.spreadSporeTo(toTekton, this, type, nextSporeId);
     }
 }

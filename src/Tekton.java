@@ -1,267 +1,146 @@
+// Tekton.java
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.stream.Collectors;
+// import java.util.Observable; // Observable is legacy
 
-/**
- * An abstract base class representing a location or area within the game world.
- * <p>
- * {@code Tekton} objects can be interconnected, host mushrooms and insects,
- * and have properties that influence gameplay, such as whether they can be cut,
- * support mushroom growth, or allow the spread of mushroom yarns. Concrete
- * subclasses will define specific types of locations with unique characteristics.
- * </p>
- *
- * @see Mushroom
- * @see Insect
- * @since 1.0
- */
-abstract class Tekton extends Observable {
-    /**
-     * A list of adjacent Tektons connected to this Tekton.
-     */
-    List<Tekton> adjacentTektons = new ArrayList<>();
+public abstract class Tekton /* extends Observable */ { // Consider PropertyChangeSupport if needed
+    protected List<Tekton> adjacentTektons = new ArrayList<>();
+    protected Mushroom mushroomManager; // Each Tekton has its own Mushroom manager instance
+    protected int ID;
+    private static int nextIDCounter = 1; // For unique default IDs
+    protected List<Insect> insects = new ArrayList<>();
 
-    /**
-     * The mushroom associated with this Tekton.
-     */
-    Mushroom mushrooms = null;
-    private int ID;
+    public Tekton(int id) {
+        if (id <= 0) {
+            this.ID = nextIDCounter++;
+            // System.out.println("Tekton Constructor: ID was <= 0, assigned new ID: " + this.ID);
+        } else {
+            this.ID = id;
+            if (id >= nextIDCounter) { // Ensure nextIDCounter stays ahead if IDs are manually set
+                nextIDCounter = id + 1;
+            }
+            // System.out.println("Tekton Constructor: Assigned provided ID: " + this.ID);
+        }
+        // CRUCIAL: Each Tekton creates its Mushroom manager and tells the manager which Tekton it belongs to.
+        this.mushroomManager = new Mushroom(this);
+    }
 
-    /**
-     * A list of insects currently located on this Tekton.
-     */
-    List<Insect> insects = new ArrayList<>();
-
-    /**
-     * Constructs a new {@code Tekton} with no initial adjacent Tektons or associated mushroom.
-     */
     public Tekton() {
-        System.out.println("Tekton.Tekton() called");
-        Mushroom mushroom = new Mushroom();
-        this.ID = 0;
-        this.mushrooms = mushroom;
-        System.out.println("Tekton.Tekton() returned");
-    }
-    public Tekton(int ID) {
-        System.out.println("Tekton.Tekton() called");
-        Mushroom mushroom = new Mushroom();
-        this.ID = ID;
-        this.mushrooms = mushroom;
-        System.out.println("Tekton.Tekton() returned");
+        this(0); // Call the constructor that handles ID assignment
     }
 
-    public int getID(){
-        return ID;
+    // --- Getters and Setters ---
+    public Mushroom getMushroomNoPrint() {
+        return mushroomManager;
     }
 
-    /**
-     * Constructs a new {@code Tekton} with a specified list of adjacent Tektons.
-     *
-     * @param adjacentTektonss The initial list of Tektons adjacent to this one.
-     */
-    public Tekton(List<Tekton> adjacentTektonss) {
-        System.out.println("Tekton.Tekton() called");
-        this.adjacentTektons = adjacentTektonss;
-        Mushroom mushroom = new Mushroom();
-        this.mushrooms = mushroom;
-        System.out.println("Tekton.Tekton() returned");
-    }
-
-    /**
-     * Gets the list of Tektons adjacent to this one.
-     *
-     * @return A {@code List} containing the adjacent {@code Tekton} objects.
-     */
-    public List<Tekton> getAdjacentTektons() {
-        System.out.println("Tekton.getAdjacentTektons() called");
-        System.out.println("Tekton.getAdjacentTektons() returned");
-        return adjacentTektons;
-    }
-
-    /**
-     * Adds a new insect to this Tekton.
-     *
-     * @param insect The {@code Insect} to be added to this Tekton.
-     */
-    public void addNewInsect(Insect insect) {
-        System.out.println("Tekton.addNewInsect(Insect) called");
-        insects.add(insect);
-        System.out.println("Tekton.addNewInsect(Insect) returned");
-    }
-
-    /**
-     * Removes an insect from this Tekton.
-     *
-     * @param insect The {@code Insect} to be removed from this Tekton.
-     */
-    public void removeInsect(Insect insect) {
-        System.out.println("Tekton.removeInsect(Insect) called");
-        insects.remove(insect);
-        System.out.println("Tekton.removeInsect(Insect) returned");
-    }
-
-    /**
-     * Adds a Tekton to the list of Tektons adjacent to this one.
-     *
-     * @param tekton The {@code Tekton} to be added as an adjacent Tekton.
-     */
-
-    public void addAdjacentTekton(Tekton tekton) {
-        // System.out.println("Tekton.addAdjacentTekton called for " + this.getIDNoPrint() + " with " + tekton.getIDNoPrint());
-        if (!this.adjacentTektons.contains(tekton)) { // Prevent duplicate additions from one side
-            this.adjacentTektons.add(tekton);
-        }
-        // The symmetric add should ensure the other side also doesn't duplicate
-        // However, to be absolutely safe and avoid potential re-entrant issues if getAdjacentTektons() has side effects
-        // or if listeners are involved (though not apparent here), make the symmetric add conditional too.
-        if (!tekton.getAdjacentTektonsNoPrint().contains(this)) { // Use NoPrint to avoid log spam here
-            tekton.getAdjacentTektonsNoPrint().add(this);
-        }
-        // System.out.println("Tekton.addAdjacentTekton returned for " + this.getIDNoPrint());
-    }
-
-    /**
-     * Removes a Tekton from the list of Tektons adjacent to this one.
-     *
-     * @param tekton The {@code Tekton} to be removed from the adjacent Tektons.
-     */
-    public void removeAdjacentTekton(Tekton tekton) {
-        System.out.println("Tekton.removeAdjacentTekton(Tekton) called");
-        adjacentTektons.remove(tekton);
-        System.out.println("Tekton.removeAdjacentTekton(Tekton) returned");
-    }
-
-    /**
-     * Sets the mushroom associated with this Tekton.
-     *
-     * @param mushroom The {@code Mushroom} to be associated with this Tekton.
-     */
-    public void setMushroom(Mushroom mushroom) {
-        System.out.println("Tekton.setMushroom(Mushroom) called");
-        this.mushrooms = mushroom;
-        System.out.println("Tekton.setMushroom(Mushroom) returned");
-    }
-
-    /**
-     * Gets the mushroom associated with this Tekton.
-     *
-     * @return The {@code Mushroom} associated with this Tekton.
-     */
     public Mushroom getMushroom() {
-        System.out.println("Tekton.getMushroom() called");
-        System.out.println("Tekton.getMushroom() returned");
-        return mushrooms;
+        // System.out.println("Tekton " + getIDNoPrint() + ": getMushroom() called.");
+        return mushroomManager;
     }
 
-    /**
-     * Gets the list of insects currently on this Tekton.
-     *
-     * @return A {@code List} containing the {@code Insect} objects on this Tekton.
-     */
-    public List<Insect> getInsects(){
-        return insects;
+    // Setting the mushroom manager post-construction should be rare if Tekton creates its own.
+    // Could be used if a Tekton's fungal properties fundamentally change.
+    public void setMushroom(Mushroom mushroomManager) {
+        // System.out.println("Tekton " + getIDNoPrint() + ": setMushroom() called.");
+        this.mushroomManager = mushroomManager;
+        if (this.mushroomManager != null && this.mushroomManager.getTektonNoPrint() != this) {
+            this.mushroomManager.setTekton(this); // Ensure the Mushroom manager knows its Tekton
+        }
     }
 
-    /**
-     * Sets the list of insects currently on this Tekton.
-     *
-     * @param insects The new {@code List} of {@code Insect} objects for this Tekton.
-     */
-    public void setInsects(List<Insect> insects){
-        this.insects = insects;
-    }
-
-    /**
-     * Determines if this Tekton can be cut (e.g., by an insect).
-     * <p>
-     * Subclasses can override this method to specify whether cutting is allowed.
-     * The default implementation allows cutting.
-     * </p>
-     *
-     * @return {@code true} if this Tekton can be cut, {@code false} otherwise.
-     */
-    public boolean canCut() {
-        System.out.println("Tekton.canCut() called");
-        System.out.println("Tekton.canCut() returned");
-        return true;
-    }
-
-    /**
-     * Determines if a mushroom body can grow on this Tekton.
-     * <p>
-     * Subclasses can override this method to specify whether mushroom growth is allowed.
-     * The default implementation allows growth.
-     * </p>
-     *
-     * @return {@code true} if a mushroom body can grow here, {@code false} otherwise.
-     */
-    public boolean canGrow() {
-        System.out.println("Tekton.canGrow() called");
-        System.out.println("Tekton.canGrow() returned");
-        return true;
-    }
-
-    /**
-     * Determines if a mushroom yarn can grow from the mushroom on this Tekton to an adjacent Tekton.
-     * <p>
-     * Subclasses can override this method to specify whether yarn growth is allowed.
-     * The default implementation allows yarn growth.
-     * </p>
-     *
-     * @return {@code true} if a mushroom yarn can grow from here, {@code false} otherwise.
-     */
-    public boolean canGrowYarn(){
-        System.out.println("Tekton.canGrowYarn() called");
-        System.out.println("Tekton.canGrowYarn() returned");
-        return true;
-    }
-
-    /**
-     * Determines if this Tekton has the characteristic of disappearing over time.
-     * <p>
-     * Subclasses can override this method to indicate if this Tekton is temporary.
-     * The default implementation indicates that the Tekton does not disappear.
-     * </p>
-     *
-     * @return {@code true} if this Tekton is disappearing, {@code false} otherwise.
-     */
-    public boolean isDisappearing() {
-        System.out.println("Tekton.isDisappearing() called");
-        System.out.println("Tekton.isDisappearing() returned");
-        return false;
-    }
-
-    /**
-     * Determines if this Tekton promotes fast growth of associated elements (e.g., mushroom bodies).
-     * <p>
-     * Subclasses can override this method to indicate if this Tekton has fast-growth properties.
-     * The default implementation indicates normal growth.
-     * </p>
-     *
-     * @return {@code true} if this Tekton promotes fast growth, {@code false} otherwise.
-     */
-    public boolean isFastTekton(){
-        System.out.println("Tekton.isFastTekton() called");
-        System.out.println("Tekton.isFastTekton() returned");
-        return false;
-    }
     public int getIDNoPrint() {
         return ID;
     }
 
-    public List<Tekton> getAdjacentTektonsNoPrint() {
-        return adjacentTektons;
+    public int getID() {
+        // System.out.println("Tekton.getID() called for ID " + this.ID);
+        return ID;
     }
 
-    public Mushroom getMushroomNoPrint() {
-        return mushrooms;
+    public void setID(int id) { // Useful if IDs are assigned after object creation (e.g. loading)
+        this.ID = id;
+        if (id >= nextIDCounter) {
+            nextIDCounter = id + 1;
+        }
+    }
+
+
+    public List<Tekton> getAdjacentTektons() {
+        // System.out.println("Tekton " + getIDNoPrint() + ": getAdjacentTektons() called (logged version).");
+        return new ArrayList<>(adjacentTektons); // Return a defensive copy
+    }
+
+    public List<Tekton> getAdjacentTektonsNoPrint() {
+        return adjacentTektons; // Internal access to the modifiable list
+    }
+
+    public void addAdjacentTekton(Tekton tekton) {
+        if (tekton == null || tekton == this) {
+            return; // Cannot add null or self as adjacent
+        }
+        // System.out.println("Tekton " + getIDNoPrint() + ": Attempting to add adjacent Tekton " + tekton.getIDNoPrint());
+        if (!this.adjacentTektons.contains(tekton)) {
+            this.adjacentTektons.add(tekton);
+        }
+        // Ensure symmetry by adding this tekton to the other's list,
+        // using its NoPrint version to avoid potential logging loops during this operation.
+        if (!tekton.getAdjacentTektonsNoPrint().contains(this)) {
+            tekton.getAdjacentTektonsNoPrint().add(this);
+        }
+    }
+
+    public void removeAdjacentTekton(Tekton tekton) {
+        if (tekton == null) return;
+        // System.out.println("Tekton " + getIDNoPrint() + ": Attempting to remove adjacent Tekton " + tekton.getIDNoPrint());
+        boolean removed1 = this.adjacentTektons.remove(tekton);
+        boolean removed2 = tekton.getAdjacentTektonsNoPrint().remove(this); // Use NoPrint for the other side
+        // if (removed1 || removed2) System.out.println("Adjacency removed between " + getIDNoPrint() + " and " + tekton.getIDNoPrint());
+    }
+
+    public List<Insect> getInsects() {
+        return new ArrayList<>(insects); // Return a defensive copy
     }
 
     public List<Insect> getInsectsNoPrint() {
         return insects;
     }
 
+    public void addNewInsect(Insect insect) {
+        if (insect != null && !this.insects.contains(insect)) {
+            this.insects.add(insect);
+            // System.out.println("Tekton " + getIDNoPrint() + ": Insect " + insect.getIDNoPrint() + " added.");
+        }
+    }
 
+    public void removeInsect(Insect insect) {
+        boolean removed = this.insects.remove(insect);
+        // if (removed) System.out.println("Tekton " + getIDNoPrint() + ": Insect " + insect.getIDNoPrint() + " removed.");
+    }
 
+    // --- Gameplay relevant methods (to be overridden by subclasses) ---
+    public boolean canGrow() {
+        // System.out.println("Tekton " + getIDNoPrint() + ": canGrow() called, returning true (default).");
+        return true;
+    }
+
+    public boolean canGrowYarn() {
+        // System.out.println("Tekton " + getIDNoPrint() + ": canGrowYarn() called, returning true (default).");
+        return true;
+    }
+
+    public boolean canCut() {
+        // System.out.println("Tekton " + getIDNoPrint() + ": canCut() called, returning true (default).");
+        return true;
+    }
+
+    public boolean isDisappearing() {
+        // System.out.println("Tekton " + getIDNoPrint() + ": isDisappearing() called, returning false (default).");
+        return false;
+    }
+
+    public boolean isFastTekton() {
+        // System.out.println("Tekton " + getIDNoPrint() + ": isFastTekton() called, returning false (default).");
+        return false;
+    }
 }

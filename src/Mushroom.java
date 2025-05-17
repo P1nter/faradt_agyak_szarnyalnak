@@ -1,306 +1,191 @@
-import java.util.*;
+// Mushroom.java
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Represents a mushroom entity within the game, capable of growing a body,
- * spreading via mushroom yarns, and releasing spores.
- * <p>
- * Each mushroom can have an optional {@code MushroomBody}, a collection of
- * {@code MushroomYarn} connecting it to other Tektons, and a set of {@code Spore}
- * it can release. The mushroom is also associated with a specific {@code Tekton}
- * and has an age that increments each game update.
- * </p>
- *
- * @see MushroomBody
- * @see MushroomYarn
- * @see Spore
- * @see Tekton
- * @since 1.0
- */
 public class Mushroom {
-    private int ID;
+    private final Tekton onTekton; // The Tekton this Mushroom manager belongs to (final preferred)
     private MushroomBody mushroomBody = null;
-    private List<MushroomYarn> mushroomYarns = new ArrayList<>();
-    private List<Spore> spores = new ArrayList<>();
-    private Tekton tekton = null;
-    int howOld = 0;
+    private List<MushroomYarn> yarnsConnectedHere = new ArrayList<>();
+    private List<Spore> sporesOnTekton = new ArrayList<>();
+    private int howOld = 0;
+    private final int ID; // ID for this Mushroom manager instance
+    private static int nextIDCounter = 1;
 
-    /**
-     * Constructs a new {@code Mushroom} instance.
-     * <p>
-     * Initializes the mushroom with no body, an empty list of mushroom yarns,
-     * an empty list of spores, and an initial age of 0.
-     * </p>
-     */
-    public Mushroom() {
-        System.out.println("Mushroom.Mushroom() called");
-        this.mushroomBody = null;
-        this.ID = 0;
-        mushroomYarns = new ArrayList<>();
-        spores = new ArrayList<>();
-        howOld = 0;
-        System.out.println("Mushroom.Mushroom() returned");
-    }
-    public Mushroom(int ID) {
-        System.out.println("Mushroom.Mushroom() called");
-        this.mushroomBody = null;
-        this.ID = ID;
-        mushroomYarns = new ArrayList<>();
-        spores = new ArrayList<>();
-        howOld = 0;
-        System.out.println("Mushroom.Mushroom() returned");
-    }
-
-    /**
-     * Checks if a mushroom yarn exists between two specified Tektons connected to this mushroom.
-     *
-     * @param tekton1 The first {@code Tekton} to check the connection for.
-     * @param tekton2 The second {@code Tekton} to check the connection for.
-     * @return {@code true} if a mushroom yarn connects the two Tektons, {@code false} otherwise.
-     */
-    public boolean isThereMushroomYarn(Tekton tekton1, Tekton tekton2) {
-        System.out.println("Mushroom.isThereMushroomYarn() called");
-        boolean result = false;
-        for (MushroomYarn mushroomYarn : mushroomYarns) {
-            Tekton[] tektons = mushroomYarn.getTektons();
-            if ((tektons[0] == tekton1 && tektons[1] == tekton2) || (tektons[0] == tekton2 && tektons[1] == tekton1)) {
-                result = true;
-                break;
-            }
+    public Mushroom(Tekton onTekton) {
+        if (onTekton == null) {
+            throw new IllegalArgumentException("Mushroom manager must be constructed with a non-null Tekton.");
         }
-        System.out.println("Mushroom.isThereMushroomYarn() returned "+result);
-        return result;
+        this.ID = nextIDCounter++;
+        this.onTekton = onTekton;
+        // System.out.println("Mushroom Manager ID " + this.ID + " created for Tekton ID " + onTekton.getIDNoPrint());
     }
 
-    /**
-     * Increments the age of this mushroom by one.
-     */
-    public void updateAge() {
-        System.out.println("Mushroom.updateAge() called");
-        howOld++;
-        System.out.println("Mushroom.updateAge() returned");
-    }
-
-    /**
-     * Instructs the mushroom body to release a spore.
-     *
-     * @param body The {@code MushroomBody} to instruct for spore release.
-     */
-    public void instructSporeRelease(MushroomBody body) {
-        System.out.println("Mushroom.instructSporeRelease() called");
-        if (howOld > 0 && howOld < 2){
-
+    // If loading from a save, ID might be provided.
+    public Mushroom(Tekton onTekton, int id) {
+        if (onTekton == null) {
+            throw new IllegalArgumentException("Mushroom manager must be constructed with a non-null Tekton.");
         }
-        System.out.println("Mushroom.instructSporeRelease() returned");
+        this.ID = id;
+        this.onTekton = onTekton;
+        if (id >= nextIDCounter) nextIDCounter = id + 1;
     }
 
-    public int getHowOld() {
-        System.out.println("Mushroom.getHowOld() called");
-        System.out.println("Mushroom.getHowOld() returned int");
-        return howOld;
+
+    public Tekton getTektonNoPrint() { return onTekton; }
+    public Tekton getTekton() { return onTekton; }
+    // setTekton should ideally not be needed if onTekton is final and set by constructor
+    public void setTekton(Tekton t) {
+        // This method might be problematic if onTekton is final.
+        // If it's not final, ensure logic is sound when changing the associated Tekton.
+        // For now, assuming onTekton is effectively final after construction via Tekton.
+        // System.out.println("Mushroom manager ID " + this.ID + ": setTekton called. This is unusual.");
+        // this.onTekton = t;
     }
-    /**
-     * Updates the state of the mushroom for the current game turn.
-     * <p>
-     * This method iterates through the mushroom's yarns and updates them. If a yarn's
-     * update returns true (indicating it should be removed), it is removed from the list.
-     * The mushroom's age is also incremented.
-     * </p>
-     */
-    public List<MushroomYarn> Update() {
-        System.out.println("Mushroom.Update() called");
-        List<MushroomYarn> mushroomYarnsToRemove = new ArrayList<>();
-        for (MushroomYarn mushroomYarn : mushroomYarns) {
-            if(mushroomYarn.Update()){
-                mushroomYarnsToRemove.add(mushroomYarn);
-            }
+
+
+    public boolean hasMushroomBody() { return mushroomBody != null; }
+    public MushroomBody getMushroomBodyNoPrint() { return mushroomBody; }
+    public int getIDNoPrint() { return ID; }
+    public int getHowOldNoPrint() { return howOld; }
+
+
+    public MushroomBody growBody(Tekton locationTekton, Mushroomer ownerPlayer) {
+        if (this.onTekton != locationTekton) {
+            System.err.println("Mushroom.growBody ERROR: Called on Mushroom manager of Tekton " +
+                    this.onTekton.getIDNoPrint() + " but for location " + locationTekton.getIDNoPrint());
+            return null;
         }
-        updateAge();
-        System.out.println("Mushroom.Update() returned");
-        return mushroomYarnsToRemove;
-    }
-
-    /**
-     * Spreads a new mushroom yarn from one Tekton to another.
-     * <p>
-     * Creates a new {@code MushroomYarn} connecting the two specified Tektons.
-     * If either of the Tektons is marked as disappearing, the new yarn's time
-     * until disappearance is set to 5.
-     * </p>
-     *
-     * @param honnan The starting {@code Tekton} for the new mushroom yarn.
-     * @param hova   The destination {@code Tekton} for the new mushroom yarn.
-     * @return The newly created {@code MushroomYarn}.
-     */
-    public MushroomYarn spread(Tekton honnan, Tekton hova) {
-        System.out.println("Mushroom.spread() called");
-        //grows a mushroomyarn
-        MushroomYarn mushroomYarn = new MushroomYarn(honnan, hova);
-        if(hova.isDisappearing() || honnan.isDisappearing()){
-            mushroomYarn.setTimeBack(5);
-        }
-        this.mushroomYarns.add(mushroomYarn);
-        System.out.println("Mushroom.spread() returned");
-        return mushroomYarn;
-    }
-
-    /**
-     * Grows a mushroom body on the associated Tekton.
-     * <p>
-     * Checks if a mushroom body already exists and if the Tekton allows growth.
-     * If both conditions are met, a new {@code MushroomBody} is created and associated
-     * with the Tekton.
-     * </p>
-     *
-     * @param tekton The {@code Tekton} on which to grow the mushroom body.
-     * @return The newly created {@code MushroomBody}, or {@code null} if a body already exists
-     * or the Tekton does not allow growth.
-     */
-    public MushroomBody growBody(Tekton tekton,Mushroomer mushroomer) {
-        System.out.println("Mushroom.growBody() called");
-        //check if tekton allows
         if (this.mushroomBody != null) {
-            System.out.println("Mushroom.growBody() returned: there is already a mushroom body");
+            System.out.println("Mushroom.growBody: Body already exists on Tekton " + onTekton.getIDNoPrint() + " for this mushroom manager.");
             return null;
         }
-        if (tekton.canGrow()) {
-            System.out.println("Mushroom.growBody() tekton.canGrow() returned");
-            //check if tekton has spore and mushroomyarn
-            mushroomBody = new MushroomBody(tekton, mushroomer);
-        } else {
-            System.out.println("Mushroom.growBody() tekton.canGrow() returned");
+        if (!onTekton.canGrow()) {
+            System.out.println("Mushroom.growBody: Tekton " + onTekton.getIDNoPrint() + " (type: " + onTekton.getClass().getSimpleName() + ") cannot grow a body.");
             return null;
         }
-        System.out.println("Mushroom.growBody() returned");
-        return mushroomBody;
-    }
 
-    /**
-     * Destroys the mushroom body associated with this mushroom.
-     *
-     * @param body The {@code MushroomBody} to destroy.
-     */
-    public void destroyMushroomBody (MushroomBody body){
-        System.out.println("Mushroom.destroyMushroomBody() called");
-        if (mushroomBody != null) {
-            mushroomBody = null;
-            System.out.println("Mushroom.destroyMushroomBody() returned");
-            return;
+        // Assuming MushroomBody constructor: MushroomBody(Tekton onT, Mushroomer owner, int id)
+        // A better ID generation for game entities is needed than just list size.
+        int newBodyID = 1; // Placeholder - Needs a global unique ID generator for bodies
+        if (ownerPlayer.getMushroomBodies() != null) {
+            newBodyID = ownerPlayer.getMushroomBodies().size() + 1 + (this.ID * 1000); // Make it somewhat unique
         }
-        System.out.println("Mushroom.getScore() returned");
+
+        MushroomBody newBody = new MushroomBody(locationTekton, ownerPlayer, newBodyID);
+        this.mushroomBody = newBody;
+        ownerPlayer.addMushroomBody(newBody); // Player keeps track of their bodies
+
+        System.out.println("Mushroom: Successfully grew body for " + ownerPlayer.getName() + " on Tekton " + onTekton.getIDNoPrint());
+        this.howOld = 0; // Reset age for new body
+        return newBody;
     }
 
-    /**
-     * Checks if this mushroom currently has a mushroom body.
-     *
-     * @return {@code true} if a mushroom body exists, {@code false} otherwise.
-     */
-    public boolean hasMushroomBody () {
-        System.out.println("Mushroom.hasMushroomBody() called");
-        boolean result = mushroomBody != null;
-        System.out.println("Mushroom.hasMushroomBody() returned boolean");
-        return result;
+    public void removeMushroomBody() {
+        if (this.mushroomBody != null) {
+            Mushroomer owner = this.mushroomBody.getOwner();
+            if (owner != null) {
+                owner.removeMushroomBody(this.mushroomBody);
+            }
+            System.out.println("Mushroom: Body of " + (owner != null ? owner.getName() : "unknown owner") +
+                    " removed from Tekton " + onTekton.getIDNoPrint());
+            this.mushroomBody = null;
+        }
     }
 
-    /**
-     * Gets the list of spores associated with this mushroom.
-     *
-     * @return A {@code List} containing the {@code Spore} objects.
-     */
-    public List<Spore> getSpores() {
-        System.out.println("Mushroom.getSpores() called");
-        System.out.println("Mushroom.getSpores() returned");
-        return spores;
+    public List<Spore> getSporesNoPrint() { return new ArrayList<>(sporesOnTekton); } // Return copy
+    public List<Spore> getSpores() { return new ArrayList<>(sporesOnTekton); }
+
+    public void addSpore(Spore spore) {
+        if (spore != null && !this.sporesOnTekton.contains(spore)) {
+            this.sporesOnTekton.add(spore);
+            if (spore.getTektonNoPrint() != this.onTekton) {
+                spore.setTekton(this.onTekton); // Ensure spore is on this Tekton
+            }
+            // System.out.println("Mushroom on Tekton " + onTekton.getIDNoPrint() + ": Spore " + spore.getIDNoPrint() + " added.");
+        }
+    }
+    public void removeSpore(Spore spore) {
+        boolean removed = this.sporesOnTekton.remove(spore);
+        // if (removed) System.out.println("Mushroom on Tekton " + onTekton.getIDNoPrint() + ": Spore " + spore.getIDNoPrint() + " removed.");
     }
 
-    /**
-     * Sets the mushroom body for this mushroom.
-     *
-     * @param mushroomBody The {@code MushroomBody} to associate with this mushroom.
-     */
-    public void setMushroomBody(MushroomBody mushroomBody) {
-        System.out.println("Mushroom.setMushroomBody(MushroomBody) called");
-        this.mushroomBody = mushroomBody;
-        System.out.println("Mushroom.setMushroomBody(MushroomBody) returned");
+
+    public List<MushroomYarn> getMushroomYarnsNoPrint() { return new ArrayList<>(yarnsConnectedHere); } // Return copy
+    public List<MushroomYarn> getMushroomYarns() { return new ArrayList<>(yarnsConnectedHere); }
+
+    public void addMushroomYarn(MushroomYarn yarn) {
+        if (yarn != null && !this.yarnsConnectedHere.contains(yarn)) {
+            this.yarnsConnectedHere.add(yarn);
+            // System.out.println("Mushroom on Tekton " + onTekton.getIDNoPrint() + ": Yarn " + yarn.getIDNoPrint() + " registered as connected.");
+        }
+    }
+    public void removeMushroomYarn(MushroomYarn yarn) {
+        boolean removed = this.yarnsConnectedHere.remove(yarn);
+        // if (removed) System.out.println("Mushroom on Tekton " + onTekton.getIDNoPrint() + ": Yarn " + yarn.getIDNoPrint() + " unregistered.");
     }
 
-    /**
-     * Checks if this mushroom has any mushroom yarns connected to it.
-     *
-     * @return {@code true} if there are one or more mushroom yarns, {@code false} otherwise.
-     */
-    public boolean hasYarns() {
-        System.out.println("Mushroom.hasYarns() called");
-        boolean result = mushroomYarns.size() > 0;
-        System.out.println("Mushroom.hasYarns() returned");
-        return result;
+    public List<MushroomYarn> Update() { // Game round update for this mushroom manager
+        howOld++;
+        List<MushroomYarn> yarnsThatDisappearedThisTurn = new ArrayList<>();
+        for (MushroomYarn yarn : new ArrayList<>(yarnsConnectedHere)) { // Iterate copy
+            if (yarn.Update()) { // Yarn.Update() returns true if it disappeared due to its timer
+                yarnsThatDisappearedThisTurn.add(yarn);
+            }
+        }
+        // Game.updateGameRound will handle the comprehensive removal of these yarns
+        // from player lists and the other Tekton's mushroom manager.
+        return yarnsThatDisappearedThisTurn;
     }
 
-    /**
-     * Removes the mushroom body from this mushroom.
-     */
-    public void removeMushroomBody(){
-        System.out.println("Mushroom.removeMushroomBody() called");
-        this.mushroomBody = null;
-        System.out.println("Mushroom.removeMushroomBody() returned");
-    }
+    // Method for spreading a specific type of spore FROM this Tekton (if it has a body owned by sporeOwner)
+    // TO a target Tekton.
+    public Spore spreadSporeTo(Tekton targetTekton, Mushroomer sporeOwner, Spore.SporeType typeToSpread, int sporeID) {
+        if (!hasMushroomBody() || mushroomBody.getOwner() != sporeOwner) {
+            System.out.println("Mushroom ("+this.ID+ ") on T"+onTekton.getIDNoPrint()+": No body or not owner's body to spread from for "+sporeOwner.getName());
+            return null;
+        }
+        if (targetTekton == null) {
+            System.err.println("Mushroom.spreadSporeTo: Target Tekton is null.");
+            return null;
+        }
 
-    /**
-     * Gets the list of mushroom yarns connected to this mushroom.
-     *
-     * @return A {@code List} containing the {@code MushroomYarn} objects.
-     */
-    public List<MushroomYarn> getMushroomYarns() {
-        System.out.println("Mushroom.getMushroomYarns() called");
-        System.out.println("Mushroom.getMushroomYarns() returned");
-        return mushroomYarns;
-    }
+        // Adjacency/range check for spreading (example: must be adjacent)
+        // This rule can be more complex (e.g. depends on mushroom age or type)
+        // boolean canReach = false;
+        // if (onTekton.getAdjacentTektonsNoPrint().contains(targetTekton)) canReach = true;
+        // if (howOld > 2) { // Older mushrooms might spread further
+        //     for (Tekton adj : onTekton.getAdjacentTektonsNoPrint()) {
+        //         if (adj.getAdjacentTektonsNoPrint().contains(targetTekton)) canReach = true;
+        //     }
+        // }
+        // if (!canReach) {
+        //    System.out.println("Mushroom on T"+onTekton.getIDNoPrint()+": Cannot spread spore to T" + targetTekton.getIDNoPrint() + " (out of range).");
+        //    return null;
+        // }
 
-    /**
-     * Gets the current mushroom body of this mushroom.
-     *
-     * @return The {@code MushroomBody} associated with this mushroom, or {@code null} if there is none.
-     */
-    public MushroomBody getMushroomBody() {
-        System.out.println("Mushroom.getMushroomBody() called");
-        System.out.println("Mushroom.getMushroomBody() returned");
-        return mushroomBody;
-    }
-    public void addMushroomBody(MushroomBody mushroomBody){
-        System.out.println("Mushroom.addMushroomBody(MushroomBody) called");
-        this.mushroomBody = mushroomBody;
-        System.out.println("Mushroom.addMushroomBody(MushroomBody) returned");
-    }
-    public void addSpore(Spore spore){
-        System.out.println("Mushroom.addSpore(Spore) called");
-        this.spores.add(spore);
-        System.out.println("Mushroom.addSpore(Spore) returned");
-    }
-    public void addMushroomYarn(MushroomYarn mushroomYarn){
-        System.out.println("Mushroom.addMushroomYarn(MushroomYarn) called");
-        this.mushroomYarns.add(mushroomYarn);
-        System.out.println("Mushroom.addMushroomYarn(MushroomYarn) returned");
-    }
-    public int getIDNoPrint() {
-        return ID;
-    }
 
-    public MushroomBody getMushroomBodyNoPrint() {
-        return mushroomBody;
-    }
+        Spore newSpore;
+        // The spore's constructor should place it on the targetTekton and link to owner
+        switch (typeToSpread) {
+            case CUT_DISABLING: newSpore = new CutDisablingSpore(targetTekton, sporeOwner, sporeID); break;
+            case PARALYZING:    newSpore = new ParalyzingSpore(targetTekton, sporeOwner, sporeID); break;
+            case DUPLICATING:   newSpore = new DuplicatingSpore(targetTekton, sporeOwner, sporeID); break;
+            case SLOWING:       newSpore = new SlowingSpore(targetTekton, sporeOwner, sporeID); break;
+            case SPEEDING:      newSpore = new SpeedingSpore(targetTekton, sporeOwner, sporeID); break;
+            default:
+                System.err.println("Mushroom.spreadSporeTo: Unknown spore type " + typeToSpread);
+                return null;
+        }
 
-    public List<MushroomYarn> getMushroomYarnsNoPrint() {
-        return mushroomYarns;
-    }
+        // The target Tekton's mushroom manager receives the spore
+        Mushroom targetMushroomManager = targetTekton.getMushroomNoPrint();
+        // Tekton constructor ensures mushroomManager is not null.
+        targetMushroomManager.addSpore(newSpore); // This also sets spore.currentTekton
 
-    public List<Spore> getSporesNoPrint() {
-        return spores;
-    }
+        // The owner player also tracks the spores they've created/own
+        sporeOwner.addOwnedSpore(newSpore);
 
-    public Tekton getTektonNoPrint() {
-        return tekton;
-    }
-
-    public int getHowOldNoPrint() {
-        return howOld;
+        System.out.println(sporeOwner.getName() + " spread " + typeToSpread + " spore (ID " + newSpore.getIDNoPrint() + ") from T" + onTekton.getIDNoPrint() + " to T" + targetTekton.getIDNoPrint());
+        return newSpore;
     }
 }

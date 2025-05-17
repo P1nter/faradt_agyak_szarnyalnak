@@ -1,433 +1,358 @@
+// Game.java
+import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Random;
 
 public class Game {
     private List<Tekton> tektons;
     private List<Player> players;
     private Player activePlayer;
-
     private final List<GameListener> listeners = new ArrayList<>();
 
-    public enum GameActionType {
-        NONE,
-        INSECT_MOVE,
-        INSECT_EAT_SPORE,
-        INSECT_CUT_YARN,
-        MUSHROOMER_SPREAD_SPORES, // Special: direct to target selection
-        MUSHROOMER_GROW_YARN,
-        MUSHROOMER_GROW_BODY,
-        MUSHROOMER_EAT // Define what they eat
-    }
+    private Spore.SporeType sporeTypeToSpreadContext = null;
 
-    public enum InteractionStep {
-        IDLE,
-        SELECT_ACTOR,           // e.g., select an Insect or a Tekton to act from
-        SELECT_FIRST_TARGET,    // e.g., select Tekton for Grow Body, or first Tekton for Grow Yarn
-        SELECT_SECOND_TARGET,   // e.g., select second Tekton for Grow Yarn
-        AWAITING_FINAL_TARGET   // Actor/first target selected, now highlight and await click on a final target
-    }
+    public enum GameActionType { NONE, INSECT_MOVE, INSECT_EAT_SPORE, INSECT_CUT_YARN, MUSHROOMER_SPREAD_SPORES, MUSHROOMER_GROW_YARN, MUSHROOMER_GROW_BODY, MUSHROOMER_EAT }
+    public enum InteractionStep { IDLE, SELECT_ACTOR, SELECT_FIRST_TARGET, SELECT_SECOND_TARGET, AWAITING_FINAL_TARGET }
 
     private GameActionType currentActionType = GameActionType.NONE;
     private InteractionStep currentInteractionStep = InteractionStep.IDLE;
+    private Object selectedActor = null;
+    private Tekton firstTektonTarget = null;
 
-    private Object selectedActor = null;       // Primary entity initiating action (e.g., Insect, or starting Tekton for Mushroomer)
-    private Tekton firstTektonTarget = null; // For two-step Tekton targeting like Grow Yarn
-
-    public Game() {
-        tektons = new ArrayList<>();
-        players = new ArrayList<>();
-    }
 
     public Game(List<Tekton> tektons, List<Player> players) {
-        this.tektons = tektons;
-        this.players = players;
-        if (players != null && !players.isEmpty()) {
-            this.activePlayer = players.get(0);
-            // Assuming Player class has setActionsRemaining() or similar
-            // if (this.activePlayer != null) this.activePlayer.resetActions();
+        this.tektons = tektons != null ? tektons : new ArrayList<>();
+        this.players = players != null ? players : new ArrayList<>();
+        if (!this.players.isEmpty()) {
+            this.activePlayer = this.players.get(0);
+            if (activePlayer != null) activePlayer.resetActionPoints();
         }
     }
 
-    public void addListener(GameListener l) { listeners.add(l); }
+    public void addListener(GameListener l) { if (!listeners.contains(l)) listeners.add(l); }
     public void removeListener(GameListener l) { listeners.remove(l); }
-    private void fireMapChanged() { for (GameListener l : listeners) l.onMapChanged(); }
-    private void fireStateChanged() { for (GameListener l : listeners) l.onStateChanged(); }
+    private void fireMapChanged() { System.out.println("GAME_EVENT: Firing Map Changed"); for (GameListener l : new ArrayList<>(listeners)) l.onMapChanged(); }
+    private void fireStateChanged() {
+        System.out.println("GAME_EVENT: Firing State Changed (Player: " + (activePlayer!=null?activePlayer.getName():"N/A") +
+                ", ActionsLeft: " + (activePlayer!=null?activePlayer.getAction():"N/A") +
+                ", Mode=" + currentInteractionStep + ", ActionType=" + currentActionType +
+                ", SelectedActor=" + (selectedActor != null ? selectedActor.getClass().getSimpleName() + "(" + getEntityID(selectedActor) + ")" : "null") + ")");
+        for (GameListener l : new ArrayList<>(listeners)) l.onStateChanged();
+    }
 
-    // --- Accessors for UI State ---
     public GameActionType getCurrentActionType() { return currentActionType; }
     public InteractionStep getCurrentInteractionStep() { return currentInteractionStep; }
     public Object getSelectedActor() { return selectedActor; }
     public Tekton getFirstTektonTarget() { return firstTektonTarget; }
+    public Player getActivePlayer() { return activePlayer; }
+    public List<Tekton> getTektons() { return tektons; }
+    public List<Player> getPlayers() { return players; }
 
-    // --- Action Initiation from ActionPanel ---
+    public void setContextForSpreadAction(Spore.SporeType type) { this.sporeTypeToSpreadContext = type; }
+
     public void startAction(GameActionType actionType) {
         if (currentInteractionStep != InteractionStep.IDLE) {
-            System.out.println("Game: Cannot start new action while another is in progress. Cancel first.");
+            System.out.println("Game: Cannot start new action " + actionType + " while " + currentActionType + " ("+currentInteractionStep+") is in progress. Cancel first.");
             return;
         }
-        if (activePlayer == null /*|| activePlayer.getActionsRemaining() <= 0*/) {
-            System.out.println("Game: No actions left or no active player.");
+        if (activePlayer == null || !activePlayer.hasActionsLeft()) {
+            System.out.println("Game: No actions left for " + (activePlayer != null ? activePlayer.getName() : "N/A") + " or no active player.");
+            JOptionPane.showMessageDialog(null, "No actions remaining this turn!", "Out of Actions", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
+        if (actionType != GameActionType.MUSHROOMER_SPREAD_SPORES) this.sporeTypeToSpreadContext = null;
         this.currentActionType = actionType;
-        System.out.println("Game: Starting action " + actionType);
+        this.selectedActor = null; this.firstTektonTarget = null; // Clear previous selections for a new action type
+        System.out.println("Game: Starting action " + actionType + (actionType == GameActionType.MUSHROOMER_SPREAD_SPORES ? " with type " + sporeTypeToSpreadContext : ""));
 
         switch (actionType) {
-            case INSECT_MOVE:
-            case INSECT_EAT_SPORE:
-            case INSECT_CUT_YARN:
-                this.currentInteractionStep = InteractionStep.SELECT_ACTOR;
-                this.selectedActor = null; // Clear previous actor
-                System.out.println("Game: Please select an Insect.");
-                break;
+            case INSECT_MOVE: case INSECT_EAT_SPORE: case INSECT_CUT_YARN:
+                this.currentInteractionStep = InteractionStep.SELECT_ACTOR; System.out.println("  > Please select an Insect."); break;
             case MUSHROOMER_SPREAD_SPORES:
-                this.currentInteractionStep = InteractionStep.AWAITING_FINAL_TARGET; // Special case
-                this.selectedActor = activePlayer; // Mushroomer is the "actor"
-                System.out.println("Game: Highlight valid Tektons for Spore Spread.");
-                break;
+                if (sporeTypeToSpreadContext == null && activePlayer instanceof Mushroomer) {
+                    this.currentActionType = GameActionType.NONE;
+                    JOptionPane.showMessageDialog(null, "Select spore type from Action Panel first for Spread.", "Spore Spread", JOptionPane.INFORMATION_MESSAGE);
+                    fireStateChanged(); return; // Fire state to update UI from aborted action start
+                }
+                this.currentInteractionStep = InteractionStep.SELECT_ACTOR; System.out.println("  > Please select one of your Mushroom Bodies (or its Tekton) to spread from."); break;
             case MUSHROOMER_GROW_BODY:
-                this.currentInteractionStep = InteractionStep.SELECT_FIRST_TARGET; // Select Tekton to grow on
-                this.selectedActor = activePlayer;
-                System.out.println("Game: Please select a Tekton to Grow Body on.");
-                break;
+                this.currentInteractionStep = InteractionStep.SELECT_FIRST_TARGET; this.selectedActor = activePlayer; System.out.println("  > Please select a Tekton to Grow Body on."); break;
             case MUSHROOMER_GROW_YARN:
-                this.currentInteractionStep = InteractionStep.SELECT_FIRST_TARGET; // Select Tekton to grow FROM
-                this.selectedActor = activePlayer;
-                System.out.println("Game: Please select Tekton to Grow Yarn FROM.");
-                break;
-            case MUSHROOMER_EAT: // Define what mushroomers eat and how
-                this.currentInteractionStep = InteractionStep.SELECT_FIRST_TARGET; // Example
-                this.selectedActor = activePlayer;
-                System.out.println("Game: Please select target for Mushroomer Eat action.");
-                break;
-            default:
-                this.currentActionType = GameActionType.NONE;
-                System.out.println("Game: Unknown action type.");
-                break;
+                this.currentInteractionStep = InteractionStep.SELECT_FIRST_TARGET; this.selectedActor = activePlayer; System.out.println("  > Please select Tekton to Grow Yarn FROM."); break;
+            case MUSHROOMER_EAT:
+                this.currentInteractionStep = InteractionStep.SELECT_FIRST_TARGET; this.selectedActor = activePlayer; System.out.println("  > Please select target for Mushroomer Eat action."); break;
+            default: this.currentActionType = GameActionType.NONE; break;
         }
         fireStateChanged();
     }
 
     public void cancelAction() {
-        System.out.println("Game: Action " + currentActionType + " cancelled.");
-        currentActionType = GameActionType.NONE;
-        currentInteractionStep = InteractionStep.IDLE;
-        selectedActor = null;
-        firstTektonTarget = null;
+        String prevAction = currentActionType.toString(); InteractionStep prevStep = currentInteractionStep;
+        currentActionType = GameActionType.NONE; currentInteractionStep = InteractionStep.IDLE;
+        selectedActor = null; firstTektonTarget = null; sporeTypeToSpreadContext = null;
+        System.out.println("Game: Action " + prevAction + " (was in step " + prevStep + ") cancelled.");
         fireStateChanged();
     }
 
-    // --- Click Handlers from MapPanel ---
     public void mapInsectClicked(Insect clickedInsect) {
-        System.out.println("Game: Insect " + clickedInsect.getIDNoPrint() + " clicked.");
-        if (activePlayer != clickedInsect.getOwnerNoPrint()) {
-            System.out.println("Game: Cannot select other player's insect.");
-            // Allow selecting own insect even if an enemy insect is clicked over it for info?
-            if (currentInteractionStep == InteractionStep.IDLE) this.selectedActor = clickedInsect; // Show info
-            fireStateChanged();
-            return;
-        }
-
-        if (currentInteractionStep == InteractionStep.SELECT_ACTOR) {
-            if (currentActionType == GameActionType.INSECT_MOVE ||
-                    currentActionType == GameActionType.INSECT_EAT_SPORE ||
-                    currentActionType == GameActionType.INSECT_CUT_YARN) {
-                this.selectedActor = clickedInsect;
-                this.currentInteractionStep = InteractionStep.AWAITING_FINAL_TARGET;
-                System.out.println("Game: Insect " + clickedInsect.getIDNoPrint() + " selected for " + currentActionType + ". Highlight targets.");
-            }
-        } else if (currentInteractionStep == InteractionStep.IDLE) {
-            this.selectedActor = clickedInsect; // Select for info display or context
-            System.out.println("Game: Insect " + clickedInsect.getIDNoPrint() + " selected for info.");
-        } else {
-            // Clicked an insect when not expecting to select one as actor.
-            // Could be an "eat insect" target for a Mushroomer, if that's a game mechanic.
-            System.out.println("Game: Insect clicked in unexpected step: " + currentInteractionStep);
-        }
+        System.out.println("Game: mapInsectClicked - Insect " + getEntityID(clickedInsect) + ". Step: " + currentInteractionStep);
+        if (currentInteractionStep == InteractionStep.IDLE) {
+            this.selectedActor = clickedInsect;
+            System.out.println("  > Insect " + getEntityID(clickedInsect) + " set as selectedActor (for info/context).");
+        } else if (currentInteractionStep == InteractionStep.SELECT_ACTOR) {
+            if (activePlayer == clickedInsect.getOwnerNoPrint()) {
+                if (currentActionType == GameActionType.INSECT_MOVE || currentActionType == GameActionType.INSECT_EAT_SPORE || currentActionType == GameActionType.INSECT_CUT_YARN) {
+                    this.selectedActor = clickedInsect;
+                    this.currentInteractionStep = InteractionStep.AWAITING_FINAL_TARGET;
+                    System.out.println("  > Insect " + getEntityID(clickedInsect) + " confirmed as actor for " + currentActionType + ". Awaiting final target.");
+                } else { System.out.println("  > Clicked Insect, but current action " + currentActionType + " does not use Insect as primary actor.");}
+            } else System.out.println("  > Cannot select other player's insect as actor.");
+        } else { System.out.println("  > Insect clicked in unexpected step: " + currentInteractionStep + ". No action taken.");}
         fireStateChanged();
     }
 
     public void mapTektonClicked(Tekton clickedTekton) {
-        System.out.println("Game: Tekton " + clickedTekton.getIDNoPrint() + " clicked in step " + currentInteractionStep + " for action " + currentActionType);
+        System.out.println("Game: mapTektonClicked - Tekton " + getEntityID(clickedTekton) + ". Step: " + currentInteractionStep + ", Action: " + currentActionType);
+        boolean actionLogicAttempted = false;
+        boolean stepChanged = false;
 
         switch (currentInteractionStep) {
             case IDLE:
-                // If a Mushroomer is active, clicking a Tekton could select it as an "actor" for some actions.
+                this.selectedActor = clickedTekton;
+                System.out.println("  > Tekton " + getEntityID(clickedTekton) + " set as selectedActor (context).");
+                break;
+            case SELECT_ACTOR:
+                if (currentActionType == GameActionType.MUSHROOMER_SPREAD_SPORES && activePlayer instanceof Mushroomer) {
+                    MushroomBody body = clickedTekton.getMushroomNoPrint().getMushroomBodyNoPrint();
+                    if (body != null && body.getOwner() == activePlayer) {
+                        this.selectedActor = body; this.currentInteractionStep = InteractionStep.AWAITING_FINAL_TARGET; stepChanged = true;
+                        System.out.println("  > MushroomBody on T" + getEntityID(clickedTekton) + " selected as source for SPREAD. Awaiting target Tekton.");
+                    } else System.out.println("  > Tekton " + getEntityID(clickedTekton) + " has no body owned by " + activePlayer.getName() + " for spread.");
+                } else if (activePlayer instanceof Insecter && (currentActionType == GameActionType.INSECT_MOVE || currentActionType == GameActionType.INSECT_EAT_SPORE || currentActionType == GameActionType.INSECT_CUT_YARN)) {
+                    boolean foundInsect = false;
+                    for(Insect i : clickedTekton.getInsectsNoPrint()){ if(i.getOwnerNoPrint() == activePlayer) { mapInsectClicked(i); foundInsect = true; return; }} // mapInsectClicked fires state
+                    if (!foundInsect) System.out.println("  > No insect of " + activePlayer.getName() + " on T" + getEntityID(clickedTekton) + " to select for " + currentActionType);
+                } else { System.out.println("  > Clicked Tekton in SELECT_ACTOR step, but current action/player type mismatch. Expected specific actor type."); }
+                break;
+            case SELECT_FIRST_TARGET:
                 if (activePlayer instanceof Mushroomer) {
-                    // This is context-dependent. For now, just log.
-                    // Potentially set selectedActor = clickedTekton if it's a valid starting point for some default action.
-                } else {
-                    // If an insect is on this tekton and belongs to player, select the insect?
-                    List<Insect> playerInsectsOnTekton = clickedTekton.getInsectsNoPrint().stream()
-                            .filter(i -> i.getOwnerNoPrint() == activePlayer).collect(Collectors.toList());
-                    if(!playerInsectsOnTekton.isEmpty()){
-                        mapInsectClicked(playerInsectsOnTekton.get(0)); // Select the first one
-                        return;
-                    }
-                }
-                System.out.println("Game: Tekton clicked while IDLE. Action depends on context.");
+                    if (currentActionType == GameActionType.MUSHROOMER_GROW_BODY) actionLogicAttempted = tryGrowBody(clickedTekton);
+                    else if (currentActionType == GameActionType.MUSHROOMER_GROW_YARN) { this.firstTektonTarget = clickedTekton; this.currentInteractionStep = InteractionStep.SELECT_SECOND_TARGET; stepChanged = true; System.out.println("  > Grow Yarn FROM T" + getEntityID(clickedTekton) + ". Select destination.");}
+                    else if (currentActionType == GameActionType.MUSHROOMER_EAT) actionLogicAttempted = tryMushroomerEat(clickedTekton);
+                    else { System.out.println("  > Clicked Tekton in SELECT_FIRST_TARGET for unhandled Mushroomer action: " + currentActionType); }
+                } else { System.out.println("  > Clicked Tekton in SELECT_FIRST_TARGET, but active player is not Mushroomer."); }
                 break;
-
-            case SELECT_FIRST_TARGET: // Mushroomer actions: Grow Body, Grow Yarn (FROM)
-                if (currentActionType == GameActionType.MUSHROOMER_GROW_BODY) {
-                    // TODO: Validate if clickedTekton is valid for growing body
-                    System.out.println("Game: Attempting Grow Body on Tekton " + clickedTekton.getIDNoPrint());
-                    // ((Mushroomer)activePlayer).growBody(clickedTekton);
-                    // activePlayer.decrementActionsRemaining();
-                    completeActionAndPotentiallyEndTurn();
-                } else if (currentActionType == GameActionType.MUSHROOMER_GROW_YARN) {
-                    // TODO: Validate if clickedTekton is valid to grow yarn FROM
-                    this.firstTektonTarget = clickedTekton;
-                    this.currentInteractionStep = InteractionStep.SELECT_SECOND_TARGET;
-                    System.out.println("Game: Grow Yarn FROM " + clickedTekton.getIDNoPrint() + ". Select destination Tekton.");
-                } else if (currentActionType == GameActionType.MUSHROOMER_EAT) {
-                    // TODO: Validate if clickedTekton is valid target for Mushroomer eat
-                    System.out.println("Game: Mushroomer eating at Tekton " + clickedTekton.getIDNoPrint());
-                    // ((Mushroomer)activePlayer).eatAt(clickedTekton);
-                    // activePlayer.decrementActionsRemaining();
-                    completeActionAndPotentiallyEndTurn();
-                }
+            case SELECT_SECOND_TARGET:
+                if (currentActionType == GameActionType.MUSHROOMER_GROW_YARN && firstTektonTarget != null && activePlayer instanceof Mushroomer) {
+                    actionLogicAttempted = tryGrowYarn(firstTektonTarget, clickedTekton);
+                } else { System.out.println("  > Clicked Tekton in SELECT_SECOND_TARGET for unhandled action/state."); }
                 break;
-
-            case SELECT_SECOND_TARGET: // Mushroomer: Grow Yarn (TO)
-                if (currentActionType == GameActionType.MUSHROOMER_GROW_YARN && firstTektonTarget != null) {
-                    // TODO: Validate if clickedTekton is valid to grow yarn TO, from firstTektonTarget
-                    System.out.println("Game: Attempting Grow Yarn from " + firstTektonTarget.getIDNoPrint() + " TO " + clickedTekton.getIDNoPrint());
-                    // ((Mushroomer)activePlayer).GrowYarn(firstTektonTarget, clickedTekton);
-                    // activePlayer.decrementActionsRemaining();
-                    completeActionAndPotentiallyEndTurn();
-                }
-                break;
-
             case AWAITING_FINAL_TARGET:
-                if (selectedActor == null && currentActionType != GameActionType.MUSHROOMER_SPREAD_SPORES) {
-                    System.out.println("Game: Actor not selected for action " + currentActionType);
-                    cancelAction(); return;
-                }
-                performFinalTargetAction(clickedTekton, null);
+                if (selectedActor == null) { System.out.println("  > No actor selected for AWAITING_FINAL_TARGET."); cancelAction(); return; }
+                actionLogicAttempted = performFinalTargetAction(clickedTekton, null);
                 break;
-            default:
-                System.out.println("Game: Tekton clicked in unhandled step: " + currentInteractionStep);
-                break;
+            default: System.out.println("  > Tekton clicked in unhandled step: " + currentInteractionStep); break;
         }
-        fireStateChanged();
+        if (stepChanged || !actionLogicAttempted) { // If only a step changed, or no model action was attempted (e.g. just context selection)
+            fireStateChanged();
+        }
     }
 
     public void mapYarnClicked(MushroomYarn clickedYarn) {
-        System.out.println("Game: Yarn (ID: " + clickedYarn.getIDNoPrint() + ") clicked in step " + currentInteractionStep + " for action " + currentActionType);
-        if (currentInteractionStep == InteractionStep.AWAITING_FINAL_TARGET &&
-                currentActionType == GameActionType.INSECT_CUT_YARN && selectedActor instanceof Insect) {
-            // TODO: Validate if this yarn can be cut by the selectedInsect
-            System.out.println("Game: Insect " + ((Insect)selectedActor).getIDNoPrint() + " attempts to CUT yarn " + clickedYarn.getIDNoPrint());
-            // boolean success = ((Insect)selectedActor).cut(clickedYarn);
-            // if (success) { activePlayer.decrementActionsRemaining(); completeActionAndPotentiallyEndTurn(); }
-            // else { System.out.println("Cut failed."); cancelAction(); }
-            completeActionAndPotentiallyEndTurn(); // Placeholder for successful cut
-        } else if (currentInteractionStep == InteractionStep.AWAITING_FINAL_TARGET &&
-                currentActionType == GameActionType.INSECT_MOVE && selectedActor instanceof Insect) {
-            performFinalTargetAction(null, clickedYarn); // Pass yarn to the common handler
+        System.out.println("Game: mapYarnClicked - Yarn " + getEntityID(clickedYarn) + ". Step: " + currentInteractionStep);
+        boolean actionLogicAttempted = false;
+        if (currentInteractionStep == InteractionStep.AWAITING_FINAL_TARGET && selectedActor instanceof Insect) {
+            if (currentActionType == GameActionType.INSECT_CUT_YARN) actionLogicAttempted = tryCutYarn((Insect) selectedActor, clickedYarn);
+            else if (currentActionType == GameActionType.INSECT_MOVE) actionLogicAttempted = performFinalTargetAction(null, clickedYarn);
+            else System.out.println("  > Yarn clicked in AWAITING_FINAL_TARGET, but action " + currentActionType + " does not use yarn target for Insect.");
         } else {
-            System.out.println("Game: Yarn clicked in unexpected state.");
+            System.out.println("  > Yarn clicked in invalid step (" + currentInteractionStep + ") or with invalid/no actor for yarn interaction.");
+            // Provide feedback: "Please select an Insect first" or "This action doesn't target yarns"
+            if (currentInteractionStep == InteractionStep.SELECT_ACTOR && currentActionType.toString().startsWith("INSECT_")) {
+                JOptionPane.showMessageDialog(null, "Please select an Insect first, not a yarn.", "Selection Error", JOptionPane.WARNING_MESSAGE);
+            }
         }
+        if (!actionLogicAttempted) fireStateChanged(); // Update UI if state didn't change via completeAction/cancelAction
+    }
+
+    private boolean tryGrowBody(Tekton onTekton) { /* ... same ... */
+        if (!activePlayer.hasActionsLeft()) { noActionsLeft(); cancelAction(); return false; }
+        if (activePlayer instanceof Mushroomer) {
+            Mushroomer m = (Mushroomer) activePlayer; MushroomBody body = onTekton.getMushroomNoPrint().growBody(onTekton, m);
+            if (body != null) { activePlayer.decrementActionPoints(); completeAction(); return true; }
+            else { System.out.println("Game: Grow Body failed in tryGrowBody (e.g., cannot grow or body exists)."); /* Don't cancel, let user select another tekton */ fireStateChanged(); return false; }
+        }
+        cancelAction(); return false;
+    }
+    private boolean tryGrowYarn(Tekton from, Tekton to) { /* ... same ... */
+        if (!activePlayer.hasActionsLeft()) { noActionsLeft(); cancelAction(); return false; }
+        if (activePlayer instanceof Mushroomer) {
+            Mushroomer m = (Mushroomer) activePlayer; boolean success = m.GrowYarn(from, to);
+            if (success) { activePlayer.decrementActionPoints(); completeAction(); return true; }
+            else { System.out.println("Game: Grow Yarn failed (e.g., not adjacent, already exists)."); /* Don't cancel, let user select another TO tekton */ firstTektonTarget = from; currentInteractionStep = InteractionStep.SELECT_SECOND_TARGET; fireStateChanged(); return false; }
+        }
+        cancelAction(); return false;
+    }
+    private boolean tryMushroomerEat(Tekton target) { /* ... same ... */
+        if (!activePlayer.hasActionsLeft()) { noActionsLeft(); cancelAction(); return false; }
+        System.out.println("Game: Mushroomer " + activePlayer.getName() + " EAT action at T" + target.getIDNoPrint() + " (Placeholder).");
+        activePlayer.decrementActionPoints(); completeAction(); return true;
+    }
+    private boolean tryCutYarn(Insect byInsect, MushroomYarn yarnToCut) { /* ... same ... */
+        if (!activePlayer.hasActionsLeft()) { noActionsLeft(); cancelAction(); return false; }
+        boolean success = byInsect.cut(yarnToCut);
+        if(success) { activePlayer.decrementActionPoints(); completeAction(); return true; }
+        else { System.out.println("Game: Cut Yarn failed (e.g., already cut, cannot cut)."); /* Don't cancel, let user select another yarn */ fireStateChanged(); return false;}
+    }
+
+    private boolean performFinalTargetAction(Tekton targetTekton, MushroomYarn targetYarn) { /* ... same ... */
+        if (!activePlayer.hasActionsLeft() && currentActionType != GameActionType.NONE) { noActionsLeft(); if(currentInteractionStep != InteractionStep.IDLE) cancelAction(); return false; }
+        System.out.println("Game: Performing final target action: " + currentActionType + " with actor: " + (selectedActor != null ? selectedActor.getClass().getSimpleName() + "(" + getEntityID(selectedActor) + ")" : "null"));
+        boolean actionTaken = false;
+        switch (currentActionType) {
+            case INSECT_MOVE: if (selectedActor instanceof Insect) { Insect i = (Insect)selectedActor; if (targetYarn != null) actionTaken = i.move(targetYarn); } break;
+            case INSECT_EAT_SPORE: if (selectedActor instanceof Insect && targetTekton != null) { Insect i = (Insect)selectedActor; if (targetTekton == i.getTektonNoPrint()) { Mushroom mgr = targetTekton.getMushroomNoPrint(); if (mgr!=null && !mgr.getSporesNoPrint().isEmpty()) actionTaken = i.consumeSpore(mgr.getSporesNoPrint().get(0));} else System.out.println("Game: Insect must be on Tekton to eat spores.");} break;
+            case MUSHROOMER_SPREAD_SPORES:
+                if (activePlayer instanceof Mushroomer && targetTekton != null && sporeTypeToSpreadContext != null && selectedActor instanceof MushroomBody) {
+                    Mushroomer m = (Mushroomer) activePlayer; MushroomBody sb = (MushroomBody)selectedActor; Tekton st = sb.getTektonNoPrint();
+                    if (sb.getOwner() == m) { int id = m.getSporesOwned().size() + (st!=null?st.getIDNoPrint()*1000:0) + targetTekton.getIDNoPrint()*100 +1; Spore sp = st.getMushroomNoPrint().spreadSporeTo(targetTekton, m, sporeTypeToSpreadContext, id); actionTaken = (sp != null); }
+                    else System.out.println("Game: Source MushroomBody not owned by active player.");
+                } else System.out.println("Game: Conditions not met for SPREAD_SPORES. Actor: " + selectedActor + ", SporeType: " + sporeTypeToSpreadContext);
+                sporeTypeToSpreadContext = null; break;
+        }
+        if (actionTaken) { activePlayer.decrementActionPoints(); System.out.println("Game: Action " + currentActionType + " successful. Decremented AP."); completeAction(); return true; }
+        else { System.out.println("Game: Action " + currentActionType + " FAILED in model or conditions unmet."); if (currentActionType != GameActionType.NONE) { /* Don't always cancel; let user retry target for current actor/action */ currentInteractionStep = InteractionStep.AWAITING_FINAL_TARGET; fireStateChanged(); } else fireStateChanged(); return false; }
+    }
+    private void completeAction() { /* ... same ... */
+        System.out.println("Game: Completing action " + currentActionType + ". Resetting to IDLE.");
+        currentActionType = GameActionType.NONE; currentInteractionStep = InteractionStep.IDLE;
+        firstTektonTarget = null; // Clear two-step target
+        // Keep selectedActor for info panel, cleared by nextPlayer or new startAction
+        fireStateChanged();
+    }
+    private void noActionsLeft(){ /* ... same ... */
+        System.out.println("Game: No actions left for " + (activePlayer != null ? activePlayer.getName() : "N/A"));
+        JOptionPane.showMessageDialog(null, "No actions remaining this turn!", "Out of Actions", JOptionPane.INFORMATION_MESSAGE);
+    }
+    public void nextPlayer() { /* ... same, calls activePlayer.resetActionPoints() ... */
+        if (players.isEmpty()) return; int index = players.indexOf(activePlayer);
+        activePlayer = players.get((index + 1) % players.size());
+        if(activePlayer != null) activePlayer.resetActionPoints();
+        System.out.println("Game: Next player is " + (activePlayer != null ? activePlayer.getName() : "None") + ". Turn begins.");
+        cancelAction(); this.selectedActor = null; this.firstTektonTarget = null; this.sporeTypeToSpreadContext = null;
+        if (index == players.size() - 1 && players.size() > 0) updateGameRound();
         fireStateChanged();
     }
 
-    private void performFinalTargetAction(Tekton targetTekton, MushroomYarn targetYarn) {
-        boolean actionTaken = false;
-        switch (currentActionType) {
-            case INSECT_MOVE:
-                Insect movingInsect = (Insect) selectedActor;
-                // TODO: Validate if targetYarn (or targetTekton if move is Tekton to Tekton) is a valid move
-                if (targetYarn != null) { // Assuming move along yarn
-                    System.out.println("Game: Insect " + movingInsect.getIDNoPrint() + " attempts to MOVE along Yarn " + targetYarn.getIDNoPrint());
-                    // boolean success = movingInsect.move(targetYarn);
-                    // if (success) actionTaken = true; else System.out.println("Move failed.");
-                    actionTaken = true; // Placeholder
-                } else if (targetTekton != null) { // Placeholder if move is Tekton to Tekton
-                    System.out.println("Game: Insect " + movingInsect.getIDNoPrint() + " attempts to MOVE to Tekton " + targetTekton.getIDNoPrint());
-                    // Tekton currentLoc = movingInsect.getTektonNoPrint();
-                    // boolean success = movingInsect.move(findPath(currentLoc, targetTekton)); // You'd need pathfinding
-                    // if (success) actionTaken = true; else System.out.println("Move failed.");
-                    actionTaken = true; // Placeholder
+    public void updateGameRound() { /* ... same, including checkForRandomTektonSplit() ... */
+        System.out.println("Game: Updating game round (effects, etc.).");
+        boolean mapMightHaveChanged = false;
+        for (Tekton tekton : new ArrayList<>(tektons)) {
+            for (Insect insect : new ArrayList<>(tekton.getInsectsNoPrint())) insect.nextTurn();
+            Mushroom mushroomManager = tekton.getMushroomNoPrint();
+            if (mushroomManager != null) {
+                List<MushroomYarn> toRemove = mushroomManager.Update();
+                if (toRemove != null && !toRemove.isEmpty()) {
+                    for(MushroomYarn yarn : new HashSet<>(toRemove)){
+                        if(yarn.getOwner() != null) yarn.getOwner().removeMushroomYarn(yarn);
+                        Tekton[] yarnTektons = yarn.getTektonsNoPrint();
+                        if(yarnTektons != null && yarnTektons.length == 2){
+                            if(yarnTektons[0] != null && yarnTektons[0].getMushroomNoPrint() != null) yarnTektons[0].getMushroomNoPrint().removeMushroomYarn(yarn);
+                            if(yarnTektons[1] != null && yarnTektons[1].getMushroomNoPrint() != null) yarnTektons[1].getMushroomNoPrint().removeMushroomYarn(yarn);
+                        }
+                    }
+                    mapMightHaveChanged = true;
                 }
-                break;
-            case INSECT_EAT_SPORE:
-                Insect eatingInsect = (Insect) selectedActor;
-                // TODO: Spores are on Tektons. Target must be the Tekton the insect is on.
-                if (targetTekton == eatingInsect.getTektonNoPrint()) {
-                    System.out.println("Game: Insect " + eatingInsect.getIDNoPrint() + " EATS SPORE on Tekton " + targetTekton.getIDNoPrint());
-                    // List<Spore> sporesOnTekton = targetTekton.getMushroomNoPrint().getSporesNoPrint();
-                    // if(!sporesOnTekton.isEmpty()){ boolean success = eatingInsect.consumeSpore(sporesOnTekton.get(0)); if(success) actionTaken=true;}
-                    actionTaken = true; // Placeholder
-                } else {
-                    System.out.println("Game: Insect can only eat spores on its current Tekton.");
-                }
-                break;
-            // INSECT_CUT_YARN is handled by mapYarnClicked directly for now
-            case MUSHROOMER_SPREAD_SPORES:
-                // TODO: Validate if targetTekton is valid for spreading spores
-                System.out.println("Game: Mushroomer SPREADS SPORES to Tekton " + targetTekton.getIDNoPrint());
-                // ((Mushroomer)activePlayer).releaseSpore(targetTekton); // Assuming a method like this
-                actionTaken = true; // Placeholder
-                break;
-            default:
-                System.out.println("Game: Final target action for " + currentActionType + " not fully defined.");
-                break;
+            }
         }
+        checkForRandomTektonSplit();
+        if (mapMightHaveChanged) fireMapChanged();
+        fireStateChanged();
+        System.out.println("Game: Game round update finished.");
+    }
 
-        if (actionTaken) {
-            // activePlayer.decrementActionsRemaining();
-            completeActionAndPotentiallyEndTurn();
-        } else {
-            cancelAction(); // If action failed or target was invalid
+    private void checkForRandomTektonSplit() {
+        Random rnd = new Random();
+        if (tektons == null || tektons.isEmpty() || tektons.size() < 2) return; // Need at least 2 tektons to split one and have remaining.
+        if (rnd.nextInt(100) < 5) { // 5% chance each round
+            Tekton tektonToSplit = tektons.get(rnd.nextInt(tektons.size()));
+            System.out.println("GAME EVENT: Attempting to randomly split Tekton " + getEntityID(tektonToSplit));
+            splitTekton(tektonToSplit);
         }
     }
 
+    public void splitTekton(Tekton tektonToSplit) { /* ... same robust splitTekton logic ... */
+        if (tektonToSplit == null || !tektons.contains(tektonToSplit) || tektons.size() < 1) { System.out.println("Game.splitTekton: Cannot split. Invalid conditions."); return; }
+        System.out.println("Game.splitTekton: Splitting Tekton " + getEntityID(tektonToSplit));
+        // Create a new Tekton of a random type, or default
+        Random rnd = new Random();
+        int newTektonID = 0; // Let Tekton constructor assign ID
+        Tekton newTekton;
+        // For simplicity, new split part is Default, or copy type of original
+        if (rnd.nextBoolean()) newTekton = new DefaultTekton(newTektonID);
+        else { try { newTekton = tektonToSplit.getClass().getDeclaredConstructor().newInstance(); newTekton.setID(newTektonID); } catch (Exception ex) { newTekton = new DefaultTekton(newTektonID); } }
 
-    private void completeActionAndPotentiallyEndTurn() {
-        System.out.println("Game: Action " + currentActionType + " completed.");
-        GameActionType completedAction = currentActionType; // Store before reset
-        currentActionType = GameActionType.NONE;
-        currentInteractionStep = InteractionStep.IDLE;
-        // selectedActor = null; // Keep selectedActor for info panel, clear on new action or turn end
-        firstTektonTarget = null;
+        List<Tekton> originalNeighbors = new ArrayList<>(tektonToSplit.getAdjacentTektonsNoPrint());
+        int halfNeighbors = originalNeighbors.size() / 2;
+        for (int i = 0; i < halfNeighbors; i++) {
+            Tekton neighborToMove = originalNeighbors.get(i);
+            tektonToSplit.removeAdjacentTekton(neighborToMove); newTekton.addAdjacentTekton(neighborToMove);
+        }
+        tektonToSplit.addAdjacentTekton(newTekton);
 
-        // TODO: Check activePlayer.getActionsRemaining(). If 0, or player chose to end turn:
-        // For now, assume one action ends turn for simplicity in GUI hookup
-        // if (activePlayer.getActionsRemaining() <= 0 || completedAction == GameActionType.MUSHROOMER_SPREAD_SPORES /* etc */) {
-        //    nextPlayer();
-        // } else {
-        //    fireStateChanged(); // Update UI (e.g. actions remaining)
-        // }
-        fireStateChanged(); // Always fire state change to update UI
-        // Decide if turn ends based on game rules / player choice / actions remaining
-        // For this example, let's not auto-end turn here. Player uses "End Turn" button.
+        List<Insect> insectsToMove = new ArrayList<>(); int c=0;
+        for(Insect insect : new ArrayList<>(tektonToSplit.getInsectsNoPrint())) if (c++ % 2 == 0) insectsToMove.add(insect);
+        for(Insect insect : insectsToMove) insect.setTekton(newTekton);
+
+        Mushroom originalMushroomManager = tektonToSplit.getMushroomNoPrint();
+        if (originalMushroomManager != null) originalMushroomManager.removeMushroomBody(); // Original loses body
+        // New tekton has its own fresh mushroomManager from its constructor. Yarns remain for now.
+        this.tektons.add(newTekton);
+        System.out.println("Game.splitTekton: T" + getEntityID(tektonToSplit) + " split. New Tekton: " + getEntityID(newTekton));
+        fireMapChanged(); fireStateChanged();
     }
 
-
-    // --- Methods for MapPanel Highlighting ---
-    public List<Object> getHighlightableEntities() {
-        List<Object> highlights = new ArrayList<>();
-        if (activePlayer == null) return highlights;
-
+    public List<Object> getHighlightableEntities() { /* ... same as previous full version ... */
+        List<Object> highlights = new ArrayList<>(); if (activePlayer == null) return highlights;
+        // System.out.println("GET_HIGHLIGHTS: Player=" + activePlayer.getName() + ", Step=" + currentInteractionStep + // (verbose log)
         switch (currentInteractionStep) {
             case SELECT_ACTOR:
-                if (currentActionType == GameActionType.INSECT_MOVE || currentActionType == GameActionType.INSECT_EAT_SPORE || currentActionType == GameActionType.INSECT_CUT_YARN) {
-                    if (activePlayer instanceof Insecter) {
-                        highlights.addAll(((Insecter) activePlayer).getInsects());
-                    }
-                }
+                if (currentActionType == GameActionType.MUSHROOMER_SPREAD_SPORES && activePlayer instanceof Mushroomer) highlights.addAll(((Mushroomer)activePlayer).getMushroomBodies());
+                else if (activePlayer instanceof Insecter && (currentActionType == GameActionType.INSECT_MOVE || currentActionType == GameActionType.INSECT_EAT_SPORE || currentActionType == GameActionType.INSECT_CUT_YARN)) highlights.addAll(((Insecter) activePlayer).getInsects());
                 break;
             case SELECT_FIRST_TARGET:
-                if (currentActionType == GameActionType.MUSHROOMER_GROW_BODY) {
-                    // highlights.addAll(getValidGrowBodyTargets((Mushroomer)activePlayer));
-                    highlights.addAll(tektons); // Placeholder: all tektons
-                } else if (currentActionType == GameActionType.MUSHROOMER_GROW_YARN) {
-                    // highlights.addAll(getValidGrowYarnFromTargets((Mushroomer)activePlayer));
-                    highlights.addAll(tektons); // Placeholder: all tektons
-                }
-                break;
+                if (activePlayer instanceof Mushroomer) { Mushroomer m = (Mushroomer) activePlayer;
+                    if (currentActionType == GameActionType.MUSHROOMER_GROW_BODY) highlights.addAll(m.whereCanIGrowMushroomBodies(tektons));
+                    else if (currentActionType == GameActionType.MUSHROOMER_GROW_YARN) highlights.addAll(m.fromWhereCanIGrowYarns());
+                    else if (currentActionType == GameActionType.MUSHROOMER_EAT) highlights.addAll(tektons); } break;
             case SELECT_SECOND_TARGET:
-                if (currentActionType == GameActionType.MUSHROOMER_GROW_YARN && firstTektonTarget != null) {
-                    // highlights.addAll(getValidGrowYarnToTargets((Mushroomer)activePlayer, firstTektonTarget));
-                    for(Tekton t : firstTektonTarget.getAdjacentTektonsNoPrint()){ // Placeholder
-                        if(t != firstTektonTarget) highlights.add(t);
-                    }
-                }
+                if (currentActionType == GameActionType.MUSHROOMER_GROW_YARN && firstTektonTarget != null && activePlayer instanceof Mushroomer) highlights.addAll(((Mushroomer)activePlayer).whereCanIGrowYarnsFromThisTekton(firstTektonTarget));
                 break;
             case AWAITING_FINAL_TARGET:
                 if (selectedActor instanceof Insect) {
-                    Insect insect = (Insect) selectedActor;
-                    if (currentActionType == GameActionType.INSECT_MOVE) {
-                        // highlights.addAll(getValidMoveTargetsForInsect(insect)); // Should return List<MushroomYarn> or List<Tekton>
-                        // Placeholder: all adjacent yarns
-                        for(Player p : players) {
-                            if(p instanceof Mushroomer) {
-                                for(MushroomYarn yarn : ((Mushroomer)p).getMushroomYarns()){
-                                    if(!yarn.getIsCut() && (yarn.getTektonsNoPrint()[0] == insect.getTektonNoPrint() || yarn.getTektonsNoPrint()[1] == insect.getTektonNoPrint())){
-                                        highlights.add(yarn);
-                                    }
-                                }
-                            }
-                        }
-                    } else if (currentActionType == GameActionType.INSECT_EAT_SPORE) {
-                        if (insect.getTektonNoPrint().getMushroomNoPrint() != null &&
-                                !insect.getTektonNoPrint().getMushroomNoPrint().getSporesNoPrint().isEmpty()) {
-                            highlights.add(insect.getTektonNoPrint()); // Highlight the Tekton insect is on
-                        }
-                    } else if (currentActionType == GameActionType.INSECT_CUT_YARN) {
-                        // highlights.addAll(getValidCutYarnTargetsForInsect(insect));
-                        for(Player p : players) { // Placeholder: all nearby yarns
-                            if(p instanceof Mushroomer) {
-                                for(MushroomYarn yarn : ((Mushroomer)p).getMushroomYarns()){
-                                    if(!yarn.getIsCut() && (yarn.getTektonsNoPrint()[0] == insect.getTektonNoPrint() || yarn.getTektonsNoPrint()[1] == insect.getTektonNoPrint())){
-                                        highlights.add(yarn);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } else if (currentActionType == GameActionType.MUSHROOMER_SPREAD_SPORES) {
-                    // highlights.addAll(getValidSpreadSporesToTargets((Mushroomer)activePlayer));
-                    for(Tekton t : tektons){ // Placeholder: some tektons
-                        if(Math.random() > 0.5) highlights.add(t);
-                    }
-                }
-                break;
+                    Insect insect = (Insect) selectedActor; Tekton currentInsectTekton = insect.getTektonNoPrint(); if (currentInsectTekton == null) break;
+                    if (currentActionType == GameActionType.INSECT_MOVE) { for(Player pOwn : players) { if(pOwn instanceof Mushroomer) { for(MushroomYarn yarn : ((Mushroomer)pOwn).getMushroomYarns()){ if(!yarn.getIsCut()){ Tekton t1=yarn.getTektonsNoPrint()[0],t2=yarn.getTektonsNoPrint()[1]; if(t1==currentInsectTekton&&t2!=null){highlights.add(yarn);highlights.add(t2);} else if(t2==currentInsectTekton&&t1!=null){highlights.add(yarn);highlights.add(t1);}}}}}}
+                    else if (currentActionType == GameActionType.INSECT_EAT_SPORE) { Mushroom mMan = currentInsectTekton.getMushroomNoPrint(); if (mMan != null && !mMan.getSporesNoPrint().isEmpty()) highlights.add(currentInsectTekton); }
+                    else if (currentActionType == GameActionType.INSECT_CUT_YARN) { for(Player pOwn : players) { if(pOwn instanceof Mushroomer){ for(MushroomYarn yarn : ((Mushroomer)pOwn).getMushroomYarns()){ if(!yarn.getIsCut() && (yarn.getTektonsNoPrint()[0] == currentInsectTekton || yarn.getTektonsNoPrint()[1] == currentInsectTekton)) highlights.add(yarn);}}}}
+                } else if (selectedActor instanceof MushroomBody && currentActionType == GameActionType.MUSHROOMER_SPREAD_SPORES && activePlayer instanceof Mushroomer) {
+                    MushroomBody sourceBody = (MushroomBody) selectedActor;
+                    highlights.addAll(((Mushroomer)activePlayer).whereCanISpreadSpores(sourceBody.getTektonNoPrint(), sporeTypeToSpreadContext, tektons)); // Pass all tektons if method needs it
+                } break;
         }
+        // System.out.println("Game: Highlighting " + highlights.size() + " entities: " + highlights.stream().map(this::getEntityID).collect(Collectors.joining(", ")));
         return highlights;
     }
-
-
-    // --- Standard Game Methods (simplified, ensure your actual logic is robust) ---
-    public void setTektons(List<Tekton> tektons) { this.tektons = tektons; fireMapChanged(); }
-    public void setPlayers(List<Player> players) {
-        this.players = players;
-        if (activePlayer == null && !players.isEmpty()) {
-            activePlayer = players.get(0);
-            // if(activePlayer != null) activePlayer.resetActions();
-        }
-        fireStateChanged();
+    private String getEntityID(Object entity) { /* ... same as before ... */
+        if (entity == null) return "null_entity";
+        if (entity instanceof Tekton) return "T" + ((Tekton) entity).getIDNoPrint();
+        if (entity instanceof Insect) return "I" + ((Insect) entity).getIDNoPrint();
+        if (entity instanceof MushroomBody) return "MB" + ((MushroomBody) entity).getIDNoPrint();
+        if (entity instanceof MushroomYarn) return "MY" + ((MushroomYarn) entity).getIDNoPrint();
+        if (entity instanceof Spore) return "S" + ((Spore) entity).getIDNoPrint();
+        return entity.getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(entity));
     }
-    public List<Tekton> getTektons() { return tektons; }
-    public List<Player> getPlayers() { return players; }
-    public Player getActivePlayer() { return activePlayer; }
-
-    public void nextPlayer() {
-        if (players.isEmpty()) return;
-        int index = players.indexOf(activePlayer);
-        activePlayer = players.get((index + 1) % players.size());
-        // if(activePlayer != null) activePlayer.resetActions(); // Reset actions for the new player
-
-        System.out.println("Next player: " + (activePlayer != null ? activePlayer.getName() : "None") + " Turn begins.");
-        cancelAction(); // Resets interaction state for the new player
-        this.selectedActor = null; // Clear selected actor from previous turn for info panel
-
-        if (index == players.size() - 1) { // If wrapped around to the first player
-            this.updateGameRound(); // Perform end-of-round updates
-        }
-        fireStateChanged(); // Also fires map change if needed via listeners
-    }
-
-    public void updateGameRound() { // Renamed from 'update' to be more specific
-        System.out.println("Game.updateGameRound() called (effects, etc.)");
-        // ... your existing update logic for insects, mushrooms, yarns ...
-        for (Tekton tekton : tektons) {
-            for(Insect insect : new ArrayList<>(tekton.getInsectsNoPrint())){ // Iterate copy
-                insect.nextTurn();
-            }
-            if(tekton.getMushroomNoPrint() != null){
-                List<MushroomYarn> toRemove = tekton.getMushroomNoPrint().Update();
-                // TODO: Handle yarn removal properly (from player lists too)
-            }
-        }
-        System.out.println("Game.updateGameRound() finished.");
-    }
-
-    // ... other methods like determineWinner, split, add/remove entities ...
-    // Make sure they call fireMapChanged() or fireStateChanged() appropriately.
 }

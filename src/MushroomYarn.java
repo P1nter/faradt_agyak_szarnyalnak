@@ -1,247 +1,114 @@
-import java.util.ArrayList;
-import java.util.List;
+// MushroomYarn.java
 import java.util.Arrays;
-import java.util.Observable;
+// import java.util.Observable; // Legacy
 
-/**
- * Represents a connection or pathway of mushroom filaments between two Tektons.
- * <p>
- * A {@code MushroomYarn} links exactly two {@code Tekton} objects. It can be cut,
- * and it has a time-based decay mechanism. The yarn can also temporarily disappear
- * and reappear after a certain duration.
- * </p>
- *
- * @see Tekton
- * @since 1.0
- */
-public class MushroomYarn extends Observable {
-    private Tekton[] tektons = new Tekton[2]; // Fixed size array for exactly 2 Tektons
+public class MushroomYarn /* extends Observable */ {
+    private Tekton[] tektons = new Tekton[2];
     private boolean isCut = false;
-    private int timeBack = 0;
-    private int ID;
-    private Mushroomer Owner;
+    private int timeBack = 0; // Time until reappears if it's a disappearing type that was cut
+    private final int ID;
+    private Mushroomer owner;
+    private static int nextIDCounter = 1;
 
-    /**
-     * Checks if this mushroom yarn has been cut.
-     *
-     * @return {@code true} if the yarn is cut, {@code false} otherwise.
-     */
-    public boolean getIsCut() {
-        System.out.println("MushroomYarn.getIsCut() called");
-        System.out.println("MushroomYarn.getIsCut() returned");
-        return isCut;
-    }
-    public Mushroomer getOwner(){
-        System.out.println("MushroomYarn.getOwner() called");
-        System.out.println("MushroomYarn.getOwner() returned");
-        return Owner;
-    }
-    public void setOwner(Mushroomer mushroomer){
-        System.out.println("MushroomYarn.setOwner() called");
-        this.Owner = mushroomer;
-        System.out.println("MushroomYarn.setOwner() returned");
-    }
+    public MushroomYarn(Tekton tekton1, Tekton tekton2, Mushroomer owner, int id) {
+        if (tekton1 == null || tekton2 == null || owner == null) {
+            throw new IllegalArgumentException("Tektons and Owner must be non-null for MushroomYarn.");
+        }
+        if (id <= 0) this.ID = nextIDCounter++; else this.ID = id;
+        if (id >= nextIDCounter) nextIDCounter = id + 1;
 
-    /**
-     * Gets the remaining time until this yarn reappears if it has disappeared.
-     *
-     * @return The number of turns remaining before the yarn reappears. A value of 0 indicates the yarn is present.
-     */
-    public int getTimeBack() {
-        System.out.println("MushroomYarn.getTimeBack() called");
-        System.out.println("MushroomYarn.getTimeBack() returned " + timeBack);
-        return timeBack;
+        this.tektons[0] = tekton1;
+        this.tektons[1] = tekton2;
+        this.owner = owner;
+        this.owner.addMushroomYarn(this); // Add to owner's list
+
+        // Tekton's mushroom manager should also know about this yarn
+        // This was previously in constructor, but should be done by GrowYarn method to ensure symmetry and avoid issues
+        // tekton1.getMushroomNoPrint().addMushroomYarn(this);
+        // tekton2.getMushroomNoPrint().addMushroomYarn(this);
+
+        // Example: disappearing yarn logic could be here if Tekton type dictates it
+        if (tektons[0].isDisappearing() || tektons[1].isDisappearing()) {
+            // this.timeBack = 5; // Yarn on such tektons might start with a timer
+        }
+        // System.out.println("MushroomYarn CONSTRUCTOR: ID " + this.ID + " created between T" + tekton1.getIDNoPrint() + " and T" + tekton2.getIDNoPrint() + " for " + owner.getName());
     }
 
-    /**
-     * Sets the time until this yarn reappears after disappearing.
-     *
-     * @param timeBack The number of turns before the yarn reappears.
-     */
-    public void setTimeBack(int timeBack) {
-        System.out.println("MushroomYarn.setTimeBack(int) called");
-
-        this.timeBack = timeBack;
-        System.out.println("MushroomYarn.setTimeBack(int) returned");
+    // Simpler constructor if ID is auto-generated and owner set later, or for neutral yarns
+    public MushroomYarn(Tekton tekton1, Tekton tekton2) {
+        this(tekton1, tekton2, null, 0); // Owner can be set later
     }
 
-    /**
-     * Marks this mushroom yarn as cut.
-     */
-    public void setCut() {
-        System.out.println("MushroomYarn.setCut() called");
-        isCut = true;
-        System.out.println("MushroomYarn.setCut() returned");
-    }
 
-    /**
-     * Updates the state of the mushroom yarn for the current game turn.
-     * <p>
-     * If the {@code timeBack} is greater than 0, it decrements. If {@code timeBack}
-     * reaches 0, this method returns {@code true}, indicating that the yarn should
-     * potentially be removed or its state updated (e.g., reappearing).
-     * </p>
-     *
-     * @return {@code true} if the yarn's disappearance timer has reached 0, {@code false} otherwise.
-     */
-    public boolean Update(){
-        System.out.println("MushroomYarn.Update() called");
+    public boolean getIsCut() { return isCut; }
+    public boolean getIsCutNoPrint() { return isCut; }
+    // public void setCutStatus(boolean cut) { this.isCut = cut; } // Internal use if needed
+
+    public Mushroomer getOwner() { return owner; }
+    public void setOwner(Mushroomer owner) { this.owner = owner; }
+
+    public int getTimeBackNoPrint() { return timeBack; }
+    public int getTimeBack() { return timeBack; }
+    public void setTimeBack(int timeBack) { this.timeBack = timeBack; }
+
+
+    public boolean Update() { // Called each game round
         if (timeBack > 0) {
             timeBack--;
             if (timeBack == 0) {
-                //tektons[0].getMushroom().getMushroomYarns().remove(this);
-                //tektons[1].getMushroom().getMushroomYarns().remove(this);
-                //this.getOwner().getMushroomYarns().remove(this);
-                return true;
+                System.out.println("MushroomYarn ID " + ID + ": Timer up. It might reappear or be fully removed.");
+                // If it was cut and timer is up, it could become uncut or just be removed.
+                // For a disappearing yarn type, this means it's gone.
+                if (this.isCut) { // If it was cut and timer is up, assume it's gone for good
+                    return true; // Signal to Game to fully remove it
+                } else {
+                    // If it was a disappearing type of yarn (not necessarily cut)
+                    // and its timer is up, signal for removal
+                    if (tektons[0].isDisappearing() || tektons[1].isDisappearing()){
+                        // This yarn type might inherently disappear
+                        // return true; // This needs specific game rule implementation
+                    }
+                }
             }
         }
-        System.out.println("MushroomYarn.Update() returned");
-        return false;
+        return false; // Not disappeared this turn due to timer
     }
 
-    /**
-     * Constructs a new {@code MushroomYarn} connecting the two specified Tektons.
-     *
-     * @param tekton1 The first {@code Tekton} to be connected by the yarn. Must not be null.
-     * @param tekton2 The second {@code Tekton} to be connected by the yarn. Must not be null.
-     * @throws IllegalArgumentException If either {@code tekton1} or {@code tekton2} is null.
-     */
-    public MushroomYarn(Tekton tekton1, Tekton tekton2) {
-        System.out.println("MushroomYarn.MushroomYarn(Tekton, Tekton) called");
-        if (tekton1 == null || tekton2 == null) {
-            throw new IllegalArgumentException("Both Tektons must be non-null.");
-        }
-        this.ID = 0; // Default ID, can be set later if needed
-        this.tektons[0] = tekton1;
-        this.tektons[1] = tekton2;
-        System.out.println("MushroomYarn.MushroomYarn(Tekton, Tekton) returned");
-    }
+    public int getIDNoPrint() { return ID; }
+    public int getID() { return ID; }
 
-    public int getID() {
-        System.out.println("MushroomYarn.getID() called");
-        System.out.println("MushroomYarn.getID() returned " + ID);
+    public Tekton[] getTektonsNoPrint() { return tektons; } // Return direct array for internal checks
+    public Tekton[] getTektons() { return Arrays.copyOf(tektons, tektons.length); } // Defensive copy
 
-        try {
-            return ID;
-        } catch(NullPointerException e){
-            System.out.println("ID is null");
-        }
-        return 0;
-    }
-    public boolean getIsCutNoPrint() {
-        return isCut;
-    }
+    // public void updateTektons(Tekton t1, Tekton t2) { /* ... if yarns can be moved ... */ }
 
-    public int getTimeBackNoPrint() {
-        return timeBack;
-    }
-
-    public int getIDNoPrint() {
-        return ID;
-    }
-
-    public Tekton[] getTektonsNoPrint() {
-        return Arrays.copyOf(tektons, tektons.length); // Return a copy to prevent external modification
-    }
-
-    public MushroomYarn(Tekton tekton1, Tekton tekton2, Mushroomer mushroomer, int ID) {
-        System.out.println("MushroomYarn.MushroomYarn(Tekton, Tekton) called");
-        if (tekton1 == null || tekton2 == null) {
-            throw new IllegalArgumentException("Both Tektons must be non-null.");
-        }
-        this.ID = ID; // Default ID, can be set later if needed
-        this.tektons[0] = tekton1;
-        this.tektons[1] = tekton2;
-        tekton1.getMushroom().addMushroomYarn(this);
-        tekton2.getMushroom().addMushroomYarn(this);
-
-        this.Owner = mushroomer;
-        mushroomer.addMushroomYarn(this);
-
-        if((tektons[0].canCut() || tektons[1].canCut())) {
-            setTimeBack(5);
-        }
-
-        System.out.println("MushroomYarn.MushroomYarn(Tekton, Tekton) returned");
-    }
-
-    /**
-     * Gets the two {@code Tekton} objects connected by this mushroom yarn.
-     * <p>
-     * Returns a copy of the internal array to prevent external modification.
-     * </p>
-     *
-     * @return An array of two {@code Tekton} objects representing the connection.
-     */
-    public Tekton[] getTektons() {
-        System.out.println("MushroomYarn.getTektons() called");
-        System.out.println("MushroomYarn.getTektons() returned Tekton[]");
-        return Arrays.copyOf(tektons, tektons.length); // Return a copy to prevent external modification
-    }
-
-    /**
-     * Updates the two {@code Tekton} objects connected by this mushroom yarn.
-     *
-     * @param tekton1 The new first {@code Tekton} for the connection. Must not be null.
-     * @param tekton2 The new second {@code Tekton} for the connection. Must not be null.
-     * @throws IllegalArgumentException If either {@code tekton1} or {@code tekton2} is null.
-     */
-    public void updateTektons(Tekton tekton1, Tekton tekton2) {
-        System.out.println("MushroomYarn.updateTektons(Tekton, Tekton) called");
-        if (tekton1 == null || tekton2 == null) {
-            throw new IllegalArgumentException("Both Tektons must be non-null.");
-        }
-        this.tektons[0] = tekton1;
-        this.tektons[1] = tekton2;
-        System.out.println("MushroomYarn.updateTektons(Tekton, Tekton) returned");
-    }
-
-    /**
-     * Initiates the decay process of this mushroom yarn.
-     * <p>
-     * Note: The current implementation does not specify how the yarn decays.
-     * This method might be intended for future implementation of a decay mechanic.
-     * </p>
-     */
-
-
-    /**
-     * Attempts to cut this mushroom yarn.
-     * <p>
-     * The yarn can only be cut if both connected Tektons allow cutting ({@code canCut()} returns true)
-     * and at least one of the connected Tektons has a mushroom body. If these conditions are met,
-     * the yarn is marked as cut, and a timer is set for it to disappear for 3 turns.
-     * </p>
-     *
-     * @return {@code true} if the yarn was successfully cut, {@code false} otherwise.
-     */
     public boolean cut() {
-        System.out.println("MushroomYarn.cut() called");
-        if(!(tektons[0].canCut() && tektons[1].canCut())){
-            System.out.println("MushroomYarn.cut() returned false");
+        System.out.println("MushroomYarn ID " + ID + ": cut() method called.");
+        if (isCut) {
+            System.out.println("  Yarn " + ID + " is already cut.");
+            return false; // Cannot cut an already cut yarn again by this logic
+        }
+        // Check if connected Tektons allow cutting.
+        // Your Tekton subtypes (like LifeTekton) override canCut().
+        if (!(tektons[0].canCut() && tektons[1].canCut())) {
+            System.out.println("  Yarn " + ID + " cannot be cut; one or both Tektons (T" + tektons[0].getIDNoPrint() + " type: " + tektons[0].getClass().getSimpleName() +
+                    ", T" + tektons[1].getIDNoPrint() + " type: " + tektons[1].getClass().getSimpleName() + ") prevent it.");
             return false;
         }
-        /*
-        boolean m1 = tektons[0].getMushroom().hasMushroomBody();
-        boolean m2 = tektons[1].getMushroom().hasMushroomBody();
 
-        if (!m1 && !m2) {
-            System.out.println("MushroomYarn.cut() returned false");
-            return false;
-        }
-        */
+        // Additional game rule: Can only cut if one of the Tektons has a MushroomBody?
+        // boolean bodyAtEnd1 = tektons[0].getMushroomNoPrint() != null && tektons[0].getMushroomNoPrint().hasMushroomBody();
+        // boolean bodyAtEnd2 = tektons[1].getMushroomNoPrint() != null && tektons[1].getMushroomNoPrint().hasMushroomBody();
+        // if (!bodyAtEnd1 && !bodyAtEnd2) {
+        //    System.out.println("  Yarn " + ID + " cannot be cut; no mushroom body at either end.");
+        //    return false;
+        // }
 
-        setCut();
-        tektons[0].getMushroom().getMushroomYarns().remove(this);
-        tektons[1].getMushroom().getMushroomYarns().remove(this);
-        setTimeBack(3);
-        System.out.println("MushroomYarn.cut() returned true");
+        this.isCut = true;
+        this.timeBack = 3; // Example: Cut yarn disappears for 3 turns then is gone for good (if Update handles it)
+        System.out.println("  Yarn " + ID + " successfully cut. Will disappear in " + this.timeBack + " turns.");
         return true;
     }
-    public void eatInsect(Insect insect)
-    {
-        System.out.println("MushroomYarn.eatInsect(Insect) called");
-        insect.disappear();
-        System.out.println("MushroomYarn.eatInsect(Insect) returned");
-    }
+
+    // public void eatInsect(Insect insect) { /* ... if yarns can eat insects ... */ }
 }

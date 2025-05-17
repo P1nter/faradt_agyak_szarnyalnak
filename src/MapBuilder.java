@@ -5,69 +5,67 @@ import java.util.Random;
 
 public class MapBuilder {
     public static List<Tekton> build(int count, int maxNeighbors) {
-        System.out.println("MAP_BUILDER: build START - Count: " + count + ", MaxNeighbors: " + maxNeighbors);
+        System.out.println("MapBuilder: Building map - Count: " + count + ", MaxNeighbors: " + maxNeighbors);
         List<Tekton> map = new ArrayList<>();
-        if (count <= 0) return map; // Handle edge case
-
-        // 1) instantiate tektons
-        for (int i = 0; i < count; i++) {
-            // DefaultTekton now needs a unique ID if Tekton.getIDNoPrint() is used for sorting/Map keys.
-            // Let's assume Tekton or DefaultTekton constructor handles ID assignment (e.g., static counter).
-            // If not, you need to assign IDs here. For now, I'll assume they get unique IDs.
-            map.add(new DefaultTekton(i + 1)); // Pass ID to constructor
-        }
-        System.out.println("MAP_BUILDER: Tektons instantiated.");
-
-        if (count == 1 || maxNeighbors == 0) { // No links needed if only one tekton or maxNeighbors is 0
-            System.out.println("MAP_BUILDER: build END - No links to create.");
+        if (count <= 0) {
+            System.err.println("MapBuilder: count cannot be <= 0.");
             return map;
         }
 
         Random rnd = new Random();
-        // 2) for each tekton, establish random links
+        // 1) Instantiate Tektons of different types
+        for (int i = 0; i < count; i++) {
+            int tektonID = i + 1; // Using 1-based indexing for IDs from builder
+            Tekton newTekton;
+            int typeRoll = rnd.nextInt(100); // For probability distribution
+
+            // Example distribution of Tekton types
+            if (typeRoll < 40) { // 40% DefaultTekton
+                newTekton = new DefaultTekton(tektonID);
+            } else if (typeRoll < 50) { // 10% DisabledBodyGrowthTekton
+                newTekton = new DisabledBodyGrowthTekton(tektonID);
+            } else if (typeRoll < 60) { // 10% DisappearingYarnTekton
+                newTekton = new DisappearingYarnTekton(tektonID);
+            } else if (typeRoll < 70) { // 10% FastGrowthTekton
+                newTekton = new FastGrowthTekton(tektonID);
+            } else if (typeRoll < 80) { // 10% LifeTekton
+                newTekton = new LifeTekton(tektonID);
+            } else if (typeRoll < 90) { // 10% NoMushroomBodyTekton
+                newTekton = new NoMushroomBodyTekton(tektonID);
+            } else { // 10% SingleMushroomOnlyTekton
+                newTekton = new SingleMushroomOnlyTekton(tektonID);
+            }
+            map.add(newTekton);
+        }
+        System.out.println("MapBuilder: Tektons instantiated with types. Count: " + map.size());
+
+        if (count == 1 || maxNeighbors == 0) {
+            System.out.println("MapBuilder: No links to create for " + count + " tekton(s) or maxNeighbors=0.");
+            return map;
+        }
+
+        // 2) For each tekton, establish random links
         for (Tekton t : map) {
-            // System.out.println("MAP_BUILDER: Processing Tekton ID: " + t.getIDNoPrint());
             // Ensure maxNeighbors is not more than other available tektons
             int actualMaxNeighbors = Math.min(maxNeighbors, count - 1);
+            int attemptsToFindNewCandidate = 0;
+            int maxAttemptsForThisTekton = count * 3; // Safety break
 
-            while (t.getAdjacentTektonsNoPrint().size() < actualMaxNeighbors) { // Use NoPrint here for the loop condition
-                int attempts = 0; // To prevent truly infinite loop if logic is stuck
+            while (t.getAdjacentTektonsNoPrint().size() < actualMaxNeighbors && attemptsToFindNewCandidate < maxAttemptsForThisTekton) {
                 Tekton candidate = map.get(rnd.nextInt(count));
+                attemptsToFindNewCandidate++;
 
-                // Basic validation for candidate
-                if (candidate == t || t.getAdjacentTektonsNoPrint().contains(candidate)) {
-                    attempts++;
-                    if (attempts > count * 2 && count > 1) { // Safety break if stuck finding a new candidate
-                        // System.out.println("MAP_BUILDER: Stuck finding new candidate for Tekton " + t.getIDNoPrint() + ", breaking inner loop.");
-                        break;
-                    }
+                if (candidate == t || // Cannot link to self
+                        t.getAdjacentTektonsNoPrint().contains(candidate) || // Already linked
+                        candidate.getAdjacentTektonsNoPrint().size() >= Math.min(maxNeighbors, count - 1) // Candidate is full (respecting overall maxNeighbors)
+                ) {
                     continue;
                 }
-
-                // Check if candidate can accept more neighbors
-                if (candidate.getAdjacentTektonsNoPrint().size() >= actualMaxNeighbors) {
-                    attempts++;
-                    if (attempts > count * 2 && count > 1) {
-                        // System.out.println("MAP_BUILDER: Stuck finding candidate with space for Tekton " + t.getIDNoPrint() + ", breaking inner loop.");
-                        break;
-                    }
-                    continue;
-                }
-
-                // Link them (this should handle symmetry)
-                // System.out.println("MAP_BUILDER: Linking " + t.getIDNoPrint() + " and " + candidate.getIDNoPrint());
-                t.addAdjacentTekton(candidate); // This one call should make them adjacent to each other
-
-                // No need for: candidate.addAdjacentTekton(t); as it's handled by t.addAdjacentTekton
-
-                // Break early if this tekton t is fully linked
-                if (t.getAdjacentTektonsNoPrint().size() >= actualMaxNeighbors) {
-                    break;
-                }
+                t.addAdjacentTekton(candidate); // This method should handle symmetry
+                // System.out.println("MapBuilder: Linked Tekton " + t.getIDNoPrint() + " and Tekton " + candidate.getIDNoPrint());
             }
-            // System.out.println("MAP_BUILDER: Finished processing Tekton ID: " + t.getIDNoPrint() + ", Adjacents: " + t.getAdjacentTektonsNoPrint().size());
         }
-        System.out.println("MAP_BUILDER: build END - Links established.");
+        System.out.println("MapBuilder: Links established.");
         return map;
     }
 }
