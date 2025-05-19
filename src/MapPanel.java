@@ -74,6 +74,7 @@ public class MapPanel extends JPanel implements GameListener {
 
     @Override public void onMapChanged() { System.out.println("MapPanel: onMapChanged received, regenerating positions."); generatePositions(); repaint(); }
     @Override public void onStateChanged() { /*System.out.println("MapPanel: onStateChanged received, repainting.");*/ repaint(); }
+    @Override public void onGameEnd(Game.Winners winners) {}
 
     private void generatePositions() {
         System.out.println("MapPanel: generatePositions START");

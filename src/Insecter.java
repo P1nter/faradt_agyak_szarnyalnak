@@ -73,4 +73,10 @@ public class Insecter extends Player{
         insects.remove(insect);
         System.out.println("Insecter.removeInsect(insect) returned");
     }
+    @Override
+    public int getPoints() {
+        return insects.stream()
+                .mapToInt(Insect::getScore)
+                .sum();
+    }
 }

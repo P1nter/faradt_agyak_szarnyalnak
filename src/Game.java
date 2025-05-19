@@ -1,4 +1,3 @@
-// Game.java
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +13,10 @@ public class Game {
 
     private Spore.SporeType sporeTypeToSpreadContext = null;
 
+    // === New round‐tracking fields ===
+    private int roundsCompleted = 0;
+    private final int maxRounds;
+
     public enum GameActionType { NONE, INSECT_MOVE, INSECT_EAT_SPORE, INSECT_CUT_YARN, MUSHROOMER_SPREAD_SPORES, MUSHROOMER_GROW_YARN, MUSHROOMER_GROW_BODY, MUSHROOMER_EAT }
     public enum InteractionStep { IDLE, SELECT_ACTOR, SELECT_FIRST_TARGET, SELECT_SECOND_TARGET, AWAITING_FINAL_TARGET }
 
@@ -26,6 +29,7 @@ public class Game {
     public Game(List<Tekton> tektons, List<Player> players) {
         this.tektons = tektons != null ? tektons : new ArrayList<>();
         this.players = players != null ? players : new ArrayList<>();
+        this.maxRounds = this.players.size() * 10;  // end after 10×players rounds
         if (!this.players.isEmpty()) {
             this.activePlayer = this.players.get(0);
             if (activePlayer != null) activePlayer.resetActionPoints();
@@ -41,6 +45,9 @@ public class Game {
                 ", Mode=" + currentInteractionStep + ", ActionType=" + currentActionType +
                 ", SelectedActor=" + (selectedActor != null ? selectedActor.getClass().getSimpleName() + "(" + getEntityID(selectedActor) + ")" : "null") + ")");
         for (GameListener l : new ArrayList<>(listeners)) l.onStateChanged();
+    }
+    private void fireGameEnd(Winners winners) {
+        for (GameListener l : new ArrayList<>(listeners)) l.onGameEnd(winners);
     }
 
     public GameActionType getCurrentActionType() { return currentActionType; }
@@ -216,8 +223,8 @@ public class Game {
             System.out.println("Mushroomer successfully ate an insect on Tekton " + target.getIDNoPrint());
             completeAction(); // Ensure actions are only deducted on success
         } else {
-            JOptionPane.showMessageDialog(null, "Failed to eat an insect. Ensure there's a paralyzed insect and yarn on the Tekton.", 
-                                      "Action Failed", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Failed to eat an insect. Ensure there's a paralyzed insect and yarn on the Tekton.",
+                    "Action Failed", JOptionPane.WARNING_MESSAGE);
             System.out.println("Mushroomer failed to eat the insect on Tekton " + target.getIDNoPrint());
         }
 
@@ -261,14 +268,19 @@ public class Game {
         System.out.println("Game: No actions left for " + (activePlayer != null ? activePlayer.getName() : "N/A"));
         JOptionPane.showMessageDialog(null, "No actions remaining this turn!", "Out of Actions", JOptionPane.INFORMATION_MESSAGE);
     }
-    public void nextPlayer() { /* ... same, calls activePlayer.resetActionPoints() ... */
-        if (players.isEmpty()) return; int index = players.indexOf(activePlayer);
-        activePlayer = players.get((index + 1) % players.size());
-        if(activePlayer != null) activePlayer.resetActionPoints();
-        System.out.println("Game: Next player is " + (activePlayer != null ? activePlayer.getName() : "None") + ". Turn begins.");
-        cancelAction(); this.selectedActor = null; this.firstTektonTarget = null; this.sporeTypeToSpreadContext = null;
-        if (index == players.size() - 1 && players.size() > 0) updateGameRound();
-        fireStateChanged();
+    public void nextPlayer() {
+        if (players.isEmpty()) return;
+        int idx = players.indexOf(activePlayer);
+        activePlayer = players.get((idx + 1) % players.size());
+        activePlayer.resetActionPoints();
+        roundsCompleted++;
+
+        // if we just cycled past the last player, it's a new round
+        if (idx == players.size() - 1) {
+            updateGameRound();
+        } else {
+            fireStateChanged();
+        }
     }
 
     public void updateGameRound() { /* ... same, including checkForRandomTektonSplit() ... */
@@ -296,6 +308,13 @@ public class Game {
         if (mapMightHaveChanged) fireMapChanged();
         fireStateChanged();
         System.out.println("Game: Game round update finished.");
+        System.out.println("Game: Completed round #" + roundsCompleted +
+                " of max " + maxRounds);
+
+        if (roundsCompleted >= maxRounds) {
+            Winners winners = determineWinners();
+            fireGameEnd(winners);
+        }
     }
 
     private void checkForRandomTektonSplit() {
@@ -377,5 +396,67 @@ public class Game {
         if (entity instanceof MushroomYarn) return "MY" + ((MushroomYarn) entity).getIDNoPrint();
         if (entity instanceof Spore) return "S" + ((Spore) entity).getIDNoPrint();
         return entity.getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(entity));
+    }
+
+    /** Simple holder for our two winners. */
+    public static class Winners {
+        private final Player bestInsecter;
+        private final Player bestMushroomer;
+        public Winners(Player bestInsecter, Player bestMushroomer) {
+            this.bestInsecter  = bestInsecter;
+            this.bestMushroomer = bestMushroomer;
+        }
+        public Player getBestInsecter()   { return bestInsecter; }
+        public Player getBestMushroomer() { return bestMushroomer; }
+    }
+
+    /**
+     * Pick the top‐scoring Insecter and top‐scoring Mushroomer.
+     * If none of a type exist, that slot is null.
+     */
+    public Winners determineWinners() {
+        Player topI = null, topM = null;
+        int bestI = Integer.MIN_VALUE, bestM = Integer.MIN_VALUE;
+
+        for (Player p : players) {
+            int pts = p.getPoints();
+            if (p instanceof Insecter) {
+                if (topI == null || pts > bestI) {
+                    topI = p; bestI = pts;
+                }
+            } else if (p instanceof Mushroomer) {
+                if (topM == null || pts > bestM) {
+                    topM = p; bestM = pts;
+                }
+            }
+        }
+        return new Winners(topI, topM);
+    }
+
+    /**
+     * Get a little multi‐line summary for dialogs.
+     */
+    public String getWinnersSummary() {
+        Winners w = determineWinners();
+        StringBuilder sb = new StringBuilder();
+        if (w.getBestInsecter() != null) {
+            sb.append("Best Insecter: ")
+                    .append(w.getBestInsecter().getName())
+                    .append(" (")
+                    .append(w.getBestInsecter().getPoints())
+                    .append(" pts)\n");
+        } else {
+            sb.append("No Insecter players.\n");
+        }
+        if (w.getBestMushroomer() != null) {
+            sb.append("Best Mushroomer: ")
+                    .append(w.getBestMushroomer().getName())
+                    .append(" (")
+                    .append(w.getBestMushroomer().getPoints())
+                    .append(" pts)\n");
+        } else {
+            sb.append("No Mushroomer players.\n");
+        }
+        return sb.toString();
     }
 }

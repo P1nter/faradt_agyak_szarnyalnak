@@ -19,39 +19,35 @@ public class ActionPanel extends JPanel implements GameListener {
         setLayout(new BorderLayout(5, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Setup top info panel
-        JPanel topInfoPanel = new JPanel();
-        topInfoPanel.setLayout(new BoxLayout(topInfoPanel, BoxLayout.Y_AXIS));
+        // Top info
+        JPanel top = new JPanel();
+        top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
         turnLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         modeLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         actionsRemainingLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        topInfoPanel.add(turnLabel);
-        topInfoPanel.add(modeLabel);
-        topInfoPanel.add(actionsRemainingLabel);
-        add(topInfoPanel, BorderLayout.NORTH);
+        top.add(turnLabel);
+        top.add(modeLabel);
+        top.add(actionsRemainingLabel);
+        add(top, BorderLayout.NORTH);
 
-        // Setup center controls panel
-        JPanel centerControlsPanel = new JPanel(new BorderLayout(5, 5));
+        // Center: spore selector + buttons
+        JPanel center = new JPanel(new BorderLayout(5,5));
         sporeSelectorPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         sporeSelectorPanel.add(new JLabel("Spore Type:"));
         sporeTypeComboBox = new JComboBox<>(Spore.SporeType.values());
-        sporeTypeComboBox.setSelectedItem(Spore.SporeType.CUT_DISABLING); // Default spore selection
+        sporeTypeComboBox.setSelectedItem(Spore.SporeType.CUT_DISABLING);
         sporeSelectorPanel.add(sporeTypeComboBox);
+        JButton applySpore = new JButton("Apply");
+        applySpore.addActionListener(e -> applySporeSelection());
+        sporeSelectorPanel.add(applySpore);
+        sporeSelectorPanel.setVisible(false);
+        center.add(sporeSelectorPanel, BorderLayout.NORTH);
 
-        // Add apply button next to the spore selector
-        JButton applySporeButton = new JButton("Apply");
-        applySporeButton.addActionListener(e -> applySporeSelection());
-        sporeSelectorPanel.add(applySporeButton);
+        buttonsPanel.setLayout(new GridLayout(0,1,5,5));
+        center.add(new JScrollPane(buttonsPanel), BorderLayout.CENTER);
+        add(center, BorderLayout.CENTER);
 
-        centerControlsPanel.add(sporeSelectorPanel, BorderLayout.NORTH);
-        sporeSelectorPanel.setVisible(false); // Initially hidden
-
-        buttonsPanel.setLayout(new GridLayout(0, 1, 5, 5));
-        centerControlsPanel.add(new JScrollPane(buttonsPanel), BorderLayout.CENTER);
-
-        add(centerControlsPanel, BorderLayout.CENTER);
-
-        // Setup bottom insect status area
+        // Bottom insect info
         selectedInsectStatusArea.setEditable(false);
         selectedInsectStatusArea.setLineWrap(true);
         selectedInsectStatusArea.setWrapStyleWord(true);
@@ -60,12 +56,12 @@ public class ActionPanel extends JPanel implements GameListener {
         selectedInsectStatusArea.setBorder(BorderFactory.createTitledBorder("Insect Status Info"));
         add(selectedInsectStatusArea, BorderLayout.SOUTH);
 
-        onStateChanged(); // Initialize UI with the current game state
+        onStateChanged();  // init UI
     }
 
     @Override
     public void onMapChanged() {
-        repaint(); // Redraw if the map changes
+        repaint();
     }
 
     @Override
@@ -77,7 +73,6 @@ public class ActionPanel extends JPanel implements GameListener {
         }
 
         updatePlayerInfo(player);
-
         buttonsPanel.removeAll();
 
         if (game.getCurrentInteractionStep() != Game.InteractionStep.IDLE) {
@@ -85,34 +80,57 @@ public class ActionPanel extends JPanel implements GameListener {
             buttonsPanel.add(new JSeparator());
         }
 
-        sporeSelectorPanel.setVisible(false); // Default: hidden unless a spore-requiring action is active
+        sporeSelectorPanel.setVisible(false);
 
-        if (player instanceof Mushroomer mushroomer) {
-            handleMushroomerActions(mushroomer);
+        if (player instanceof Mushroomer m) {
+            handleMushroomerActions(m);
         } else if (player instanceof Insecter) {
             handleInsecterActions();
         }
 
         buttonsPanel.add(new JSeparator());
-        addAction("Save Game", e -> saveGame());
-        addAction("End Turn", e -> game.nextPlayer());
+        addAction("Save Game",   e -> saveGame());
+        addAction("End Turn",    e -> game.nextPlayer());
+        addAction("End Game",    e -> {
+            // manual end-game
+            String summary = game.getWinnersSummary();
+            JOptionPane.showMessageDialog(
+                    this, summary, "Game Over – Winners", JOptionPane.INFORMATION_MESSAGE
+            );
+            // close window
+            Window w = SwingUtilities.getWindowAncestor(this);
+            if (w != null) w.dispose();
+        });
 
         revalidate();
         repaint();
     }
 
+    @Override
+    public void onGameEnd(Game.Winners winners) {
+        // automatic end-game after rounds limit
+        String summary = game.getWinnersSummary();
+        JOptionPane.showMessageDialog(
+                this, summary, "Game Over – Winners", JOptionPane.INFORMATION_MESSAGE
+        );
+        Window w = SwingUtilities.getWindowAncestor(this);
+        if (w != null) w.dispose();
+    }
+
     private void updatePlayerInfo(Player player) {
         turnLabel.setText("Turn: " + player.getName() + " (" + player.getPlayerType() + ")");
-        modeLabel.setText("Mode: " + game.getCurrentInteractionStep() + " (" + game.getCurrentActionType() + ")");
+        modeLabel.setText("Mode: " + game.getCurrentInteractionStep() +
+                " (" + game.getCurrentActionType() + ")");
         actionsRemainingLabel.setText("Actions: " + player.getAction());
 
-        // Update insect status if any
-        Object selectedActor = game.getSelectedActor();
-        if (selectedActor instanceof Insect insect) {
-            int[] effects = insect.getEffectsNoPrint();
-            String status = "Selected: " + insect.getClass().getSimpleName() + " ID " + insect.getIDNoPrint() + "\n";
-            status += "Paralyzed: " + effects[1] + " | No Cut: " + effects[0] + "\n";
-            status += "Slowed: " + effects[3] + " | Sped Up: " + effects[2];
+        Object sel = game.getSelectedActor();
+        if (sel instanceof Insect insect) {
+            int[] fx = insect.getEffectsNoPrint();
+            String status =
+                    "Selected: " + insect.getClass().getSimpleName() +
+                            " ID " + insect.getIDNoPrint() + "\n" +
+                            "Paralyzed: " + fx[1] + " | No Cut: " + fx[0] + "\n" +
+                            "Slowed: "     + fx[3] + " | Sped Up: " + fx[2];
             selectedInsectStatusArea.setText(status);
             selectedInsectStatusArea.setVisible(true);
         } else {
@@ -121,40 +139,34 @@ public class ActionPanel extends JPanel implements GameListener {
         }
     }
 
-    private void handleMushroomerActions(Mushroomer mushroomer) {
-        // Add actions specific to the Mushroomer role
+    private void handleMushroomerActions(Mushroomer m) {
         addAction("Spread Spores", e -> {
-            Spore.SporeType selectedType = (Spore.SporeType) sporeTypeComboBox.getSelectedItem();
-            if (selectedType != null) {
-                game.setContextForSpreadAction(selectedType); // Update context with selected spore type
+            Spore.SporeType t = (Spore.SporeType)sporeTypeComboBox.getSelectedItem();
+            if (t != null) {
+                game.setContextForSpreadAction(t);
                 game.startAction(Game.GameActionType.MUSHROOMER_SPREAD_SPORES);
             }
         });
-
-        // Show the spore selector panel only when the Mushroomer is spreading spores
-        boolean showSporeSelector = game.getCurrentActionType() == Game.GameActionType.MUSHROOMER_SPREAD_SPORES &&
-                (game.getCurrentInteractionStep() == Game.InteractionStep.AWAITING_FINAL_TARGET ||
-                 game.getCurrentInteractionStep() == Game.InteractionStep.IDLE);
-
-        sporeSelectorPanel.setVisible(showSporeSelector);
+        boolean show = game.getCurrentActionType() == Game.GameActionType.MUSHROOMER_SPREAD_SPORES
+                && (game.getCurrentInteractionStep() == Game.InteractionStep.AWAITING_FINAL_TARGET
+                || game.getCurrentInteractionStep() == Game.InteractionStep.IDLE);
+        sporeSelectorPanel.setVisible(show);
 
         addAction("Grow Yarn", e -> game.startAction(Game.GameActionType.MUSHROOMER_GROW_YARN));
         addAction("Grow Body", e -> game.startAction(Game.GameActionType.MUSHROOMER_GROW_BODY));
-
         addAction("Eat Insect", e -> {
-            Object selected = game.getSelectedActor();
-            if (selected instanceof Insect insect) {
+            Object s = game.getSelectedActor();
+            if (s instanceof Insect ins) {
                 game.startAction(Game.GameActionType.MUSHROOMER_EAT);
-                game.tryMushroomerEat(insect.getTekton()); // Delegate eating logic to the game
+                game.tryMushroomerEat(ins.getTektonNoPrint());
             }
         });
     }
 
     private void handleInsecterActions() {
-        // Add actions specific to the Insecter role
-        addAction("Move", e -> game.startAction(Game.GameActionType.INSECT_MOVE));
+        addAction("Move",      e -> game.startAction(Game.GameActionType.INSECT_MOVE));
         addAction("Eat Spore", e -> game.startAction(Game.GameActionType.INSECT_EAT_SPORE));
-        addAction("Cut Yarn", e -> game.startAction(Game.GameActionType.INSECT_CUT_YARN));
+        addAction("Cut Yarn",  e -> game.startAction(Game.GameActionType.INSECT_CUT_YARN));
     }
 
     private void resetPanel() {
@@ -169,21 +181,20 @@ public class ActionPanel extends JPanel implements GameListener {
     }
 
     private void applySporeSelection() {
-        Spore.SporeType selectedType = (Spore.SporeType) sporeTypeComboBox.getSelectedItem();
-        if (selectedType != null) {
-            game.setContextForSpreadAction(selectedType); // Save the currently selected spore type
-            System.out.println("Spore type applied: " + selectedType);
+        Spore.SporeType t = (Spore.SporeType)sporeTypeComboBox.getSelectedItem();
+        if (t != null) {
+            game.setContextForSpreadAction(t);
+            System.out.println("Spore type applied: " + t);
         }
     }
 
     private void saveGame() {
-        // Placeholder for save logic
         System.out.println("Game state saved.");
     }
 
     private void addAction(String name, ActionListener listener) {
-        JButton button = new JButton(name);
-        button.addActionListener(listener);
-        buttonsPanel.add(button);
+        JButton btn = new JButton(name);
+        btn.addActionListener(listener);
+        buttonsPanel.add(btn);
     }
 }

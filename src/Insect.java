@@ -1,4 +1,3 @@
-// Insect.java
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 // import java.util.Observable; // Legacy
@@ -150,6 +149,8 @@ public class Insect /* extends Observable */ { // Consider PropertyChangeSupport
             return false;
         }
 
+        // add score to Insect's score
+        this.score += spore.getNutrition();
         spore.affectInsect(this); // Apply effect
 
         // Spore is consumed, remove it from game model
@@ -182,6 +183,8 @@ public class Insect /* extends Observable */ { // Consider PropertyChangeSupport
         boolean cutSuccess = yarn.cut(); // This method in MushroomYarn should set its state and return true
         if (cutSuccess) {
             // action--; // Game.java handles action point decrement
+            // Cutting yarn → 1 point
+            this.score += 1;
             System.out.println("  Cut SUCCESS: Insect " + ID + " cut Yarn " + yarn.getIDNoPrint());
             return true;
         } else {

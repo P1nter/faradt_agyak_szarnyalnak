@@ -1,9 +1,10 @@
-// Mushroomer.java
 import java.util.*;
 // import java.util.stream.Collectors; // If used
 
 public class Mushroomer extends Player {
     private List<MushroomBody> mushroomBodies = new ArrayList<>();
+    private int totalBodiesCreated = 0;
+    private int totalInsectsEaten = 0;
     private List<MushroomYarn> mushroomYarns = new ArrayList<>();
     private List<Spore> sporesOwned = new ArrayList<>();
 
@@ -15,6 +16,7 @@ public class Mushroomer extends Player {
     public void addMushroomBody(MushroomBody body) { /* ... same as before ... */
         if (body != null && !this.mushroomBodies.contains(body)) {
             this.mushroomBodies.add(body);
+            totalBodiesCreated++;
         }
     }
     public void removeMushroomBody(MushroomBody body) { this.mushroomBodies.remove(body); }
@@ -222,6 +224,7 @@ public class Mushroomer extends Player {
         // Eat the insect (remove it from the game).
         targetInsect.disappear();
         System.out.println(getName() + ": Successfully ate insect ID " + targetInsect.getIDNoPrint() + " on Tekton " + targetTekton.getIDNoPrint());
+        totalInsectsEaten++;
         return true;
     }
 
@@ -232,5 +235,9 @@ public class Mushroomer extends Player {
         Mushroom sourceMushroomManager = sourceTekton.getMushroomNoPrint();
         int nextSporeId = this.sporesOwned.size() + 1;
         sourceMushroomManager.spreadSporeTo(toTekton, this, type, nextSporeId);
+    }
+    @Override
+    public int getPoints() {
+        return totalBodiesCreated *3 + totalInsectsEaten * 2;
     }
 }

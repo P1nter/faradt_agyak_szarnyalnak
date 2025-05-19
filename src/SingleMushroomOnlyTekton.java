@@ -1,16 +1,34 @@
+/**
+ * A Tekton variant that allows only a single mushroom yarn connection.
+ * Overrides yarn growth behavior to enforce at most one active yarn.
+ */
 public class SingleMushroomOnlyTekton extends Tekton {
-    public SingleMushroomOnlyTekton(int id) { super(id); }
-    public SingleMushroomOnlyTekton() { super(); }
 
+    /**
+     * Constructs a SingleMushroomOnlyTekton with the specified unique identifier.
+     *
+     * @param id the unique identifier for this Tekton
+     */
+    public SingleMushroomOnlyTekton(int id) {
+        super(id);
+    }
+
+    /**
+     * Constructs a SingleMushroomOnlyTekton with an auto-generated unique identifier.
+     */
+    public SingleMushroomOnlyTekton() {
+        super();
+    }
+
+    /**
+     * Indicates whether this Tekton can grow a new yarn connection.
+     * Only allowed if no existing yarns are connected.
+     *
+     * @return true if no yarns currently connected; false otherwise
+     */
     @Override
     public boolean canGrowYarn() {
-        // A Tekton of this type can only grow a yarn if its mushroomManager
-        // currently has no yarns connected to it.
-        if (this.getMushroomNoPrint() != null && !this.getMushroomNoPrint().getMushroomYarnsNoPrint().isEmpty()) {
-            // System.out.println("SingleMushroomOnlyTekton " + getIDNoPrint() + ": cannot grow yarn, already has one.");
-            return false;
-        }
-        // System.out.println("SingleMushroomOnlyTekton " + getIDNoPrint() + ": can grow yarn.");
-        return true;
+        var manager = this.getMushroomNoPrint();
+        return manager == null || manager.getMushroomYarnsNoPrint().isEmpty();
     }
 }
