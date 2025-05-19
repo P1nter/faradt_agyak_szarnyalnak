@@ -1,33 +1,4 @@
 
-b	java:S112 "FDefine and throw a dedicated exception instead of using a generic one.(ßÀÇ¼8ßúª½Ü2
 7
 java:S1220""Move this file to a named package.8àúª½Ü2
-U
-java:S18541"8Remove this useless assignment to local variable "game".(áö²ò8äúª½Ü2
-G	java:S106"+Replace this use of System.out by a logger.(ìÝüÛ8åúª½Ü2
-G	java:S106	"+Replace this use of System.out by a logger.(ú·üÇ8åúª½Ü2
-F	java:S106
-"+Replace this use of System.out by a logger.(ìœ®_8æúª½Ü2
-L	java:S106"+Replace this use of System.out by a logger.(¹­»‘þÿÿÿÿ8æúª½Ü2
-F	java:S106"+Replace this use of System.out by a logger.(æë–h8æúª½Ü2
-L	java:S106"+Replace this use of System.out by a logger.(Â¤Ô€ýÿÿÿÿ8æúª½Ü2
-G	java:S106"+Replace this use of System.out by a logger.(­¶¥Ó8æúª½Ü2
-L	java:S106"+Replace this use of System.out by a logger.(ü”ïˆúÿÿÿÿ8æúª½Ü2
-G	java:S106"+Replace this use of System.out by a logger.(„­µË8æúª½Ü2
-G	java:S106"+Replace this use of System.out by a logger.(ÛÀ®³8çúª½Ü2
-G	java:S106"+Replace this use of System.out by a logger.(êÝ‚Ç8çúª½Ü2
-G	java:S106"+Replace this use of System.out by a logger.(…§±ø8çúª½Ü2
-G	java:S106"+Replace this use of System.out by a logger.(Ýó§™8çúª½Ü2
-G	java:S106"+Replace this use of System.out by a logger.(Ôèå¸8çúª½Ü2
-G	java:S106"+Replace this use of System.out by a logger.(‚âˆã8èúª½Ü2
-L	java:S106"+Replace this use of System.out by a logger.(Â¯ß»ÿÿÿÿÿ8èúª½Ü2
-L	java:S106"+Replace this use of System.out by a logger.(¹ƒ˜Þúÿÿÿÿ8èúª½Ü2
-G	java:S106"+Replace this use of System.out by a logger.(„©ÍÄ8èúª½Ü2
-L	java:S106"+Replace this use of System.out by a logger.(ìüºÑøÿÿÿÿ8èúª½Ü2
-L	java:S106,"+Replace this use of System.out by a logger.(ªÓ¼áþÿÿÿÿ8îúª½Ü2
-F
-java:S14811")Remove this unused "game" local variable.(áö²ò8ïúª½Ü2
-X	java:S125="<This block of commented-out lines of code should be removed.(ÈùíÚ8ðúª½Ü2
-G	java:S106E"+Replace this use of System.out by a logger.(•€ðù8ðúª½Ü2
-@
-java:S1128"$Remove this unused import 'java.io'.(¬›ãD8ñ’Ž¾Ü2
+L	java:S106"+Replace this use of System.err by a logger.(çùÓ±øÿÿÿÿ8Ã©ì½î2

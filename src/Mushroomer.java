@@ -55,6 +55,7 @@ public class Mushroomer extends Player {
         if(!canGrowFrom) { System.out.println(" GrowYarn Fail: No influence on source Tekton " + fromTekton.getIDNoPrint()); return false; }
         if(!fromTekton.getAdjacentTektonsNoPrint().contains(toTekton)) { System.out.println(" GrowYarn Fail: Tektons not adjacent."); return false; }
         if(!toTekton.canGrowYarn()) { System.out.println(" GrowYarn Fail: Target Tekton " + toTekton.getIDNoPrint() + " cannot grow yarn."); return false; }
+        if(!fromTekton.canGrowYarn()) { System.out.println(" GrowYarn Fail: Target Tekton " + toTekton.getIDNoPrint() + " cannot grow yarn."); return false; }
         for(MushroomYarn existingYarn : this.mushroomYarns){
             Tekton[] ends = existingYarn.getTektonsNoPrint();
             if((ends[0] == fromTekton && ends[1] == toTekton) || (ends[0] == toTekton && ends[1] == fromTekton)){

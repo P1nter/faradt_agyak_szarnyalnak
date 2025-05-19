@@ -35,3 +35,5 @@ M
 src/NoMushroomBodyTekton.java,8\4\84cb1cc6738eb0fba5734f72f3f22bc6790b0b69
 Q
 !src/SingleMushroomOnlyTekton.java,a\4\a4d4ab7aa91e2a3a3519e889ff42685efaed2f6d
+C
+src/Mushroomer.java,8\0\80b8d6574635ca9aa48d7c905463454dc45e6fc7
