@@ -43,9 +43,11 @@ public class MapPanel extends JPanel implements GameListener {
 
     private boolean drawTektonIDs = true; // Set to true for debugging Tekton IDs
 
+    private List<Tekton> knownTektonsSnapshot = new ArrayList<>();
     public MapPanel(Game game) {
         this.game = game;
         this.game.addListener(this);
+        this.knownTektonsSnapshot = new ArrayList<>(game.getTektons());
         setBackground(new Color(230, 235, 245));
         loadImages();
         addMouseListener(new MouseAdapter() {
@@ -72,8 +74,21 @@ public class MapPanel extends JPanel implements GameListener {
         try { java.net.URL imgUrl = getClass().getClassLoader().getResource(path); if (imgUrl != null) return new ImageIcon(imgUrl).getImage(); } catch (Exception e) {} return null;
     }
 
-    @Override public void onMapChanged() { System.out.println("MapPanel: onMapChanged received, regenerating positions."); generatePositions(); repaint(); }
-    @Override public void onStateChanged() { /*System.out.println("MapPanel: onStateChanged received, repainting.");*/ repaint(); }
+    @Override
+    public void onMapChanged() {
+        List<Tekton> currentTektons = game.getTektons();
+        boolean structureChanged = currentTektons.size() != knownTektonsSnapshot.size()
+                || !knownTektonsSnapshot.containsAll(currentTektons);
+
+        if (structureChanged) {
+            System.out.println("MapPanel: Detected Tekton structure change. Regenerating positions.");
+            generatePositions();
+            knownTektonsSnapshot = new ArrayList<>(currentTektons);
+        } else {
+            System.out.println("MapPanel: Map changed, but Tekton layout same. Skipping reposition.");
+        }
+        repaint();
+    }    @Override public void onStateChanged() { /*System.out.println("MapPanel: onStateChanged received, repainting.");*/ repaint(); }
     @Override public void onGameEnd(Game.Winners winners) {}
 
     private void generatePositions() {

@@ -324,6 +324,7 @@ public class Game {
             Tekton tektonToSplit = tektons.get(rnd.nextInt(tektons.size()));
             System.out.println("GAME EVENT: Attempting to randomly split Tekton " + getEntityID(tektonToSplit));
             splitTekton(tektonToSplit);
+
         }
     }
 

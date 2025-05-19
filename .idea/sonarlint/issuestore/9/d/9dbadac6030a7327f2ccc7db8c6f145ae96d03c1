@@ -1,0 +1,175 @@
+
+½
+java:S6539"ŸSplit this â€œMonster Classâ€ into smaller and more specialized ones to reduce its dependencies on other classes from 43 to the maximum authorized 20 or less.(¼çÓ8Ÿ±«¿î2
+u	java:S135j"YReduce the total number of break and continue statements in this loop to use at most one.(¶ıÍÂ8£±«¿î2
+u	java:S135o"YReduce the total number of break and continue statements in this loop to use at most one.(ğîßê8£±«¿î2
+7
+java:S1220""Move this file to a named package.8©±«¿î2
+g
+java:S2184l"ECast one of the operands of this subtraction operation to a "double".(Ìï•†úÿÿÿÿ8ª±«¿î2
+g
+java:S2184l"ECast one of the operands of this subtraction operation to a "double".(Ìï•†úÿÿÿÿ8ª±«¿î2
+g
+java:S2184q"ECast one of the operands of this subtraction operation to a "double".(›Î®şÿÿÿÿ8ª±«¿î2
+g
+java:S2184q"ECast one of the operands of this subtraction operation to a "double".(›Î®şÿÿÿÿ8ª±«¿î2
+h
+java:S2184"ECast one of the operands of this subtraction operation to a "double".(Ô«ïÅÿÿÿÿÿ8«±«¿î2
+h
+java:S2184"ECast one of the operands of this subtraction operation to a "double".(Ô«ïÅÿÿÿÿÿ8«±«¿î2
+k
+java:S2184"HCast one of the operands of this multiplication operation to a "double".(Ô«ïÅÿÿÿÿÿ8«±«¿î2
+k
+java:S2184"HCast one of the operands of this multiplication operation to a "double".(Ô«ïÅÿÿÿÿÿ8«±«¿î2
+_
+java:S2184ş"ACast one of the operands of this addition operation to a "float".(Š›ºæ8«±«¿î2
+h
+java:S2184¡"ECast one of the operands of this subtraction operation to a "double".(éª‘äøÿÿÿÿ8«±«¿î2
+h
+java:S2184¡"ECast one of the operands of this subtraction operation to a "double".(éª‘äøÿÿÿÿ8«±«¿î2
+k
+java:S2184¡"HCast one of the operands of this multiplication operation to a "double".(éª‘äøÿÿÿÿ8«±«¿î2
+k
+java:S2184¡"HCast one of the operands of this multiplication operation to a "double".(éª‘äøÿÿÿÿ8«±«¿î2
+c
+java:S2184Á"ECast one of the operands of this subtraction operation to a "double".(Ñù’â8«±«¿î2
+c
+java:S2184Á"ECast one of the operands of this subtraction operation to a "double".(Ñù’â8«±«¿î2
+f
+java:S2184Á"HCast one of the operands of this multiplication operation to a "double".(Ñù’â8«±«¿î2
+f
+java:S2184Á"HCast one of the operands of this multiplication operation to a "double".(Ñù’â8«±«¿î2
+h
+java:S2184Ä"ECast one of the operands of this subtraction operation to a "double".(ƒ°Æòúÿÿÿÿ8«±«¿î2
+h
+java:S2184Ä"ECast one of the operands of this subtraction operation to a "double".(ƒ°Æòúÿÿÿÿ8¬±«¿î2
+e
+java:S2184Ä"BCast one of the operands of this addition operation to a "double".(ƒ°Æòúÿÿÿÿ8¬±«¿î2
+e
+java:S2184Ä"BCast one of the operands of this addition operation to a "double".(ƒ°Æòúÿÿÿÿ8¬±«¿î2
+h
+java:S2184Å"ECast one of the operands of this subtraction operation to a "double".(Íë«ºıÿÿÿÿ8¬±«¿î2
+h
+java:S2184Å"ECast one of the operands of this subtraction operation to a "double".(Íë«ºıÿÿÿÿ8¬±«¿î2
+e
+java:S2184Å"BCast one of the operands of this addition operation to a "double".(Íë«ºıÿÿÿÿ8¬±«¿î2
+e
+java:S2184Å"BCast one of the operands of this addition operation to a "double".(Íë«ºıÿÿÿÿ8¬±«¿î2
+
+java:S2681k"{This statement will not be executed conditionally; only the first statement will be. The rest will execute unconditionally.(œ›Šüÿÿÿÿ8¯±«¿î2
+
+java:S2681l"{This statement will not be executed conditionally; only the first statement will be. The rest will execute unconditionally.(Ìï•†úÿÿÿÿ8¯±«¿î2
+
+java:S2681p"{This statement will not be executed conditionally; only the first statement will be. The rest will execute unconditionally.(‚Ì´ÿÿÿÿÿ8¯±«¿î2
+	java:S116"`Rename this field "DEFAULT_PLAYER_COLORS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ùœÈ£ÿÿÿÿÿ8ë·«¿î2
+	java:S116'"gRename this field "HIGHLIGHT_COLOR_VALID_TARGET" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ëåf8ì·«¿î2
+Š	java:S116("iRename this field "HIGHLIGHT_COLOR_SELECTED_ACTOR" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(±»Âªùÿÿÿÿ8ì·«¿î2
+ƒ	java:S116)"gRename this field "HIGHLIGHT_COLOR_FIRST_TARGET" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(õ’ğÏ8ì·«¿î2
+Š	java:S116*"nRename this field "ACTIVE_PLAYER_PIECE_HIGHLIGHT_COLOR" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ë³£8ì·«¿î2
+
+java:S1186\"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ÉÆÙ¦8ò·«¿î2
+h
+java:S1659"FDeclare "insectImg" and all following declarations on a separate line.(¿”Âˆúÿÿÿÿ8ô·«¿î2
+C
+java:S1948"&Make "game" transient or serializable.(Œş³8‹¸«¿î2
+M
+java:S1948"+Make "tektonImg" transient or serializable.(¿”Âˆúÿÿÿÿ8‹¸«¿î2
+M
+java:S1948"+Make "insectImg" transient or serializable.(¿”Âˆúÿÿÿÿ8‹¸«¿î2
+O
+java:S1948"-Make "mushroomImg" transient or serializable.(¿”Âˆúÿÿÿÿ8‹¸«¿î2
+P
+java:S1948".Make "sporeImgIcon" transient or serializable.(¿”Âˆúÿÿÿÿ8‹¸«¿î2
+K
+java:S1948".Make "playerColors" transient or serializable.(ı„ŸŞ8‹¸«¿î2
+S
+java:S1948."6Make "knownTektonsSnapshot" transient or serializable.(ˆÖêÛ8¹Š±¿î2
+8
+java:S3626="Remove this redundant jump.(øÎÒ8–¸«¿î2
+S
+java:S1172I"6Remove this unused method parameter "placeholderText".(ü‘şü8¹¸«¿î2
+J	java:S108J")Either remove or fill this block of code.(õİ÷ùÿÿÿÿ8»¸«¿î2
+L	java:S106T"+Replace this use of System.out by a logger.(ÀÎóúÿÿÿÿ8½¸«¿î2
+G	java:S106X"+Replace this use of System.out by a logger.(Õ÷™·8¾¸«¿î2
+W	java:S125["<This block of commented-out lines of code should be removed.(©¼l8¿¸«¿î2
+o
+java:S3776^"RRefactor this method to reduce its Cognitive Complexity from 49 to the 15 allowed.(ˆà§˜8Á¸«¿î2
+F
+java:S1659b")Declare "panelHeight" on a separate line.(Ñ½úÒ8Â¸«¿î2
+C
+java:S1659c"!Declare "rnd" on a separate line.(ÒÃ‚Ğşÿÿÿÿ8Ã¸«¿î2
+k
+java:S1659e"IDeclare "pullStrength" and all following declarations on a separate line.(š­ğ’úÿÿÿÿ8Ã¸«¿î2
+L	java:S106_"+Replace this use of System.out by a logger.(«ô³¯úÿÿÿÿ8Ã¸«¿î2
+G	java:S106a"+Replace this use of System.out by a logger.(©——¨8Ä¸«¿î2
+=
+java:S1659i" Declare "p1" on a separate line.(ıûë 8Ì¸«¿î2
+B
+java:S1659k" Declare "p2" on a separate line.(œ›Šüÿÿÿÿ8Í¸«¿î2
+a
+java:S1659l"?Declare "dy" and all following declarations on a separate line.(Ìï•†úÿÿÿÿ8Í¸«¿î2
+G
+java:S1659m"%Declare "forceT1" on a separate line.(Õçıÿÿÿÿ8Í¸«¿î2
+Y
+java:S3972k"7Move this "if" to a new line or add the missing "else".(œ›Šüÿÿÿÿ8Î¸«¿î2
+a
+java:S1659q"?Declare "dy" and all following declarations on a separate line.(›Î®şÿÿÿÿ8Ï¸«¿î2
+G
+java:S1659r"%Declare "forceT1" on a separate line.(ÅÍ€’şÿÿÿÿ8Ï¸«¿î2
+Y
+java:S3972p"7Move this "if" to a new line or add the missing "else".(‚Ì´ÿÿÿÿÿ8Ğ¸«¿î2
+^
+java:S1659w"BDeclare "force" and all following declarations on a separate line.(¡şÑ08Ñ¸«¿î2
+=
+java:S1659x" Declare "dY" on a separate line.(Èõºã8Ñ¸«¿î2
+<
+java:S1659y" Declare "nY" on a separate line.(¾‘]8Ñ¸«¿î2
+L	java:S106}"+Replace this use of System.out by a logger.(àÁß¼ûÿÿÿÿ8Ó¸«¿î2
+o
+java:S3776Š"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(ÒÚŸ]8Õ¸«¿î2
+m
+java:S6201"JReplace this instanceof check and cast with 'instanceof Insecter insecter'(áÏŸ›øÿÿÿÿ8×¸«¿î2
+@
+java:S1659“""Declare "host" on a separate line.(¦‹Áœ8Ø¸«¿î2
+^
+java:S1659™"@Declare "col" and all following declarations on a separate line.(šÎó×8Ù¸«¿î2
+u
+java:S3776¥"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(Úø¥üÿÿÿÿ8Û¸«¿î2
+l
+java:S6201§"NReplace this instanceof check and cast with 'instanceof Mushroomer mushroomer'(•æê»8Ü¸«¿î2
+>
+java:S1659«" Declare "p2" on a separate line.(¼š©³8İ¸«¿î2
+q
+java:S3776Û"SRefactor this method to reduce its Cognitive Complexity from 105 to the 15 allowed.(ÈÊ“À8æ¸«¿î2
+`
+java:S1854›"=Remove this useless assignment to local variable "angleStep".(ÚÏ˜Şøÿÿÿÿ8è¸«¿î2
+I
+java:S1659ë"&Declare "tinyFont" on a separate line.(è¡ùöÿÿÿÿÿ8ê¸«¿î2
+l
+java:S6201ğ"NReplace this instanceof check and cast with 'instanceof Mushroomer mushroomer'(“½ã¥8¹«¿î2
+P
+java:S1659ñ"-Declare "playerBaseColor" on a separate line.(•–õŸşÿÿÿÿ8¹«¿î2
+>
+java:S1659õ" Declare "p2" on a separate line.(ëÆê¦8Ÿ¹«¿î2
+p
+java:S1659ö"MDeclare "currentYarnColor" and all following declarations on a separate line.(‘û ¨úÿÿÿÿ8Ÿ¹«¿î2
+`
+java:S1659’"BDeclare "owner" and all following declarations on a separate line.(îÚ®ó8¤¹«¿î2
+j
+java:S1659›"GDeclare "sporeCount" and all following declarations on a separate line.(ÚÏ˜Şøÿÿÿÿ8¦¹«¿î2
+Q
+java:S1481›".Remove this unused "angleStep" local variable.(ÚÏ˜Şøÿÿÿÿ8§¹«¿î2
+j
+java:S1659"GDeclare "ownerColor" and all following declarations on a separate line.(ãºù¤ùÿÿÿÿ8§¹«¿î2
+C
+java:S1659Ÿ"%Declare "offsetY" on a separate line.(„ûÓä8§¹«¿î2
+m
+java:S6201·"JReplace this instanceof check and cast with 'instanceof Insecter insecter'(·“—ùÿÿÿÿ8°¹«¿î2
+F
+java:S1659»"#Declare "count" on a separate line.(½ÓŸİùÿÿÿÿ8°¹«¿î2
+^
+java:S1659¼"@Declare "col" and all following declarations on a separate line.(ŸÎïû8±¹«¿î2
+N
+java:S1128	"1Remove this unused import 'java.util.Comparator'.(î¹ó¹8È ¬¿î2
+å
+java:S6541Û"ÆA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 101 to 64, Complexity from 43 to 14, Nesting Level from 5 to 2, Number of Variables from 59 to 6.(ÈÊ“À8º¹«¿î2

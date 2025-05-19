@@ -1,0 +1,29 @@
+
+»
+java:S6539
+"ŸSplit this â€œMonster Classâ€ into smaller and more specialized ones to reduce its dependencies on other classes from 25 to the maximum authorized 20 or less.(Ÿ‚«ıÿÿÿÿ
+0
+java:S1220""Move this file to a named package.
+h
+java:S3776["RRefactor this method to reduce its Cognitive Complexity from 45 to the 15 allowed.(‘‹ªÎ
+@	java:S106\"+Replace this use of System.out by a logger.(¾“‘›
+E	java:S106|"+Replace this use of System.out by a logger.(Ä¤ôÈøÿÿÿÿ
+3
+java:S2119}"Save and re-use this "Random".(¼İÅf
+A	java:S106‹"+Replace this use of System.err by a logger.(„‘¸¹
+A	java:S106"+Replace this use of System.err by a logger.(íÖŞø
+A	java:S106‘"+Replace this use of System.out by a logger.(‡œ«Ö
+a
+java:S6201’"JReplace this instanceof check and cast with 'instanceof Insecter insecter'(ş—“´
+e
+java:S6201“"NReplace this instanceof check and cast with 'instanceof Mushroomer mushroomer'(ô˜ØË
+A	java:S106•"+Replace this use of System.out by a logger.(¦ö¥´
+F	java:S106–"+Replace this use of System.err by a logger.(‚Ã¾òùÿÿÿÿ
+A	java:S106™"+Replace this use of System.err by a logger.(ïÓÑä
+F	java:S106š"+Replace this use of System.out by a logger.(Èø‘ìøÿÿÿÿ
+e
+java:S3252"IUse static access with "javax.swing.WindowConstants" for "EXIT_ON_CLOSE".(¹¿ùøÿÿÿÿ
+A
+java:S1181¶"%Catch Exception instead of Throwable.(À˜§üÿÿÿÿ
+Ü
+java:S6541["ÅA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 80 to 64, Complexity from 21 to 14, Nesting Level from 5 to 2, Number of Variables from 27 to 6.(‘‹ªÎ
