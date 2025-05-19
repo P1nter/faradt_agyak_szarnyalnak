@@ -28,7 +28,7 @@ public class MushroomYarn /* extends Observable */ {
 
         // Example: disappearing yarn logic could be here if Tekton type dictates it
         if (tektons[0].isDisappearing() || tektons[1].isDisappearing()) {
-            // this.timeBack = 5; // Yarn on such tektons might start with a timer
+            this.timeBack = 5; // Yarn on such tektons might start with a timer
         }
         // System.out.println("MushroomYarn CONSTRUCTOR: ID " + this.ID + " created between T" + tekton1.getIDNoPrint() + " and T" + tekton2.getIDNoPrint() + " for " + owner.getName());
     }
@@ -65,7 +65,7 @@ public class MushroomYarn /* extends Observable */ {
                     // and its timer is up, signal for removal
                     if (tektons[0].isDisappearing() || tektons[1].isDisappearing()){
                         // This yarn type might inherently disappear
-                        // return true; // This needs specific game rule implementation
+                        return true; // This needs specific game rule implementation
                     }
                 }
             }

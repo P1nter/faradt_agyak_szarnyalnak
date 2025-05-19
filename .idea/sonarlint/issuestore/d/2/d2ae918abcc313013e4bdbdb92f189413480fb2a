@@ -1,18 +1,25 @@
 
+e
+java:S1192W"HDefine a constant instead of duplicating this literal "  Yarn " 3 times.(ÌïÑ†8„›µ¾î2
 7
 java:S1220""Move this file to a named package.8Ìë¹½Ü2
-L	java:S106
-"+Replace this use of System.out by a logger.(ªÓ¼áşÿÿÿÿ8Ôë¹½Ü2
-G	java:S106"+Replace this use of System.out by a logger.(¾ãÎü8Ôë¹½Ü2
-L	java:S106"+Replace this use of System.out by a logger.(ÜÉ²òşÿÿÿÿ8Õë¹½Ü2
-L	java:S106"+Replace this use of System.out by a logger.(ªÓ¼áşÿÿÿÿ8Õë¹½Ü2
-L	java:S106"+Replace this use of System.out by a logger.(ë—¼·øÿÿÿÿ8Õë¹½Ü2
-L	java:S106"+Replace this use of System.out by a logger.(û¦ÊÊùÿÿÿÿ8Õë¹½Ü2
-G	java:S106"+Replace this use of System.out by a logger.(­¬œ›8Õë¹½Ü2
-G	java:S106"+Replace this use of System.out by a logger.(é¹‚¨8Öë¹½Ü2
-G	java:S106"+Replace this use of System.out by a logger.(Ìº™·8Öë¹½Ü2
-L	java:S106"+Replace this use of System.out by a logger.(¤Î‹‘ıÿÿÿÿ8©º½Ü2
-L	java:S106"+Replace this use of System.out by a logger.(¨ıûåùÿÿÿÿ8ì»½Ü2
-L	java:S106!"+Replace this use of System.out by a logger.(Õ±É®ûÿÿÿÿ8´ò¼½Ü2
-L	java:S106$"+Replace this use of System.out by a logger.(î§ƒüÿÿÿÿ8çî¾½Ü2
-L	java:S106%"+Replace this use of System.out by a logger.(ŒûÌÏÿÿÿÿÿ8’™¿½Ü2
+n	java:S116"MRename this field "ID" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‘¥âğúÿÿÿÿ8¦›µ¾î2
+z
+java:S4144+"XUpdate this method so that its implementation is not identical to "getIsCut" on line 42.(­¬­ûÿÿÿÿ8¨›µ¾î2
+„
+java:S41442"bUpdate this method so that its implementation is not identical to "getTimeBackNoPrint" on line 49.(Ñû³²ûÿÿÿÿ8©›µ¾î2
+y
+java:S4144M"\Update this method so that its implementation is not identical to "getIDNoPrint" on line 76.(€ä‹Á8©›µ¾î2
+G
+java:S3010"*Remove this assignment of "nextIDCounter".(ÅØÎ±8·›µ¾î2
+]	java:S125"<This block of commented-out lines of code should be removed.(¨Å Üÿÿÿÿÿ8½›µ¾î2
+]	java:S125!"<This block of commented-out lines of code should be removed.(Ù‡¶šûÿÿÿÿ8¾›µ¾î2
+j	java:S1006"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ü»•Ô8Ä›µ¾î2
+G	java:S106:"+Replace this use of System.out by a logger.(ëˆöğ8Æ›µ¾î2
+]	java:S125R"<This block of commented-out lines of code should be removed.(¿¬¿ÿÿÿÿÿ8Ë›µ¾î2
+G	java:S106U"+Replace this use of System.out by a logger.(ŞÆ­©8Ì›µ¾î2
+G	java:S106W"+Replace this use of System.out by a logger.(ÌïÑ†8Í›µ¾î2
+G	java:S106]"+Replace this use of System.out by a logger.(¸âù—8Î›µ¾î2
+]	java:S125c"<This block of commented-out lines of code should be removed.(¹ì¢Éúÿÿÿÿ8Ğ›µ¾î2
+L	java:S106l"+Replace this use of System.out by a logger.(İğáàşÿÿÿÿ8Ñ›µ¾î2
+X	java:S125p"<This block of commented-out lines of code should be removed.(€¯°8Ò›µ¾î2
