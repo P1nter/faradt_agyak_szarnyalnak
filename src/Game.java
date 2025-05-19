@@ -197,11 +197,34 @@ public class Game {
         }
         cancelAction(); return false;
     }
-    private boolean tryMushroomerEat(Tekton target) { /* ... same ... */
-        if (!activePlayer.hasActionsLeft()) { noActionsLeft(); cancelAction(); return false; }
-        System.out.println("Game: Mushroomer " + activePlayer.getName() + " EAT action at T" + target.getIDNoPrint() + " (Placeholder).");
-        activePlayer.decrementActionPoints(); completeAction(); return true;
+
+    public boolean tryMushroomerEat(Tekton target) {
+        Player player = getActivePlayer();
+        if (!(player instanceof Mushroomer mushroomer)) {
+            System.out.println("Current player is not a Mushroomer.");
+            return false;
+        }
+
+        if (target == null) {
+            System.out.println("No target Tekton selected for eating.");
+            return false;
+        }
+
+        // Delegate the eat logic to the Mushroomer object.
+        boolean eatSuccess = mushroomer.eatInsect(target);
+        if (eatSuccess) {
+            System.out.println("Mushroomer successfully ate an insect on Tekton " + target.getIDNoPrint());
+            completeAction(); // Ensure actions are only deducted on success
+        } else {
+            JOptionPane.showMessageDialog(null, "Failed to eat an insect. Ensure there's a paralyzed insect and yarn on the Tekton.", 
+                                      "Action Failed", JOptionPane.WARNING_MESSAGE);
+            System.out.println("Mushroomer failed to eat the insect on Tekton " + target.getIDNoPrint());
+        }
+
+        fireStateChanged(); // Reflect changes to the UI regardless of success
+        return eatSuccess;
     }
+
     private boolean tryCutYarn(Insect byInsect, MushroomYarn yarnToCut) { /* ... same ... */
         if (!activePlayer.hasActionsLeft()) { noActionsLeft(); cancelAction(); return false; }
         boolean success = byInsect.cut(yarnToCut);

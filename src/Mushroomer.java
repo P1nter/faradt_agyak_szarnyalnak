@@ -1,8 +1,5 @@
 // Mushroomer.java
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 // import java.util.stream.Collectors; // If used
 
 public class Mushroomer extends Player {
@@ -195,6 +192,39 @@ public class Mushroomer extends Player {
             System.out.println(getName() + ": growBody preconditions not met for T" + tekton.getIDNoPrint());
         }
     }
+
+    public boolean eatInsect(Tekton targetTekton) {
+        if (targetTekton == null) {
+            System.out.println(getName() + ": Target Tekton is null. Cannot eat insect.");
+            return false;
+        }
+
+        // Check if there is a paralyzed insect on the target Tekton.
+        Insect targetInsect = targetTekton.getInsects().stream()
+                .filter(insect -> insect.getEffectsNoPrint()[1] > 0)  // Check if the insect is paralyzed.
+                .findFirst()
+                .orElse(null);
+
+        if (targetInsect == null) {
+            System.out.println(getName() + ": No paralyzed insect found on Tekton " + targetTekton.getIDNoPrint());
+            return false;
+        }
+
+        // Check if the Mushroomer has a yarn on the target Tekton.
+        boolean hasYarnOnTekton = mushroomYarns.stream()
+                .anyMatch(yarn -> Arrays.asList(yarn.getTektons()).contains(targetTekton));
+
+        if (!hasYarnOnTekton) {
+            System.out.println(getName() + ": No yarn on Tekton " + targetTekton.getIDNoPrint() + ". Cannot eat insect.");
+            return false;
+        }
+
+        // Eat the insect (remove it from the game).
+        targetInsect.disappear();
+        System.out.println(getName() + ": Successfully ate insect ID " + targetInsect.getIDNoPrint() + " on Tekton " + targetTekton.getIDNoPrint());
+        return true;
+    }
+
     public void addYarn(MushroomYarn my) { addMushroomYarn(my); } // Alias from diagram
     public void releaseSpore(MushroomBody fromBody, Spore.SporeType type, Tekton toTekton){ /* ... same as before ... */
         if (fromBody == null || fromBody.getOwner() != this || toTekton == null) { return; }
